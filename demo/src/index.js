@@ -50,6 +50,7 @@ class Demo extends Component {
         zVar='sz'
         prefix='counties'
         options={baseOptions}
+        onReady={(e) => console.log(e.getOption())}
       />
     </div>
   }

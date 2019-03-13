@@ -64211,7 +64211,8 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
 
     _this.state = {
       data: {},
-      loading: false,
+      ready: false,
+      loading: true,
       errorMessage: null
     };
 
@@ -64232,7 +64233,9 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
       if (!_this.props.onReady) {
         return;
       }
-      _this.props.onReady(echart);
+      if (!_this.state.ready && !_this.state.loading) {
+        _this._setReady();
+      }
     };
 
     _this._onHover = function (e) {
@@ -64317,15 +64320,29 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
     return this.echart && this.echart.apply(this, arguments);
   };
 
+  SedaScatterplot.prototype._setReady = function _setReady() {
+    var _this2 = this;
+
+    this.setState({ ready: true }, function () {
+      _this2.props.onReady && _this2.props.onReady(_this2.echart);
+    });
+  };
+
   /** Sets data for the given data category */
 
 
   SedaScatterplot.prototype._setData = function _setData(data, prefix) {
-    var _extends2;
+    var _extends2,
+        _this3 = this;
 
     prefix = prefix ? prefix : 'unprefixed';
     this.setState({
       data: SedaScatterplot_extends({}, this.state.data, (_extends2 = {}, _extends2[prefix] = SedaScatterplot_extends({}, this.state.data[prefix], data), _extends2))
+    }, function () {
+      _this3.props.onDataLoaded && _this3.props.onDataLoaded(_this3.state.data);
+      if (!_this3.state.ready && _this3.echart) {
+        _this3._setReady();
+      }
     });
   };
 
@@ -64335,7 +64352,7 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
 
 
   SedaScatterplot.prototype._loadScatterplotData = function _loadScatterplotData() {
-    var _this2 = this;
+    var _this4 = this;
 
     var _props2 = this.props,
         prefix = _props2.prefix,
@@ -64354,13 +64371,13 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
     this.setState({ loading: true });
     this.echart && this.echart.showLoading();
     utils_fetchScatterplotVars(vars, prefix).then(function (data) {
-      _this2._setData(data, prefix);
-      _this2.setState({ loading: false });
-      _this2.echart && _this2.echart.hideLoading();
+      _this4._setData(data, prefix);
+      _this4.setState({ loading: false });
+      _this4.echart && _this4.echart.hideLoading();
       return data;
     }).catch(function (err) {
-      _this2.echart && _this2.echart.hideLoading();
-      _this2.setState({
+      _this4.echart && _this4.echart.hideLoading();
+      _this4.setState({
         errorMessage: err.message ? err.message : err,
         loading: false
       });
@@ -64442,7 +64459,8 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
   onHover: prop_types_default.a.func,
   onClick: prop_types_default.a.func,
   onReady: prop_types_default.a.func,
-  onMouseMove: prop_types_default.a.func
+  onMouseMove: prop_types_default.a.func,
+  onDataLoaded: prop_types_default.a.func
 }, SedaScatterplot_temp);
 
 /* harmony default export */ var src_SedaScatterplot = (SedaScatterplot_SedaScatterplot);

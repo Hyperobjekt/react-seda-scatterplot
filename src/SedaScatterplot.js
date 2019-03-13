@@ -39,11 +39,13 @@ export class SedaScatterplot extends Component {
     onClick: PropTypes.func,
     onReady: PropTypes.func,
     onMouseMove: PropTypes.func,
+    onDataLoaded: PropTypes.func,
   }
 
   state = {
     data: {},
-    loading: false,
+    ready: false,
+    loading: true,
     errorMessage: null
   }
   
@@ -92,6 +94,12 @@ export class SedaScatterplot extends Component {
     return this.echart && this.echart(...args);
   }
 
+  _setReady() {
+    this.setState({ready: true}, () => {
+      this.props.onReady && this.props.onReady(this.echart);
+    });
+  }
+
   /** Sets data for the given data category */
   _setData(data, prefix) {
     prefix = prefix ? prefix : 'unprefixed';
@@ -103,7 +111,14 @@ export class SedaScatterplot extends Component {
           ...data
         }
       }
+    }, () => {
+      this.props.onDataLoaded && 
+        this.props.onDataLoaded(this.state.data)
+      if (!this.state.ready && this.echart) {
+        this._setReady()
+      }
     })
+
   }
 
   /**
@@ -172,7 +187,9 @@ export class SedaScatterplot extends Component {
   _onReady = (echart) => {
     this.echart = echart;
     if (!this.props.onReady) { return; }
-    this.props.onReady(echart);
+    if (!this.state.ready && !this.state.loading) {
+      this._setReady()
+    }
   }
 
   /**
