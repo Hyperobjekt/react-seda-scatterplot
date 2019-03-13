@@ -76,6 +76,23 @@ export class SedaScatterplot extends Component {
     }
   }
 
+  getData() { 
+    return this.state.data && 
+      this.state.data[this.props.prefix] ?
+        this.state.data[this.props.prefix] : {}
+  }
+
+  /** Gets the echart options, alias for echart function */
+  getOption() {
+    return this.echart ? this.echart.getOption() : {} 
+  }
+
+  /** Set echart options, alias for echart function */
+  setOption(...args) {
+    return this.echart && this.echart(...args);
+  }
+
+  /** Sets data for the given data category */
   _setData(data, prefix) {
     prefix = prefix ? prefix : 'unprefixed';
     this.setState({
@@ -85,8 +102,7 @@ export class SedaScatterplot extends Component {
           ...this.state.data[prefix],
           ...data
         }
-      },
-      loading: false
+      }
     })
   }
 
@@ -102,12 +118,16 @@ export class SedaScatterplot extends Component {
     yVar && (!data || !data[yVar]) && vars.push(yVar);
     if (vars.length === 0) { return; }
     this.setState({ loading: true })
+    this.echart && this.echart.showLoading()
     fetchScatterplotVars(vars, prefix)
       .then(data => {
         this._setData(data, prefix);
+        this.setState({loading: false});
+        this.echart && this.echart.hideLoading();
         return data;        
       })
       .catch(err => {
+        this.echart && this.echart.hideLoading()
         this.setState({
           errorMessage: err.message ? err.message : err,
           loading: false

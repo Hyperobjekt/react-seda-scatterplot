@@ -10,20 +10,16 @@ import * as merge from 'lodash.merge';
 // import the core library.
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 
-// then import echarts modules those you have used manually.
+// manually import required echarts components
 import echarts from 'echarts/lib/echarts';
 import 'echarts/lib/chart/line';
+import 'echarts/lib/chart/lines';
 import 'echarts/lib/chart/scatter';
-// import 'echarts/lib/chart/effectScatter';
-// import 'echarts/lib/chart/lines';
-// import 'echarts/lib/component/graphic';
+import 'echarts/lib/chart/effectScatter';
 import 'echarts/lib/component/grid';
 import 'echarts/lib/component/legend';
 import 'echarts/lib/component/tooltip';
-// import 'echarts/lib/component/singleAxis';
-// import 'echarts/lib/component/brush';
 import 'echarts/lib/component/title';
-// import 'echarts/lib/component/dataZoom';
 import 'echarts/lib/component/visualMap';
 import 'echarts/lib/component/markPoint';
 import 'echarts/lib/component/markLine';
@@ -91,7 +87,9 @@ export class Scatterplot extends Component {
 
   componentDidMount() {
     this.setState({
-      options: this._getScatterplotOptions()
+      options: getScatterplotOptions(
+        this._getScatterplotOptions()
+      )
     });
   }
 
@@ -114,7 +112,9 @@ export class Scatterplot extends Component {
       !_isEqual(prevProps.selected, selected)
     ) {
       this.setState({
-        options: this._getScatterplotOptions()
+        options: getScatterplotOptions(
+          this._getScatterplotOptions()
+        )
       });
     }
   }
@@ -210,12 +210,12 @@ export class Scatterplot extends Component {
 
   render() {
     return (
-      this.props.options && 
+      this.state.options && 
         <ReactEchartsCore
           echarts={echarts}
           onChartReady={this._onChartReady.bind(this)}
-          style={{ position: 'absolute', width: '100%', height: '100%', ...this.props.style }}
-          option={getScatterplotOptions(this.state.options)}
+          style={{ position: 'absolute', top:0, left:0, width: '100%', height: '100%', ...this.props.style }}
+          option={this.state.options}
         />
     )
   }
