@@ -48,9 +48,12 @@ class Demo extends Component {
         xVar='all_ses'
         yVar='all_avg'
         zVar='sz'
-        prefix='counties'
+        prefix='districts'
+        selected={["1305580"]}
+        selectedColors={[ '#f00' ]}
         options={baseOptions}
         onReady={(e) => console.log(e.getOption())}
+        onHover={(e) => console.log(e) }
       />
     </div>
   }

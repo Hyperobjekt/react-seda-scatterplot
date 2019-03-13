@@ -172,7 +172,7 @@ export class SedaScatterplot extends Component {
    */
   _onClick = (e) => {
     if (!this.props.onClick) { return; }
-    const { data } = this.props;
+    const { data } = this.state;
     const locationData = {
       id: e.data[3],
       ...getDataForId(e.data[3], data)
@@ -198,7 +198,7 @@ export class SedaScatterplot extends Component {
    */
   _onHover = (e) => {
     if (!this.props.onHover) { return; }
-    const { data } = this.props;
+    const { data } = this.state;
     // get the data array for the hovered location
     const hoverData = 
       e && e.data && e.data.hasOwnProperty('value') ?
