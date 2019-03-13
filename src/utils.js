@@ -2,7 +2,7 @@ import axios from 'axios';
 import { parse } from 'papaparse';
 
 /** load endpoint from env variable or use fallback */
-const endpoint = 'http://seda-data.s3-website-us-east-1.amazonaws.com/build/dev/scatterplot/';
+const endpoint = 'https://d2fypeb6f974r1.cloudfront.net/dev/scatterplot/';
 
 /** variables that are part of the base scatterplot file */ 
 const baseVars = ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz' ];

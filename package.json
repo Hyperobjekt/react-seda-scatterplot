@@ -1,6 +1,6 @@
 {
   "name": "react-seda-scatterplot",
-  "version": "0.0.0-development",
+  "version": "1.0.1",
   "description": "react-seda-scatterplot React component",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -41,8 +41,8 @@
     "semantic-release": "^15.13.3",
     "travis-deploy-once": "^5.0.11"
   },
-  "author": "",
-  "homepage": "",
+  "author": "Lane Olson",
+  "homepage": "http://laneolson.ca",
   "license": "MIT",
   "repository": {
     "type": "git",
