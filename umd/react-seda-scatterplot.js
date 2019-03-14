@@ -875,7 +875,7 @@ var ComponentView = __webpack_require__(98);
 
 var ChartView = __webpack_require__(99);
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var modelUtil = __webpack_require__(4);
 
@@ -2902,6 +2902,24 @@ var ___ec_export = __webpack_require__(214);
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+if (false) { var throwOnDirectAccess, ReactIs; } else {
+  // By explicitly using `prop-types` you are opting into new production behavior.
+  // http://fb.me/prop-types-in-prod
+  module.exports = __webpack_require__(136)();
+}
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var zrUtil = __webpack_require__(0);
 
 var pathTool = __webpack_require__(180);
@@ -4009,24 +4027,6 @@ exports.groupTransition = groupTransition;
 exports.clipPointsByRect = clipPointsByRect;
 exports.clipRectByRect = clipRectByRect;
 exports.createIcon = createIcon;
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-if (false) { var throwOnDirectAccess, ReactIs; } else {
-  // By explicitly using `prop-types` you are opting into new production behavior.
-  // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(136)();
-}
-
 
 /***/ }),
 /* 4 */
@@ -7594,7 +7594,7 @@ module.exports = _default;
 
 var zrUtil = __webpack_require__(0);
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var BoundingRect = __webpack_require__(12);
 
@@ -19629,7 +19629,7 @@ module.exports = _default;
 /* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var SymbolClz = __webpack_require__(58);
 
@@ -22141,7 +22141,7 @@ var _symbol = __webpack_require__(16);
 
 var createSymbol = _symbol.createSymbol;
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var _number = __webpack_require__(5);
 
@@ -22593,7 +22593,7 @@ var echarts = __webpack_require__(1);
 
 var zrUtil = __webpack_require__(0);
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 __webpack_require__(232);
 
@@ -22654,7 +22654,7 @@ var symbolUtil = __webpack_require__(16);
 
 var LinePath = __webpack_require__(244);
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var _number = __webpack_require__(5);
 
@@ -31492,7 +31492,7 @@ var each = _util.each;
 
 var formatUtil = __webpack_require__(9);
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var Model = __webpack_require__(15);
 
@@ -32316,7 +32316,7 @@ exports.layout = layout;
 /* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var LineGroup = __webpack_require__(61);
 
@@ -32491,7 +32491,7 @@ module.exports = _default;
 /* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var Line = __webpack_require__(61);
 
@@ -32690,7 +32690,7 @@ module.exports = _default;
 /* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var zrUtil = __webpack_require__(0);
 
@@ -32891,7 +32891,7 @@ module.exports = _default;
 /* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var BaseAxisPointer = __webpack_require__(257);
 
@@ -33029,7 +33029,7 @@ module.exports = _default;
 
 var zrUtil = __webpack_require__(0);
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var textContain = __webpack_require__(23);
 
@@ -34587,7 +34587,7 @@ var echarts = __webpack_require__(1);
 
 var zrUtil = __webpack_require__(0);
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var formatUtil = __webpack_require__(9);
 
@@ -35358,7 +35358,7 @@ var _react = __webpack_require__(21);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -40727,7 +40727,7 @@ module.exports = _default;
 
 var textContain = __webpack_require__(23);
 
-var graphicUtil = __webpack_require__(2);
+var graphicUtil = __webpack_require__(3);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -44077,7 +44077,7 @@ module.exports = _default;
 
 var zrUtil = __webpack_require__(0);
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -45008,7 +45008,7 @@ var colorTool = __webpack_require__(22);
 
 exports.color = colorTool;
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 exports.graphic = graphic;
 
@@ -47183,7 +47183,7 @@ var SymbolClz = __webpack_require__(58);
 
 var lineAnimationDiff = __webpack_require__(229);
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var modelUtil = __webpack_require__(4);
 
@@ -49952,7 +49952,7 @@ __webpack_require__(240);
 
 var zrUtil = __webpack_require__(0);
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var AxisBuilder = __webpack_require__(108);
 
@@ -50707,7 +50707,7 @@ module.exports = _default;
 /* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var vec2 = __webpack_require__(7);
 
@@ -50908,7 +50908,7 @@ module.exports = _default;
 /* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var IncrementalDisplayable = __webpack_require__(53);
 
@@ -51474,7 +51474,7 @@ echarts.extendChartView({
 /* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var _symbol = __webpack_require__(16);
 
@@ -51932,7 +51932,7 @@ var _symbol = __webpack_require__(16);
 
 var createSymbol = _symbol.createSymbol;
 
-var _graphic = __webpack_require__(2);
+var _graphic = __webpack_require__(3);
 
 var Group = _graphic.Group;
 
@@ -52188,7 +52188,7 @@ var zrUtil = __webpack_require__(0);
 
 var clazzUtil = __webpack_require__(17);
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var axisPointerModelHelper = __webpack_require__(46);
 
@@ -53674,7 +53674,7 @@ var _symbol = __webpack_require__(16);
 
 var createSymbol = _symbol.createSymbol;
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var _listComponent = __webpack_require__(265);
 
@@ -53995,7 +53995,7 @@ var positionElement = _layout.positionElement;
 
 var formatUtil = __webpack_require__(9);
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -54275,7 +54275,7 @@ var formatUtil = __webpack_require__(9);
 
 var numberUtil = __webpack_require__(5);
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var findPointFromSeries = __webpack_require__(118);
 
@@ -55259,7 +55259,7 @@ module.exports = _default;
 
 var echarts = __webpack_require__(1);
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var _layout = __webpack_require__(13);
 
@@ -55789,7 +55789,7 @@ var eventTool = __webpack_require__(24);
 
 var VisualMapView = __webpack_require__(126);
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var numberUtil = __webpack_require__(5);
 
@@ -57241,7 +57241,7 @@ var zrUtil = __webpack_require__(0);
 
 var VisualMapView = __webpack_require__(126);
 
-var graphic = __webpack_require__(2);
+var graphic = __webpack_require__(3);
 
 var _symbol = __webpack_require__(16);
 
@@ -58163,7 +58163,7 @@ var external_root_React_commonjs2_react_commonjs_react_amd_react_ = __webpack_re
 var external_root_React_commonjs2_react_commonjs_react_amd_react_default = /*#__PURE__*/__webpack_require__.n(external_root_React_commonjs2_react_commonjs_react_amd_react_);
 
 // EXTERNAL MODULE: ./node_modules/prop-types/index.js
-var prop_types = __webpack_require__(3);
+var prop_types = __webpack_require__(2);
 var prop_types_default = /*#__PURE__*/__webpack_require__.n(prop_types);
 
 // EXTERNAL MODULE: ./node_modules/axios/index.js
@@ -58176,9 +58176,6 @@ var papaparse_min = __webpack_require__(133);
 // CONCATENATED MODULE: ./src/utils.js
 
 
-
-/** load endpoint from env variable or use fallback */
-var endpoint = 'https://d2fypeb6f974r1.cloudfront.net/dev/scatterplot/';
 
 /** variables that are part of the base scatterplot file */
 var baseVars = ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz'];
@@ -58271,6 +58268,7 @@ var utils_parseCsvData = function parseCsvData(data, varName) {
 var utils_fetchScatterplotVars = function fetchScatterplotVars() {
   var vars = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var prefix = arguments[1];
+  var endpoint = arguments[2];
 
   var fetchVars = vars.map(function (v) {
     return baseVars.indexOf(v) > -1 ? 'base' : v;
@@ -64177,7 +64175,7 @@ function SedaScatterplot_inherits(subClass, superClass) { if (typeof superClass 
 
 
 /**
- * 
+ * Gets the scatterplot data for a given ID
  * @param {*} id 
  * @param {*} data 
  */
@@ -64191,7 +64189,7 @@ var getDataForId = function getDataForId(id, data) {
 };
 
 /**
- * 
+ * Gets the data index for the given ID in scatterplot data
  * @param {*} id 
  * @param {*} series 
  */
@@ -64277,17 +64275,36 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
     return _this;
   }
 
+  /** 
+   * Set initial data if it exists, 
+   * call load to load any missing data 
+   */
+
+
   SedaScatterplot.prototype.componentDidMount = function componentDidMount() {
+    var _props = this.props,
+        prefix = _props.prefix,
+        initialData = _props.initialData;
+
+    if (initialData) {
+      this._setData(initialData, prefix, true);
+    }
     this._loadScatterplotData();
   };
 
+  /**
+   * Call load if variable or region (prefix) has changed
+   * Toggle highlights on the hovered ID if needed
+   */
+
+
   SedaScatterplot.prototype.componentDidUpdate = function componentDidUpdate(prevProps) {
-    var _props = this.props,
-        prefix = _props.prefix,
-        xVar = _props.xVar,
-        yVar = _props.yVar,
-        zVar = _props.zVar,
-        hovered = _props.hovered;
+    var _props2 = this.props,
+        prefix = _props2.prefix,
+        xVar = _props2.xVar,
+        yVar = _props2.yVar,
+        zVar = _props2.zVar,
+        hovered = _props2.hovered;
     // load data if needed
 
     if (prevProps.prefix !== prefix || prevProps.xVar !== xVar || prevProps.zVar !== zVar || prevProps.yVar !== yVar) {
@@ -64302,8 +64319,29 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
     }
   };
 
+  /**
+   * Gets the state data for the scatterplot
+   */
+
+
   SedaScatterplot.prototype.getData = function getData() {
     return this.state.data && this.state.data[this.props.prefix] ? this.state.data[this.props.prefix] : {};
+  };
+
+  /** 
+   * Get the data series echart configuration for the givn ID
+   * 
+   * @returns {object} echart options for series https://ecomfe.github.io/echarts-doc/public/en/option.html#series-scatter.type
+   */
+
+
+  SedaScatterplot.prototype.getDataSeries = function getDataSeries() {
+    var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'scatter';
+
+    var options = this.getOption();
+    return options.series && options.series.length ? options.series.find(function (s) {
+      return s.id === id;
+    }) : null;
   };
 
   /** Gets the echart options, alias for echart function */
@@ -64320,6 +64358,9 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
     return this.echart && this.echart.apply(this, arguments);
   };
 
+  /** Sets ready state of this component and fires callback */
+
+
   SedaScatterplot.prototype._setReady = function _setReady() {
     var _this2 = this;
 
@@ -64335,11 +64376,15 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
     var _extends2,
         _this3 = this;
 
+    var silent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
     prefix = prefix ? prefix : 'unprefixed';
     this.setState({
       data: SedaScatterplot_extends({}, this.state.data, (_extends2 = {}, _extends2[prefix] = SedaScatterplot_extends({}, this.state.data[prefix], data), _extends2))
     }, function () {
-      _this3.props.onDataLoaded && _this3.props.onDataLoaded(_this3.state.data);
+      if (!silent) {
+        _this3.props.onDataLoaded && _this3.props.onDataLoaded(_this3.state.data);
+      }
       if (!_this3.state.ready && _this3.echart) {
         _this3._setReady();
       }
@@ -64354,14 +64399,18 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
   SedaScatterplot.prototype._loadScatterplotData = function _loadScatterplotData() {
     var _this4 = this;
 
-    var _props2 = this.props,
-        prefix = _props2.prefix,
-        xVar = _props2.xVar,
-        yVar = _props2.yVar,
-        zVar = _props2.zVar;
+    var _props3 = this.props,
+        prefix = _props3.prefix,
+        xVar = _props3.xVar,
+        yVar = _props3.yVar,
+        zVar = _props3.zVar,
+        endpoint = _props3.endpoint;
     var data = this.state.data;
 
     var vars = [];
+    if (!endpoint) {
+      throw new Error('no endpoint specified for scatterplot');
+    }
     zVar && (!data || !data[zVar]) && vars.push(zVar);
     xVar && (!data || !data[xVar]) && vars.push(xVar);
     yVar && (!data || !data[yVar]) && vars.push(yVar);
@@ -64370,7 +64419,7 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
     }
     this.setState({ loading: true });
     this.echart && this.echart.showLoading();
-    utils_fetchScatterplotVars(vars, prefix).then(function (data) {
+    utils_fetchScatterplotVars(vars, prefix, endpoint).then(function (data) {
       _this4._setData(data, prefix);
       _this4.setState({ loading: false });
       _this4.echart && _this4.echart.hideLoading();
@@ -64414,8 +64463,8 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
 
 
   /**
-   * Set the echart instance on ready and pass it to the onReady
-   * handler if it exists
+   * Set the echart instance on ready and set the
+   * component status to ready if data has loaded.
    */
 
 
@@ -64448,9 +64497,11 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
 
   return SedaScatterplot;
 }(external_root_React_commonjs2_react_commonjs_react_amd_react_["Component"]), SedaScatterplot_class.propTypes = {
+  endpoint: prop_types_default.a.string.isRequired,
   xVar: prop_types_default.a.string,
   yVar: prop_types_default.a.string,
   zVar: prop_types_default.a.string,
+  initialData: prop_types_default.a.object,
   prefix: prop_types_default.a.string,
   options: prop_types_default.a.object,
   hovered: prop_types_default.a.string,

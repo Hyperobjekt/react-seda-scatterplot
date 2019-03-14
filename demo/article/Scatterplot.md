@@ -9,6 +9,12 @@ Scatterplot is a helper class to build and transition between states.
   - `rootEl` {DOMElement} element to render the scatterplot in
   - `props` {object} optional props to pass to the React component
 
+## Attributes
+
+### `.component` 
+
+Instance of the React SedaScatterplot component (see [here](../../README.md) for available attributes and methods)
+
 ## Methods
 
 ### `.on(eventName, handler)`
