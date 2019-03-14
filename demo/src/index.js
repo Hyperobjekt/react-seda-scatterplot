@@ -48,6 +48,7 @@ class Demo extends Component {
         xVar='all_ses'
         yVar='all_avg'
         zVar='sz'
+        endpoint='https://d2fypeb6f974r1.cloudfront.net/dev/scatterplot/'
         prefix='districts'
         selected={["1305580"]}
         selectedColors={[ '#f00' ]}

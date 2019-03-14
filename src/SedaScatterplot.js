@@ -8,13 +8,15 @@ import { fetchScatterplotVars } from './utils';
  * @param {*} id 
  * @param {*} data 
  */
-const getDataForId = (id, data) => 
-  Object.keys(data).reduce((acc, curr) => {
+const getDataForId = (id, data) => {
+  return Object.keys(data).reduce((acc, curr) => {
     if (data[curr][id]) {
       acc[curr] = data[curr][id]
     }
     return acc;
   }, {})
+}
+
 
 /**
  * Gets the data index for the given ID in scatterplot data
@@ -207,10 +209,11 @@ export class SedaScatterplot extends Component {
    */
   _onClick = (e) => {
     if (!this.props.onClick) { return; }
+    const prefix = this.props.prefix || 'unprefixed';
     const { data } = this.state;
     const locationData = {
       id: e.data[3],
-      ...getDataForId(e.data[3], data)
+      ...getDataForId(e.data[3], data[prefix])
     };
     this.props.onClick && this.props.onClick(locationData, e)
   }
@@ -233,6 +236,7 @@ export class SedaScatterplot extends Component {
    */
   _onHover = (e) => {
     if (!this.props.onHover) { return; }
+    const prefix = this.props.prefix || 'unprefixed';
     const { data } = this.state;
     // get the data array for the hovered location
     const hoverData = 
@@ -241,7 +245,7 @@ export class SedaScatterplot extends Component {
     // get the data from the state for the location
     const locationData = hoverData && e.type === 'mouseover' ? ({
       id: hoverData[3],
-      ...getDataForId(hoverData[3], data)
+      ...getDataForId(hoverData[3], data[prefix])
     }) : null;
     // if there is a location then call onHover immediately
     if (locationData) {

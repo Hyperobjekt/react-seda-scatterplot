@@ -64180,6 +64180,7 @@ function SedaScatterplot_inherits(subClass, superClass) { if (typeof superClass 
  * @param {*} data 
  */
 var getDataForId = function getDataForId(id, data) {
+  console.log('getting data', id, data);
   return Object.keys(data).reduce(function (acc, curr) {
     if (data[curr][id]) {
       acc[curr] = data[curr][id];
@@ -64218,11 +64219,12 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
       if (!_this.props.onClick) {
         return;
       }
+      var prefix = _this.props.prefix || 'unprefixed';
       var data = _this.state.data;
 
       var locationData = SedaScatterplot_extends({
         id: e.data[3]
-      }, getDataForId(e.data[3], data));
+      }, getDataForId(e.data[3], data[prefix]));
       _this.props.onClick && _this.props.onClick(locationData, e);
     };
 
@@ -64240,6 +64242,7 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
       if (!_this.props.onHover) {
         return;
       }
+      var prefix = _this.props.prefix || 'unprefixed';
       var data = _this.state.data;
       // get the data array for the hovered location
 
@@ -64247,7 +64250,7 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
       // get the data from the state for the location
       var locationData = hoverData && e.type === 'mouseover' ? SedaScatterplot_extends({
         id: hoverData[3]
-      }, getDataForId(hoverData[3], data)) : null;
+      }, getDataForId(hoverData[3], data[prefix])) : null;
       // if there is a location then call onHover immediately
       if (locationData) {
         _this.props.onHover(locationData, e);
