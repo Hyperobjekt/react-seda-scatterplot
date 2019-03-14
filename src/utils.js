@@ -1,9 +1,6 @@
 import axios from 'axios';
 import { parse } from 'papaparse';
 
-/** load endpoint from env variable or use fallback */
-const endpoint = 'https://d2fypeb6f974r1.cloudfront.net/dev/scatterplot/';
-
 /** variables that are part of the base scatterplot file */ 
 const baseVars = ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz' ];
 
@@ -103,7 +100,7 @@ const parseCsvData = (data, varName) => {
  * @param {string} prefix prefix to the varname to fetch (e.g. 'districts')
  * @returns {Promise<object>}
  */
-export const fetchScatterplotVars = (vars = [], prefix) => {
+export const fetchScatterplotVars = (vars = [], prefix, endpoint) => {
   const fetchVars = vars
     .map(v => baseVars.indexOf(v) > -1 ? 'base' : v)
     .filter((value, index, self) => self.indexOf(value) === index)

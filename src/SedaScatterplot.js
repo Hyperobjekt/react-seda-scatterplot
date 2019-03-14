@@ -4,7 +4,7 @@ import Scatterplot from './Scatterplot';
 import { fetchScatterplotVars } from './utils';
 
 /**
- * 
+ * Gets the scatterplot data for a given ID
  * @param {*} id 
  * @param {*} data 
  */
@@ -17,7 +17,7 @@ const getDataForId = (id, data) =>
   }, {})
 
 /**
- * 
+ * Gets the data index for the given ID in scatterplot data
  * @param {*} id 
  * @param {*} series 
  */
@@ -27,9 +27,11 @@ const getDataIndex = (id, series) => {
 
 export class SedaScatterplot extends Component {
   static propTypes = {
+    endpoint: PropTypes.string.isRequired,
     xVar: PropTypes.string,
     yVar: PropTypes.string,
     zVar: PropTypes.string,
+    initialData: PropTypes.object,
     prefix: PropTypes.string,
     options: PropTypes.object,
     hovered: PropTypes.string,
@@ -54,10 +56,22 @@ export class SedaScatterplot extends Component {
     this.hoverTimeout = null;
   }
 
+  /** 
+   * Set initial data if it exists, 
+   * call load to load any missing data 
+   */
   componentDidMount() {
+    const { prefix, initialData } = this.props;
+    if (initialData) {
+      this._setData(initialData, prefix, true);
+    }
     this._loadScatterplotData();
   }
 
+  /**
+   * Call load if variable or region (prefix) has changed
+   * Toggle highlights on the hovered ID if needed
+   */
   componentDidUpdate(prevProps) {
     const { prefix, xVar, yVar, zVar, hovered } = this.props;    
     // load data if needed
@@ -78,10 +92,25 @@ export class SedaScatterplot extends Component {
     }
   }
 
+  /**
+   * Gets the state data for the scatterplot
+   */
   getData() { 
     return this.state.data && 
       this.state.data[this.props.prefix] ?
         this.state.data[this.props.prefix] : {}
+  }
+
+  /** 
+   * Get the data series echart configuration for the givn ID
+   * 
+   * @returns {object} echart options for series https://ecomfe.github.io/echarts-doc/public/en/option.html#series-scatter.type
+   */
+  getDataSeries(id = 'scatter') {
+    const options = this.getOption();
+    return options.series && options.series.length ?
+      options.series.find(s => s.id === id) :
+      null;
   }
 
   /** Gets the echart options, alias for echart function */
@@ -94,6 +123,7 @@ export class SedaScatterplot extends Component {
     return this.echart && this.echart(...args);
   }
 
+  /** Sets ready state of this component and fires callback */
   _setReady() {
     this.setState({ready: true}, () => {
       this.props.onReady && this.props.onReady(this.echart);
@@ -101,7 +131,7 @@ export class SedaScatterplot extends Component {
   }
 
   /** Sets data for the given data category */
-  _setData(data, prefix) {
+  _setData(data, prefix, silent = false) {
     prefix = prefix ? prefix : 'unprefixed';
     this.setState({
       data: { 
@@ -112,8 +142,10 @@ export class SedaScatterplot extends Component {
         }
       }
     }, () => {
-      this.props.onDataLoaded && 
-        this.props.onDataLoaded(this.state.data)
+      if (!silent) {
+        this.props.onDataLoaded && 
+          this.props.onDataLoaded(this.state.data)
+      }
       if (!this.state.ready && this.echart) {
         this._setReady()
       }
@@ -125,16 +157,19 @@ export class SedaScatterplot extends Component {
    * Loads variables for a region if they do not exist in the data
    */
   _loadScatterplotData() {
-    const { prefix, xVar, yVar, zVar } = this.props;
+    const { prefix, xVar, yVar, zVar, endpoint } = this.props;
     const { data } = this.state;
     const vars = [];
+    if (!endpoint) { 
+      throw new Error('no endpoint specified for scatterplot') 
+    }
     zVar && (!data || !data[zVar]) && vars.push(zVar);
     xVar && (!data || !data[xVar]) && vars.push(xVar);
     yVar && (!data || !data[yVar]) && vars.push(yVar);
     if (vars.length === 0) { return; }
     this.setState({ loading: true })
     this.echart && this.echart.showLoading()
-    fetchScatterplotVars(vars, prefix)
+    fetchScatterplotVars(vars, prefix, endpoint)
       .then(data => {
         this._setData(data, prefix);
         this.setState({loading: false});
@@ -181,8 +216,8 @@ export class SedaScatterplot extends Component {
   }
 
   /**
-   * Set the echart instance on ready and pass it to the onReady
-   * handler if it exists
+   * Set the echart instance on ready and set the
+   * component status to ready if data has loaded.
    */
   _onReady = (echart) => {
     this.echart = echart;
