@@ -97,6 +97,22 @@ In addition to the metric/demographic variables, the following variables exist a
 
   - **sz**: number of students for the region (county, districts, schools)
 
+## Custom Endpoints
+
+This component can be used with any data by creating your own endpoint.  The endpoint is a URL that contains CSV files for individual variables. CSV files should follow the naming format:
+
+```
+{prefix}-{varName}.csv
+```
+
+> Note: You can leave out the `prefix` if you are only showing one category of data. (`{varName}.csv`)
+
+CSV files should have the following data format:
+
+```
+{identifier},{varName}
+```
+
 
 [build-badge]: https://img.shields.io/travis/Hyperobjekt/react-seda-scatterplot/master.png?style=flat-square
 [build]: https://travis-ci.org/Hyperobjekt/react-seda-scatterplot
