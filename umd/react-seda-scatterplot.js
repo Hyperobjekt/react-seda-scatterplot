@@ -64220,7 +64220,7 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
       if (!_this.props.onClick) {
         return;
       }
-      var data = _this.props.data;
+      var data = _this.state.data;
 
       var locationData = SedaScatterplot_extends({
         id: e.data[3]
@@ -64242,7 +64242,7 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
       if (!_this.props.onHover) {
         return;
       }
-      var data = _this.props.data;
+      var data = _this.state.data;
       // get the data array for the hovered location
 
       var hoverData = e && e.data && e.data.hasOwnProperty('value') ? e.data['value'] : e.data;
