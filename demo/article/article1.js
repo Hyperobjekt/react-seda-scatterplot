@@ -30,7 +30,13 @@ var state1 = function(scatterplot) {
       name: 'White Average Performance',
     },
     series: [{
+      id: 'base',
       type:'scatter',
+      itemStyle: {
+        color: '#ccc',
+        borderColor: 'rgba(0,0,0,0.5)',
+        borderWidth: 1
+      },
       markLine: {
         animation: false,
         silent: true,
@@ -53,7 +59,7 @@ var state1 = function(scatterplot) {
             { coord: [ 3,  3], symbol: 'none' },
           ],
           [
-            { 
+            {
               name: '', 
               coord: [0, -4], 
               symbol: 'none',
@@ -94,10 +100,10 @@ var state2 = function(scatterplot) {
   var dataSeries = scatterplot.getDataSeries();
   dataSeries['itemStyle'] = Object.assign(dataSeries['itemStyle'], { opacity: 0.2 })
   var top100 = scatterplot.getSeriesDataBySize(dataSeries.data, 10)
-  return deepmerge(base, {
+  const state = deepmerge(base, {
     series: [
-      dataSeries,
       {
+        id: 'top100',
         type: 'scatter',
         data: top100,
         symbolSize: dataSeries.symbolSize,
@@ -109,6 +115,7 @@ var state2 = function(scatterplot) {
       }
     ]
   })
+  return state;
 };
 
 /** State 3: Highlight locations (Detroit, Gwinet, Washington) */
@@ -119,8 +126,6 @@ var state3 = function(scatterplot) {
   var highlightedValues = scatterplot.getSeriesDataForIds(dataSeries.data, highlightIds);
   return deepmerge(base, {
     series: [
-      base.series[0],
-      base.series[1],
       {
         type: 'scatter',
         data: highlightedValues,
@@ -162,7 +167,13 @@ var state4 = function(scatterplot) {
       name: 'White-Black Socioeconomic Disparity',
     },
     series: [{
+      id: 'base',
       type:'scatter',
+      itemStyle: {
+        color: '#ccc',
+        borderColor: 'rgba(0,0,0,0.5)',
+        borderWidth: 1
+      },
       markLine: {
         animation: false,
         silent: true,

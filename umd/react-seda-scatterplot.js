@@ -1,5 +1,5 @@
 /*!
- * react-seda-scatterplot v1.0.1 - http://laneolson.ca
+ * react-seda-scatterplot v1.0.8 - http://laneolson.ca
  * MIT Licensed
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -851,7 +851,7 @@ var colorTool = __webpack_require__(22);
 
 var env = __webpack_require__(8);
 
-var timsort = __webpack_require__(49);
+var timsort = __webpack_require__(50);
 
 var Eventful = __webpack_require__(27);
 
@@ -879,7 +879,7 @@ var graphic = __webpack_require__(3);
 
 var modelUtil = __webpack_require__(4);
 
-var _throttle = __webpack_require__(55);
+var _throttle = __webpack_require__(56);
 
 var throttle = _throttle.throttle;
 
@@ -2998,7 +2998,7 @@ var BoundingRect = __webpack_require__(12);
 
 exports.BoundingRect = BoundingRect;
 
-var IncrementalDisplayable = __webpack_require__(53);
+var IncrementalDisplayable = __webpack_require__(54);
 
 exports.IncrementalDisplayable = IncrementalDisplayable;
 
@@ -5074,7 +5074,7 @@ if (typeof dev === 'undefined') {
 
 var __DEV__ = dev;
 exports.__DEV__ = __DEV__;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(48)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(49)))
 
 /***/ }),
 /* 7 */
@@ -9714,7 +9714,7 @@ exports.stringify = stringify;
 
 var BoundingRect = __webpack_require__(12);
 
-var imageHelper = __webpack_require__(50);
+var imageHelper = __webpack_require__(51);
 
 var _util = __webpack_require__(0);
 
@@ -10594,7 +10594,7 @@ var zrUtil = __webpack_require__(0);
 
 var OrdinalScale = __webpack_require__(217);
 
-var IntervalScale = __webpack_require__(57);
+var IntervalScale = __webpack_require__(58);
 
 var Scale = __webpack_require__(44);
 
@@ -12938,7 +12938,7 @@ function stubFalse() {
 
 module.exports = merge;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(48), __webpack_require__(68)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(49), __webpack_require__(68)(module)))
 
 /***/ }),
 /* 27 */
@@ -13503,7 +13503,7 @@ var _layout = __webpack_require__(13);
 var getLayoutParams = _layout.getLayoutParams;
 var mergeLayoutParam = _layout.mergeLayoutParam;
 
-var _task = __webpack_require__(54);
+var _task = __webpack_require__(55);
 
 var createTask = _task.createTask;
 
@@ -14403,7 +14403,7 @@ var _dataProvider = __webpack_require__(31);
 var defaultDimValueGetters = _dataProvider.defaultDimValueGetters;
 var DefaultDataProvider = _dataProvider.DefaultDataProvider;
 
-var _dimensionHelper = __webpack_require__(56);
+var _dimensionHelper = __webpack_require__(57);
 
 var summarizeDimensions = _dimensionHelper.summarizeDimensions;
 
@@ -19308,7 +19308,7 @@ var _sourceType = __webpack_require__(29);
 
 var SOURCE_FORMAT_ORIGINAL = _sourceType.SOURCE_FORMAT_ORIGINAL;
 
-var _dimensionHelper = __webpack_require__(56);
+var _dimensionHelper = __webpack_require__(57);
 
 var getDimensionTypeByAxis = _dimensionHelper.getDimensionTypeByAxis;
 
@@ -19631,7 +19631,7 @@ module.exports = _default;
 
 var graphic = __webpack_require__(3);
 
-var SymbolClz = __webpack_require__(58);
+var SymbolClz = __webpack_require__(59);
 
 var _util = __webpack_require__(0);
 
@@ -20150,2876 +20150,6 @@ exports.makeKey = makeKey;
 
 /***/ }),
 /* 47 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-var utils = __webpack_require__(11);
-var normalizeHeaderName = __webpack_require__(142);
-
-var DEFAULT_CONTENT_TYPE = {
-  'Content-Type': 'application/x-www-form-urlencoded'
-};
-
-function setContentTypeIfUnset(headers, value) {
-  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
-    headers['Content-Type'] = value;
-  }
-}
-
-function getDefaultAdapter() {
-  var adapter;
-  if (typeof XMLHttpRequest !== 'undefined') {
-    // For browsers use XHR adapter
-    adapter = __webpack_require__(64);
-  } else if (typeof process !== 'undefined') {
-    // For node use HTTP adapter
-    adapter = __webpack_require__(64);
-  }
-  return adapter;
-}
-
-var defaults = {
-  adapter: getDefaultAdapter(),
-
-  transformRequest: [function transformRequest(data, headers) {
-    normalizeHeaderName(headers, 'Content-Type');
-    if (utils.isFormData(data) ||
-      utils.isArrayBuffer(data) ||
-      utils.isBuffer(data) ||
-      utils.isStream(data) ||
-      utils.isFile(data) ||
-      utils.isBlob(data)
-    ) {
-      return data;
-    }
-    if (utils.isArrayBufferView(data)) {
-      return data.buffer;
-    }
-    if (utils.isURLSearchParams(data)) {
-      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
-      return data.toString();
-    }
-    if (utils.isObject(data)) {
-      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
-      return JSON.stringify(data);
-    }
-    return data;
-  }],
-
-  transformResponse: [function transformResponse(data) {
-    /*eslint no-param-reassign:0*/
-    if (typeof data === 'string') {
-      try {
-        data = JSON.parse(data);
-      } catch (e) { /* Ignore */ }
-    }
-    return data;
-  }],
-
-  /**
-   * A timeout in milliseconds to abort a request. If set to 0 (default) a
-   * timeout is not created.
-   */
-  timeout: 0,
-
-  xsrfCookieName: 'XSRF-TOKEN',
-  xsrfHeaderName: 'X-XSRF-TOKEN',
-
-  maxContentLength: -1,
-
-  validateStatus: function validateStatus(status) {
-    return status >= 200 && status < 300;
-  }
-};
-
-defaults.headers = {
-  common: {
-    'Accept': 'application/json, text/plain, */*'
-  }
-};
-
-utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
-  defaults.headers[method] = {};
-});
-
-utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
-});
-
-module.exports = defaults;
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(141)))
-
-/***/ }),
-/* 48 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1, eval)("this");
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 49 */
-/***/ (function(module, exports) {
-
-// https://github.com/mziccard/node-timsort
-var DEFAULT_MIN_MERGE = 32;
-var DEFAULT_MIN_GALLOPING = 7;
-var DEFAULT_TMP_STORAGE_LENGTH = 256;
-
-function minRunLength(n) {
-  var r = 0;
-
-  while (n >= DEFAULT_MIN_MERGE) {
-    r |= n & 1;
-    n >>= 1;
-  }
-
-  return n + r;
-}
-
-function makeAscendingRun(array, lo, hi, compare) {
-  var runHi = lo + 1;
-
-  if (runHi === hi) {
-    return 1;
-  }
-
-  if (compare(array[runHi++], array[lo]) < 0) {
-    while (runHi < hi && compare(array[runHi], array[runHi - 1]) < 0) {
-      runHi++;
-    }
-
-    reverseRun(array, lo, runHi);
-  } else {
-    while (runHi < hi && compare(array[runHi], array[runHi - 1]) >= 0) {
-      runHi++;
-    }
-  }
-
-  return runHi - lo;
-}
-
-function reverseRun(array, lo, hi) {
-  hi--;
-
-  while (lo < hi) {
-    var t = array[lo];
-    array[lo++] = array[hi];
-    array[hi--] = t;
-  }
-}
-
-function binaryInsertionSort(array, lo, hi, start, compare) {
-  if (start === lo) {
-    start++;
-  }
-
-  for (; start < hi; start++) {
-    var pivot = array[start];
-    var left = lo;
-    var right = start;
-    var mid;
-
-    while (left < right) {
-      mid = left + right >>> 1;
-
-      if (compare(pivot, array[mid]) < 0) {
-        right = mid;
-      } else {
-        left = mid + 1;
-      }
-    }
-
-    var n = start - left;
-
-    switch (n) {
-      case 3:
-        array[left + 3] = array[left + 2];
-
-      case 2:
-        array[left + 2] = array[left + 1];
-
-      case 1:
-        array[left + 1] = array[left];
-        break;
-
-      default:
-        while (n > 0) {
-          array[left + n] = array[left + n - 1];
-          n--;
-        }
-
-    }
-
-    array[left] = pivot;
-  }
-}
-
-function gallopLeft(value, array, start, length, hint, compare) {
-  var lastOffset = 0;
-  var maxOffset = 0;
-  var offset = 1;
-
-  if (compare(value, array[start + hint]) > 0) {
-    maxOffset = length - hint;
-
-    while (offset < maxOffset && compare(value, array[start + hint + offset]) > 0) {
-      lastOffset = offset;
-      offset = (offset << 1) + 1;
-
-      if (offset <= 0) {
-        offset = maxOffset;
-      }
-    }
-
-    if (offset > maxOffset) {
-      offset = maxOffset;
-    }
-
-    lastOffset += hint;
-    offset += hint;
-  } else {
-    maxOffset = hint + 1;
-
-    while (offset < maxOffset && compare(value, array[start + hint - offset]) <= 0) {
-      lastOffset = offset;
-      offset = (offset << 1) + 1;
-
-      if (offset <= 0) {
-        offset = maxOffset;
-      }
-    }
-
-    if (offset > maxOffset) {
-      offset = maxOffset;
-    }
-
-    var tmp = lastOffset;
-    lastOffset = hint - offset;
-    offset = hint - tmp;
-  }
-
-  lastOffset++;
-
-  while (lastOffset < offset) {
-    var m = lastOffset + (offset - lastOffset >>> 1);
-
-    if (compare(value, array[start + m]) > 0) {
-      lastOffset = m + 1;
-    } else {
-      offset = m;
-    }
-  }
-
-  return offset;
-}
-
-function gallopRight(value, array, start, length, hint, compare) {
-  var lastOffset = 0;
-  var maxOffset = 0;
-  var offset = 1;
-
-  if (compare(value, array[start + hint]) < 0) {
-    maxOffset = hint + 1;
-
-    while (offset < maxOffset && compare(value, array[start + hint - offset]) < 0) {
-      lastOffset = offset;
-      offset = (offset << 1) + 1;
-
-      if (offset <= 0) {
-        offset = maxOffset;
-      }
-    }
-
-    if (offset > maxOffset) {
-      offset = maxOffset;
-    }
-
-    var tmp = lastOffset;
-    lastOffset = hint - offset;
-    offset = hint - tmp;
-  } else {
-    maxOffset = length - hint;
-
-    while (offset < maxOffset && compare(value, array[start + hint + offset]) >= 0) {
-      lastOffset = offset;
-      offset = (offset << 1) + 1;
-
-      if (offset <= 0) {
-        offset = maxOffset;
-      }
-    }
-
-    if (offset > maxOffset) {
-      offset = maxOffset;
-    }
-
-    lastOffset += hint;
-    offset += hint;
-  }
-
-  lastOffset++;
-
-  while (lastOffset < offset) {
-    var m = lastOffset + (offset - lastOffset >>> 1);
-
-    if (compare(value, array[start + m]) < 0) {
-      offset = m;
-    } else {
-      lastOffset = m + 1;
-    }
-  }
-
-  return offset;
-}
-
-function TimSort(array, compare) {
-  var minGallop = DEFAULT_MIN_GALLOPING;
-  var length = 0;
-  var tmpStorageLength = DEFAULT_TMP_STORAGE_LENGTH;
-  var stackLength = 0;
-  var runStart;
-  var runLength;
-  var stackSize = 0;
-  length = array.length;
-
-  if (length < 2 * DEFAULT_TMP_STORAGE_LENGTH) {
-    tmpStorageLength = length >>> 1;
-  }
-
-  var tmp = [];
-  stackLength = length < 120 ? 5 : length < 1542 ? 10 : length < 119151 ? 19 : 40;
-  runStart = [];
-  runLength = [];
-
-  function pushRun(_runStart, _runLength) {
-    runStart[stackSize] = _runStart;
-    runLength[stackSize] = _runLength;
-    stackSize += 1;
-  }
-
-  function mergeRuns() {
-    while (stackSize > 1) {
-      var n = stackSize - 2;
-
-      if (n >= 1 && runLength[n - 1] <= runLength[n] + runLength[n + 1] || n >= 2 && runLength[n - 2] <= runLength[n] + runLength[n - 1]) {
-        if (runLength[n - 1] < runLength[n + 1]) {
-          n--;
-        }
-      } else if (runLength[n] > runLength[n + 1]) {
-        break;
-      }
-
-      mergeAt(n);
-    }
-  }
-
-  function forceMergeRuns() {
-    while (stackSize > 1) {
-      var n = stackSize - 2;
-
-      if (n > 0 && runLength[n - 1] < runLength[n + 1]) {
-        n--;
-      }
-
-      mergeAt(n);
-    }
-  }
-
-  function mergeAt(i) {
-    var start1 = runStart[i];
-    var length1 = runLength[i];
-    var start2 = runStart[i + 1];
-    var length2 = runLength[i + 1];
-    runLength[i] = length1 + length2;
-
-    if (i === stackSize - 3) {
-      runStart[i + 1] = runStart[i + 2];
-      runLength[i + 1] = runLength[i + 2];
-    }
-
-    stackSize--;
-    var k = gallopRight(array[start2], array, start1, length1, 0, compare);
-    start1 += k;
-    length1 -= k;
-
-    if (length1 === 0) {
-      return;
-    }
-
-    length2 = gallopLeft(array[start1 + length1 - 1], array, start2, length2, length2 - 1, compare);
-
-    if (length2 === 0) {
-      return;
-    }
-
-    if (length1 <= length2) {
-      mergeLow(start1, length1, start2, length2);
-    } else {
-      mergeHigh(start1, length1, start2, length2);
-    }
-  }
-
-  function mergeLow(start1, length1, start2, length2) {
-    var i = 0;
-
-    for (i = 0; i < length1; i++) {
-      tmp[i] = array[start1 + i];
-    }
-
-    var cursor1 = 0;
-    var cursor2 = start2;
-    var dest = start1;
-    array[dest++] = array[cursor2++];
-
-    if (--length2 === 0) {
-      for (i = 0; i < length1; i++) {
-        array[dest + i] = tmp[cursor1 + i];
-      }
-
-      return;
-    }
-
-    if (length1 === 1) {
-      for (i = 0; i < length2; i++) {
-        array[dest + i] = array[cursor2 + i];
-      }
-
-      array[dest + length2] = tmp[cursor1];
-      return;
-    }
-
-    var _minGallop = minGallop;
-    var count1, count2, exit;
-
-    while (1) {
-      count1 = 0;
-      count2 = 0;
-      exit = false;
-
-      do {
-        if (compare(array[cursor2], tmp[cursor1]) < 0) {
-          array[dest++] = array[cursor2++];
-          count2++;
-          count1 = 0;
-
-          if (--length2 === 0) {
-            exit = true;
-            break;
-          }
-        } else {
-          array[dest++] = tmp[cursor1++];
-          count1++;
-          count2 = 0;
-
-          if (--length1 === 1) {
-            exit = true;
-            break;
-          }
-        }
-      } while ((count1 | count2) < _minGallop);
-
-      if (exit) {
-        break;
-      }
-
-      do {
-        count1 = gallopRight(array[cursor2], tmp, cursor1, length1, 0, compare);
-
-        if (count1 !== 0) {
-          for (i = 0; i < count1; i++) {
-            array[dest + i] = tmp[cursor1 + i];
-          }
-
-          dest += count1;
-          cursor1 += count1;
-          length1 -= count1;
-
-          if (length1 <= 1) {
-            exit = true;
-            break;
-          }
-        }
-
-        array[dest++] = array[cursor2++];
-
-        if (--length2 === 0) {
-          exit = true;
-          break;
-        }
-
-        count2 = gallopLeft(tmp[cursor1], array, cursor2, length2, 0, compare);
-
-        if (count2 !== 0) {
-          for (i = 0; i < count2; i++) {
-            array[dest + i] = array[cursor2 + i];
-          }
-
-          dest += count2;
-          cursor2 += count2;
-          length2 -= count2;
-
-          if (length2 === 0) {
-            exit = true;
-            break;
-          }
-        }
-
-        array[dest++] = tmp[cursor1++];
-
-        if (--length1 === 1) {
-          exit = true;
-          break;
-        }
-
-        _minGallop--;
-      } while (count1 >= DEFAULT_MIN_GALLOPING || count2 >= DEFAULT_MIN_GALLOPING);
-
-      if (exit) {
-        break;
-      }
-
-      if (_minGallop < 0) {
-        _minGallop = 0;
-      }
-
-      _minGallop += 2;
-    }
-
-    minGallop = _minGallop;
-    minGallop < 1 && (minGallop = 1);
-
-    if (length1 === 1) {
-      for (i = 0; i < length2; i++) {
-        array[dest + i] = array[cursor2 + i];
-      }
-
-      array[dest + length2] = tmp[cursor1];
-    } else if (length1 === 0) {
-      throw new Error(); // throw new Error('mergeLow preconditions were not respected');
-    } else {
-      for (i = 0; i < length1; i++) {
-        array[dest + i] = tmp[cursor1 + i];
-      }
-    }
-  }
-
-  function mergeHigh(start1, length1, start2, length2) {
-    var i = 0;
-
-    for (i = 0; i < length2; i++) {
-      tmp[i] = array[start2 + i];
-    }
-
-    var cursor1 = start1 + length1 - 1;
-    var cursor2 = length2 - 1;
-    var dest = start2 + length2 - 1;
-    var customCursor = 0;
-    var customDest = 0;
-    array[dest--] = array[cursor1--];
-
-    if (--length1 === 0) {
-      customCursor = dest - (length2 - 1);
-
-      for (i = 0; i < length2; i++) {
-        array[customCursor + i] = tmp[i];
-      }
-
-      return;
-    }
-
-    if (length2 === 1) {
-      dest -= length1;
-      cursor1 -= length1;
-      customDest = dest + 1;
-      customCursor = cursor1 + 1;
-
-      for (i = length1 - 1; i >= 0; i--) {
-        array[customDest + i] = array[customCursor + i];
-      }
-
-      array[dest] = tmp[cursor2];
-      return;
-    }
-
-    var _minGallop = minGallop;
-
-    while (true) {
-      var count1 = 0;
-      var count2 = 0;
-      var exit = false;
-
-      do {
-        if (compare(tmp[cursor2], array[cursor1]) < 0) {
-          array[dest--] = array[cursor1--];
-          count1++;
-          count2 = 0;
-
-          if (--length1 === 0) {
-            exit = true;
-            break;
-          }
-        } else {
-          array[dest--] = tmp[cursor2--];
-          count2++;
-          count1 = 0;
-
-          if (--length2 === 1) {
-            exit = true;
-            break;
-          }
-        }
-      } while ((count1 | count2) < _minGallop);
-
-      if (exit) {
-        break;
-      }
-
-      do {
-        count1 = length1 - gallopRight(tmp[cursor2], array, start1, length1, length1 - 1, compare);
-
-        if (count1 !== 0) {
-          dest -= count1;
-          cursor1 -= count1;
-          length1 -= count1;
-          customDest = dest + 1;
-          customCursor = cursor1 + 1;
-
-          for (i = count1 - 1; i >= 0; i--) {
-            array[customDest + i] = array[customCursor + i];
-          }
-
-          if (length1 === 0) {
-            exit = true;
-            break;
-          }
-        }
-
-        array[dest--] = tmp[cursor2--];
-
-        if (--length2 === 1) {
-          exit = true;
-          break;
-        }
-
-        count2 = length2 - gallopLeft(array[cursor1], tmp, 0, length2, length2 - 1, compare);
-
-        if (count2 !== 0) {
-          dest -= count2;
-          cursor2 -= count2;
-          length2 -= count2;
-          customDest = dest + 1;
-          customCursor = cursor2 + 1;
-
-          for (i = 0; i < count2; i++) {
-            array[customDest + i] = tmp[customCursor + i];
-          }
-
-          if (length2 <= 1) {
-            exit = true;
-            break;
-          }
-        }
-
-        array[dest--] = array[cursor1--];
-
-        if (--length1 === 0) {
-          exit = true;
-          break;
-        }
-
-        _minGallop--;
-      } while (count1 >= DEFAULT_MIN_GALLOPING || count2 >= DEFAULT_MIN_GALLOPING);
-
-      if (exit) {
-        break;
-      }
-
-      if (_minGallop < 0) {
-        _minGallop = 0;
-      }
-
-      _minGallop += 2;
-    }
-
-    minGallop = _minGallop;
-
-    if (minGallop < 1) {
-      minGallop = 1;
-    }
-
-    if (length2 === 1) {
-      dest -= length1;
-      cursor1 -= length1;
-      customDest = dest + 1;
-      customCursor = cursor1 + 1;
-
-      for (i = length1 - 1; i >= 0; i--) {
-        array[customDest + i] = array[customCursor + i];
-      }
-
-      array[dest] = tmp[cursor2];
-    } else if (length2 === 0) {
-      throw new Error(); // throw new Error('mergeHigh preconditions were not respected');
-    } else {
-      customCursor = dest - (length2 - 1);
-
-      for (i = 0; i < length2; i++) {
-        array[customCursor + i] = tmp[i];
-      }
-    }
-  }
-
-  this.mergeRuns = mergeRuns;
-  this.forceMergeRuns = forceMergeRuns;
-  this.pushRun = pushRun;
-}
-
-function sort(array, compare, lo, hi) {
-  if (!lo) {
-    lo = 0;
-  }
-
-  if (!hi) {
-    hi = array.length;
-  }
-
-  var remaining = hi - lo;
-
-  if (remaining < 2) {
-    return;
-  }
-
-  var runLength = 0;
-
-  if (remaining < DEFAULT_MIN_MERGE) {
-    runLength = makeAscendingRun(array, lo, hi, compare);
-    binaryInsertionSort(array, lo, hi, lo + runLength, compare);
-    return;
-  }
-
-  var ts = new TimSort(array, compare);
-  var minRun = minRunLength(remaining);
-
-  do {
-    runLength = makeAscendingRun(array, lo, hi, compare);
-
-    if (runLength < minRun) {
-      var force = remaining;
-
-      if (force > minRun) {
-        force = minRun;
-      }
-
-      binaryInsertionSort(array, lo, lo + force, lo + runLength, compare);
-      runLength = force;
-    }
-
-    ts.pushRun(lo, runLength);
-    ts.mergeRuns();
-    remaining -= runLength;
-    lo += runLength;
-  } while (remaining !== 0);
-
-  ts.forceMergeRuns();
-}
-
-module.exports = sort;
-
-/***/ }),
-/* 50 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var LRU = __webpack_require__(76);
-
-var globalImageCache = new LRU(50);
-/**
- * @param {string|HTMLImageElement|HTMLCanvasElement|Canvas} newImageOrSrc
- * @return {HTMLImageElement|HTMLCanvasElement|Canvas} image
- */
-
-function findExistImage(newImageOrSrc) {
-  if (typeof newImageOrSrc === 'string') {
-    var cachedImgObj = globalImageCache.get(newImageOrSrc);
-    return cachedImgObj && cachedImgObj.image;
-  } else {
-    return newImageOrSrc;
-  }
-}
-/**
- * Caution: User should cache loaded images, but not just count on LRU.
- * Consider if required images more than LRU size, will dead loop occur?
- *
- * @param {string|HTMLImageElement|HTMLCanvasElement|Canvas} newImageOrSrc
- * @param {HTMLImageElement|HTMLCanvasElement|Canvas} image Existent image.
- * @param {module:zrender/Element} [hostEl] For calling `dirty`.
- * @param {Function} [cb] params: (image, cbPayload)
- * @param {Object} [cbPayload] Payload on cb calling.
- * @return {HTMLImageElement|HTMLCanvasElement|Canvas} image
- */
-
-
-function createOrUpdateImage(newImageOrSrc, image, hostEl, cb, cbPayload) {
-  if (!newImageOrSrc) {
-    return image;
-  } else if (typeof newImageOrSrc === 'string') {
-    // Image should not be loaded repeatly.
-    if (image && image.__zrImageSrc === newImageOrSrc || !hostEl) {
-      return image;
-    } // Only when there is no existent image or existent image src
-    // is different, this method is responsible for load.
-
-
-    var cachedImgObj = globalImageCache.get(newImageOrSrc);
-    var pendingWrap = {
-      hostEl: hostEl,
-      cb: cb,
-      cbPayload: cbPayload
-    };
-
-    if (cachedImgObj) {
-      image = cachedImgObj.image;
-      !isImageReady(image) && cachedImgObj.pending.push(pendingWrap);
-    } else {
-      !image && (image = new Image());
-      image.onload = imageOnLoad;
-      globalImageCache.put(newImageOrSrc, image.__cachedImgObj = {
-        image: image,
-        pending: [pendingWrap]
-      });
-      image.src = image.__zrImageSrc = newImageOrSrc;
-    }
-
-    return image;
-  } // newImageOrSrc is an HTMLImageElement or HTMLCanvasElement or Canvas
-  else {
-      return newImageOrSrc;
-    }
-}
-
-function imageOnLoad() {
-  var cachedImgObj = this.__cachedImgObj;
-  this.onload = this.__cachedImgObj = null;
-
-  for (var i = 0; i < cachedImgObj.pending.length; i++) {
-    var pendingWrap = cachedImgObj.pending[i];
-    var cb = pendingWrap.cb;
-    cb && cb(this, pendingWrap.cbPayload);
-    pendingWrap.hostEl.dirty();
-  }
-
-  cachedImgObj.pending.length = 0;
-}
-
-function isImageReady(image) {
-  return image && image.width && image.height;
-}
-
-exports.findExistImage = findExistImage;
-exports.createOrUpdateImage = createOrUpdateImage;
-exports.isImageReady = isImageReady;
-
-/***/ }),
-/* 51 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var zrUtil = __webpack_require__(0);
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-// TODO Parse shadow style
-// TODO Only shallow path support
-function _default(properties) {
-  // Normalize
-  for (var i = 0; i < properties.length; i++) {
-    if (!properties[i][1]) {
-      properties[i][1] = properties[i][0];
-    }
-  }
-
-  return function (model, excludes, includes) {
-    var style = {};
-
-    for (var i = 0; i < properties.length; i++) {
-      var propName = properties[i][1];
-
-      if (excludes && zrUtil.indexOf(excludes, propName) >= 0 || includes && zrUtil.indexOf(includes, propName) < 0) {
-        continue;
-      }
-
-      var val = model.getShallow(propName);
-
-      if (val != null) {
-        style[properties[i][0]] = val;
-      }
-    }
-
-    return style;
-  };
-}
-
-module.exports = _default;
-
-/***/ }),
-/* 52 */
-/***/ (function(module, exports) {
-
-/**
- * @param {Array.<Object>} colorStops
- */
-var Gradient = function (colorStops) {
-  this.colorStops = colorStops || [];
-};
-
-Gradient.prototype = {
-  constructor: Gradient,
-  addColorStop: function (offset, color) {
-    this.colorStops.push({
-      offset: offset,
-      color: color
-    });
-  }
-};
-var _default = Gradient;
-module.exports = _default;
-
-/***/ }),
-/* 53 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var _util = __webpack_require__(0);
-
-var inherits = _util.inherits;
-
-var Displayble = __webpack_require__(37);
-
-var BoundingRect = __webpack_require__(12);
-
-/**
- * Displayable for incremental rendering. It will be rendered in a separate layer
- * IncrementalDisplay have too main methods. `clearDisplayables` and `addDisplayables`
- * addDisplayables will render the added displayables incremetally.
- *
- * It use a not clearFlag to tell the painter don't clear the layer if it's the first element.
- */
-// TODO Style override ?
-function IncrementalDisplayble(opts) {
-  Displayble.call(this, opts);
-  this._displayables = [];
-  this._temporaryDisplayables = [];
-  this._cursor = 0;
-  this.notClear = true;
-}
-
-IncrementalDisplayble.prototype.incremental = true;
-
-IncrementalDisplayble.prototype.clearDisplaybles = function () {
-  this._displayables = [];
-  this._temporaryDisplayables = [];
-  this._cursor = 0;
-  this.dirty();
-  this.notClear = false;
-};
-
-IncrementalDisplayble.prototype.addDisplayable = function (displayable, notPersistent) {
-  if (notPersistent) {
-    this._temporaryDisplayables.push(displayable);
-  } else {
-    this._displayables.push(displayable);
-  }
-
-  this.dirty();
-};
-
-IncrementalDisplayble.prototype.addDisplayables = function (displayables, notPersistent) {
-  notPersistent = notPersistent || false;
-
-  for (var i = 0; i < displayables.length; i++) {
-    this.addDisplayable(displayables[i], notPersistent);
-  }
-};
-
-IncrementalDisplayble.prototype.eachPendingDisplayable = function (cb) {
-  for (var i = this._cursor; i < this._displayables.length; i++) {
-    cb && cb(this._displayables[i]);
-  }
-
-  for (var i = 0; i < this._temporaryDisplayables.length; i++) {
-    cb && cb(this._temporaryDisplayables[i]);
-  }
-};
-
-IncrementalDisplayble.prototype.update = function () {
-  this.updateTransform();
-
-  for (var i = this._cursor; i < this._displayables.length; i++) {
-    var displayable = this._displayables[i]; // PENDING
-
-    displayable.parent = this;
-    displayable.update();
-    displayable.parent = null;
-  }
-
-  for (var i = 0; i < this._temporaryDisplayables.length; i++) {
-    var displayable = this._temporaryDisplayables[i]; // PENDING
-
-    displayable.parent = this;
-    displayable.update();
-    displayable.parent = null;
-  }
-};
-
-IncrementalDisplayble.prototype.brush = function (ctx, prevEl) {
-  // Render persistant displayables.
-  for (var i = this._cursor; i < this._displayables.length; i++) {
-    var displayable = this._displayables[i];
-    displayable.beforeBrush && displayable.beforeBrush(ctx);
-    displayable.brush(ctx, i === this._cursor ? null : this._displayables[i - 1]);
-    displayable.afterBrush && displayable.afterBrush(ctx);
-  }
-
-  this._cursor = i; // Render temporary displayables.
-
-  for (var i = 0; i < this._temporaryDisplayables.length; i++) {
-    var displayable = this._temporaryDisplayables[i];
-    displayable.beforeBrush && displayable.beforeBrush(ctx);
-    displayable.brush(ctx, i === 0 ? null : this._temporaryDisplayables[i - 1]);
-    displayable.afterBrush && displayable.afterBrush(ctx);
-  }
-
-  this._temporaryDisplayables = [];
-  this.notClear = true;
-};
-
-var m = [];
-
-IncrementalDisplayble.prototype.getBoundingRect = function () {
-  if (!this._rect) {
-    var rect = new BoundingRect(Infinity, Infinity, -Infinity, -Infinity);
-
-    for (var i = 0; i < this._displayables.length; i++) {
-      var displayable = this._displayables[i];
-      var childRect = displayable.getBoundingRect().clone();
-
-      if (displayable.needLocalTransform()) {
-        childRect.applyTransform(displayable.getLocalTransform(m));
-      }
-
-      rect.union(childRect);
-    }
-
-    this._rect = rect;
-  }
-
-  return this._rect;
-};
-
-IncrementalDisplayble.prototype.contain = function (x, y) {
-  var localPos = this.transformCoordToLocal(x, y);
-  var rect = this.getBoundingRect();
-
-  if (rect.contain(localPos[0], localPos[1])) {
-    for (var i = 0; i < this._displayables.length; i++) {
-      var displayable = this._displayables[i];
-
-      if (displayable.contain(x, y)) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-};
-
-inherits(IncrementalDisplayble, Displayble);
-var _default = IncrementalDisplayble;
-module.exports = _default;
-
-/***/ }),
-/* 54 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var _util = __webpack_require__(0);
-
-var assert = _util.assert;
-var isArray = _util.isArray;
-
-var _config = __webpack_require__(6);
-
-var __DEV__ = _config.__DEV__;
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-
-/**
- * @param {Object} define
- * @return See the return of `createTask`.
- */
-function createTask(define) {
-  return new Task(define);
-}
-/**
- * @constructor
- * @param {Object} define
- * @param {Function} define.reset Custom reset
- * @param {Function} [define.plan] Returns 'reset' indicate reset immediately.
- * @param {Function} [define.count] count is used to determin data task.
- * @param {Function} [define.onDirty] count is used to determin data task.
- */
-
-
-function Task(define) {
-  define = define || {};
-  this._reset = define.reset;
-  this._plan = define.plan;
-  this._count = define.count;
-  this._onDirty = define.onDirty;
-  this._dirty = true; // Context must be specified implicitly, to
-  // avoid miss update context when model changed.
-
-  this.context;
-}
-
-var taskProto = Task.prototype;
-/**
- * @param {Object} performArgs
- * @param {number} [performArgs.step] Specified step.
- * @param {number} [performArgs.skip] Skip customer perform call.
- * @param {number} [performArgs.modBy] Sampling window size.
- * @param {number} [performArgs.modDataCount] Sampling count.
- */
-
-taskProto.perform = function (performArgs) {
-  var upTask = this._upstream;
-  var skip = performArgs && performArgs.skip; // TODO some refactor.
-  // Pull data. Must pull data each time, because context.data
-  // may be updated by Series.setData.
-
-  if (this._dirty && upTask) {
-    var context = this.context;
-    context.data = context.outputData = upTask.context.outputData;
-  }
-
-  if (this.__pipeline) {
-    this.__pipeline.currentTask = this;
-  }
-
-  var planResult;
-
-  if (this._plan && !skip) {
-    planResult = this._plan(this.context);
-  } // Support sharding by mod, which changes the render sequence and makes the rendered graphic
-  // elements uniformed distributed when progress, especially when moving or zooming.
-
-
-  var lastModBy = normalizeModBy(this._modBy);
-  var lastModDataCount = this._modDataCount || 0;
-  var modBy = normalizeModBy(performArgs && performArgs.modBy);
-  var modDataCount = performArgs && performArgs.modDataCount || 0;
-
-  if (lastModBy !== modBy || lastModDataCount !== modDataCount) {
-    planResult = 'reset';
-  }
-
-  function normalizeModBy(val) {
-    !(val >= 1) && (val = 1); // jshint ignore:line
-
-    return val;
-  }
-
-  var forceFirstProgress;
-
-  if (this._dirty || planResult === 'reset') {
-    this._dirty = false;
-    forceFirstProgress = reset(this, skip);
-  }
-
-  this._modBy = modBy;
-  this._modDataCount = modDataCount;
-  var step = performArgs && performArgs.step;
-
-  if (upTask) {
-    this._dueEnd = upTask._outputDueEnd;
-  } // DataTask or overallTask
-  else {
-      this._dueEnd = this._count ? this._count(this.context) : Infinity;
-    } // Note: Stubs, that its host overall task let it has progress, has progress.
-  // If no progress, pass index from upstream to downstream each time plan called.
-
-
-  if (this._progress) {
-    var start = this._dueIndex;
-    var end = Math.min(step != null ? this._dueIndex + step : Infinity, this._dueEnd);
-
-    if (!skip && (forceFirstProgress || start < end)) {
-      var progress = this._progress;
-
-      if (isArray(progress)) {
-        for (var i = 0; i < progress.length; i++) {
-          doProgress(this, progress[i], start, end, modBy, modDataCount);
-        }
-      } else {
-        doProgress(this, progress, start, end, modBy, modDataCount);
-      }
-    }
-
-    this._dueIndex = end; // If no `outputDueEnd`, assume that output data and
-    // input data is the same, so use `dueIndex` as `outputDueEnd`.
-
-    var outputDueEnd = this._settedOutputEnd != null ? this._settedOutputEnd : end;
-    this._outputDueEnd = outputDueEnd;
-  } else {
-    // (1) Some overall task has no progress.
-    // (2) Stubs, that its host overall task do not let it has progress, has no progress.
-    // This should always be performed so it can be passed to downstream.
-    this._dueIndex = this._outputDueEnd = this._settedOutputEnd != null ? this._settedOutputEnd : this._dueEnd;
-  }
-
-  return this.unfinished();
-};
-
-var iterator = function () {
-  var end;
-  var current;
-  var modBy;
-  var modDataCount;
-  var winCount;
-  var it = {
-    reset: function (s, e, sStep, sCount) {
-      current = s;
-      end = e;
-      modBy = sStep;
-      modDataCount = sCount;
-      winCount = Math.ceil(modDataCount / modBy);
-      it.next = modBy > 1 && modDataCount > 0 ? modNext : sequentialNext;
-    }
-  };
-  return it;
-
-  function sequentialNext() {
-    return current < end ? current++ : null;
-  }
-
-  function modNext() {
-    var dataIndex = current % winCount * modBy + Math.ceil(current / winCount);
-    var result = current >= end ? null : dataIndex < modDataCount ? dataIndex // If modDataCount is smaller than data.count() (consider `appendData` case),
-    // Use normal linear rendering mode.
-    : current;
-    current++;
-    return result;
-  }
-}();
-
-taskProto.dirty = function () {
-  this._dirty = true;
-  this._onDirty && this._onDirty(this.context);
-};
-
-function doProgress(taskIns, progress, start, end, modBy, modDataCount) {
-  iterator.reset(start, end, modBy, modDataCount);
-  taskIns._callingProgress = progress;
-
-  taskIns._callingProgress({
-    start: start,
-    end: end,
-    count: end - start,
-    next: iterator.next
-  }, taskIns.context);
-}
-
-function reset(taskIns, skip) {
-  taskIns._dueIndex = taskIns._outputDueEnd = taskIns._dueEnd = 0;
-  taskIns._settedOutputEnd = null;
-  var progress;
-  var forceFirstProgress;
-
-  if (!skip && taskIns._reset) {
-    progress = taskIns._reset(taskIns.context);
-
-    if (progress && progress.progress) {
-      forceFirstProgress = progress.forceFirstProgress;
-      progress = progress.progress;
-    } // To simplify no progress checking, array must has item.
-
-
-    if (isArray(progress) && !progress.length) {
-      progress = null;
-    }
-  }
-
-  taskIns._progress = progress;
-  taskIns._modBy = taskIns._modDataCount = null;
-  var downstream = taskIns._downstream;
-  downstream && downstream.dirty();
-  return forceFirstProgress;
-}
-/**
- * @return {boolean}
- */
-
-
-taskProto.unfinished = function () {
-  return this._progress && this._dueIndex < this._dueEnd;
-};
-/**
- * @param {Object} downTask The downstream task.
- * @return {Object} The downstream task.
- */
-
-
-taskProto.pipe = function (downTask) {
-  // If already downstream, do not dirty downTask.
-  if (this._downstream !== downTask || this._dirty) {
-    this._downstream = downTask;
-    downTask._upstream = this;
-    downTask.dirty();
-  }
-};
-
-taskProto.dispose = function () {
-  if (this._disposed) {
-    return;
-  }
-
-  this._upstream && (this._upstream._downstream = null);
-  this._downstream && (this._downstream._upstream = null);
-  this._dirty = false;
-  this._disposed = true;
-};
-
-taskProto.getUpstream = function () {
-  return this._upstream;
-};
-
-taskProto.getDownstream = function () {
-  return this._downstream;
-};
-
-taskProto.setOutputEnd = function (end) {
-  // This only happend in dataTask, dataZoom, map, currently.
-  // where dataZoom do not set end each time, but only set
-  // when reset. So we should record the setted end, in case
-  // that the stub of dataZoom perform again and earse the
-  // setted end by upstream.
-  this._outputDueEnd = this._settedOutputEnd = end;
-}; ///////////////////////////////////////////////////////////
-// For stream debug (Should be commented out after used!)
-// Usage: printTask(this, 'begin');
-// Usage: printTask(this, null, {someExtraProp});
-// function printTask(task, prefix, extra) {
-//     window.ecTaskUID == null && (window.ecTaskUID = 0);
-//     task.uidDebug == null && (task.uidDebug = `task_${window.ecTaskUID++}`);
-//     task.agent && task.agent.uidDebug == null && (task.agent.uidDebug = `task_${window.ecTaskUID++}`);
-//     var props = [];
-//     if (task.__pipeline) {
-//         var val = `${task.__idxInPipeline}/${task.__pipeline.tail.__idxInPipeline} ${task.agent ? '(stub)' : ''}`;
-//         props.push({text: 'idx', value: val});
-//     } else {
-//         var stubCount = 0;
-//         task.agentStubMap.each(() => stubCount++);
-//         props.push({text: 'idx', value: `overall (stubs: ${stubCount})`});
-//     }
-//     props.push({text: 'uid', value: task.uidDebug});
-//     if (task.__pipeline) {
-//         props.push({text: 'pid', value: task.__pipeline.id});
-//         task.agent && props.push(
-//             {text: 'stubFor', value: task.agent.uidDebug}
-//         );
-//     }
-//     props.push(
-//         {text: 'dirty', value: task._dirty},
-//         {text: 'dueIndex', value: task._dueIndex},
-//         {text: 'dueEnd', value: task._dueEnd},
-//         {text: 'outputDueEnd', value: task._outputDueEnd}
-//     );
-//     if (extra) {
-//         Object.keys(extra).forEach(key => {
-//             props.push({text: key, value: extra[key]});
-//         });
-//     }
-//     var args = ['color: blue'];
-//     var msg = `%c[${prefix || 'T'}] %c` + props.map(item => (
-//         args.push('color: black', 'color: red'),
-//         `${item.text}: %c${item.value}`
-//     )).join('%c, ');
-//     console.log.apply(console, [msg].concat(args));
-//     // console.log(this);
-// }
-
-
-exports.createTask = createTask;
-
-/***/ }),
-/* 55 */
-/***/ (function(module, exports) {
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-var ORIGIN_METHOD = '\0__throttleOriginMethod';
-var RATE = '\0__throttleRate';
-var THROTTLE_TYPE = '\0__throttleType';
-/**
- * @public
- * @param {(Function)} fn
- * @param {number} [delay=0] Unit: ms.
- * @param {boolean} [debounce=false]
- *        true: If call interval less than `delay`, only the last call works.
- *        false: If call interval less than `delay, call works on fixed rate.
- * @return {(Function)} throttled fn.
- */
-
-function throttle(fn, delay, debounce) {
-  var currCall;
-  var lastCall = 0;
-  var lastExec = 0;
-  var timer = null;
-  var diff;
-  var scope;
-  var args;
-  var debounceNextCall;
-  delay = delay || 0;
-
-  function exec() {
-    lastExec = new Date().getTime();
-    timer = null;
-    fn.apply(scope, args || []);
-  }
-
-  var cb = function () {
-    currCall = new Date().getTime();
-    scope = this;
-    args = arguments;
-    var thisDelay = debounceNextCall || delay;
-    var thisDebounce = debounceNextCall || debounce;
-    debounceNextCall = null;
-    diff = currCall - (thisDebounce ? lastCall : lastExec) - thisDelay;
-    clearTimeout(timer); // Here we should make sure that: the `exec` SHOULD NOT be called later
-    // than a new call of `cb`, that is, preserving the command order. Consider
-    // calculating "scale rate" when roaming as an example. When a call of `cb`
-    // happens, either the `exec` is called dierectly, or the call is delayed.
-    // But the delayed call should never be later than next call of `cb`. Under
-    // this assurance, we can simply update view state each time `dispatchAction`
-    // triggered by user roaming, but not need to add extra code to avoid the
-    // state being "rolled-back".
-
-    if (thisDebounce) {
-      timer = setTimeout(exec, thisDelay);
-    } else {
-      if (diff >= 0) {
-        exec();
-      } else {
-        timer = setTimeout(exec, -diff);
-      }
-    }
-
-    lastCall = currCall;
-  };
-  /**
-   * Clear throttle.
-   * @public
-   */
-
-
-  cb.clear = function () {
-    if (timer) {
-      clearTimeout(timer);
-      timer = null;
-    }
-  };
-  /**
-   * Enable debounce once.
-   */
-
-
-  cb.debounceNextCall = function (debounceDelay) {
-    debounceNextCall = debounceDelay;
-  };
-
-  return cb;
-}
-/**
- * Create throttle method or update throttle rate.
- *
- * @example
- * ComponentView.prototype.render = function () {
- *     ...
- *     throttle.createOrUpdate(
- *         this,
- *         '_dispatchAction',
- *         this.model.get('throttle'),
- *         'fixRate'
- *     );
- * };
- * ComponentView.prototype.remove = function () {
- *     throttle.clear(this, '_dispatchAction');
- * };
- * ComponentView.prototype.dispose = function () {
- *     throttle.clear(this, '_dispatchAction');
- * };
- *
- * @public
- * @param {Object} obj
- * @param {string} fnAttr
- * @param {number} [rate]
- * @param {string} [throttleType='fixRate'] 'fixRate' or 'debounce'
- * @return {Function} throttled function.
- */
-
-
-function createOrUpdate(obj, fnAttr, rate, throttleType) {
-  var fn = obj[fnAttr];
-
-  if (!fn) {
-    return;
-  }
-
-  var originFn = fn[ORIGIN_METHOD] || fn;
-  var lastThrottleType = fn[THROTTLE_TYPE];
-  var lastRate = fn[RATE];
-
-  if (lastRate !== rate || lastThrottleType !== throttleType) {
-    if (rate == null || !throttleType) {
-      return obj[fnAttr] = originFn;
-    }
-
-    fn = obj[fnAttr] = throttle(originFn, rate, throttleType === 'debounce');
-    fn[ORIGIN_METHOD] = originFn;
-    fn[THROTTLE_TYPE] = throttleType;
-    fn[RATE] = rate;
-  }
-
-  return fn;
-}
-/**
- * Clear throttle. Example see throttle.createOrUpdate.
- *
- * @public
- * @param {Object} obj
- * @param {string} fnAttr
- */
-
-
-function clear(obj, fnAttr) {
-  var fn = obj[fnAttr];
-
-  if (fn && fn[ORIGIN_METHOD]) {
-    obj[fnAttr] = fn[ORIGIN_METHOD];
-  }
-}
-
-exports.throttle = throttle;
-exports.createOrUpdate = createOrUpdate;
-exports.clear = clear;
-
-/***/ }),
-/* 56 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var _util = __webpack_require__(0);
-
-var each = _util.each;
-var createHashMap = _util.createHashMap;
-var assert = _util.assert;
-
-var _config = __webpack_require__(6);
-
-var __DEV__ = _config.__DEV__;
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-var OTHER_DIMENSIONS = createHashMap(['tooltip', 'label', 'itemName', 'itemId', 'seriesName']);
-
-function summarizeDimensions(data) {
-  var summary = {};
-  var encode = summary.encode = {};
-  var notExtraCoordDimMap = createHashMap();
-  var defaultedLabel = [];
-  var defaultedTooltip = [];
-  each(data.dimensions, function (dimName) {
-    var dimItem = data.getDimensionInfo(dimName);
-    var coordDim = dimItem.coordDim;
-
-    if (coordDim) {
-      var coordDimArr = encode[coordDim];
-
-      if (!encode.hasOwnProperty(coordDim)) {
-        coordDimArr = encode[coordDim] = [];
-      }
-
-      coordDimArr[dimItem.coordDimIndex] = dimName;
-
-      if (!dimItem.isExtraCoord) {
-        notExtraCoordDimMap.set(coordDim, 1); // Use the last coord dim (and label friendly) as default label,
-        // because when dataset is used, it is hard to guess which dimension
-        // can be value dimension. If both show x, y on label is not look good,
-        // and conventionally y axis is focused more.
-
-        if (mayLabelDimType(dimItem.type)) {
-          defaultedLabel[0] = dimName;
-        }
-      }
-
-      if (dimItem.defaultTooltip) {
-        defaultedTooltip.push(dimName);
-      }
-    }
-
-    OTHER_DIMENSIONS.each(function (v, otherDim) {
-      var otherDimArr = encode[otherDim];
-
-      if (!encode.hasOwnProperty(otherDim)) {
-        otherDimArr = encode[otherDim] = [];
-      }
-
-      var dimIndex = dimItem.otherDims[otherDim];
-
-      if (dimIndex != null && dimIndex !== false) {
-        otherDimArr[dimIndex] = dimItem.name;
-      }
-    });
-  });
-  var dataDimsOnCoord = [];
-  var encodeFirstDimNotExtra = {};
-  notExtraCoordDimMap.each(function (v, coordDim) {
-    var dimArr = encode[coordDim]; // ??? FIXME extra coord should not be set in dataDimsOnCoord.
-    // But should fix the case that radar axes: simplify the logic
-    // of `completeDimension`, remove `extraPrefix`.
-
-    encodeFirstDimNotExtra[coordDim] = dimArr[0]; // Not necessary to remove duplicate, because a data
-    // dim canot on more than one coordDim.
-
-    dataDimsOnCoord = dataDimsOnCoord.concat(dimArr);
-  });
-  summary.dataDimsOnCoord = dataDimsOnCoord;
-  summary.encodeFirstDimNotExtra = encodeFirstDimNotExtra;
-  var encodeLabel = encode.label; // FIXME `encode.label` is not recommanded, because formatter can not be set
-  // in this way. Use label.formatter instead. May be remove this approach someday.
-
-  if (encodeLabel && encodeLabel.length) {
-    defaultedLabel = encodeLabel.slice();
-  }
-
-  var encodeTooltip = encode.tooltip;
-
-  if (encodeTooltip && encodeTooltip.length) {
-    defaultedTooltip = encodeTooltip.slice();
-  } else if (!defaultedTooltip.length) {
-    defaultedTooltip = defaultedLabel.slice();
-  }
-
-  encode.defaultedLabel = defaultedLabel;
-  encode.defaultedTooltip = defaultedTooltip;
-  return summary;
-}
-
-function getDimensionTypeByAxis(axisType) {
-  return axisType === 'category' ? 'ordinal' : axisType === 'time' ? 'time' : 'float';
-}
-
-function mayLabelDimType(dimType) {
-  // In most cases, ordinal and time do not suitable for label.
-  // Ordinal info can be displayed on axis. Time is too long.
-  return !(dimType === 'ordinal' || dimType === 'time');
-} // function findTheLastDimMayLabel(data) {
-//     // Get last value dim
-//     var dimensions = data.dimensions.slice();
-//     var valueType;
-//     var valueDim;
-//     while (dimensions.length && (
-//         valueDim = dimensions.pop(),
-//         valueType = data.getDimensionInfo(valueDim).type,
-//         valueType === 'ordinal' || valueType === 'time'
-//     )) {} // jshint ignore:line
-//     return valueDim;
-// }
-
-
-exports.OTHER_DIMENSIONS = OTHER_DIMENSIONS;
-exports.summarizeDimensions = summarizeDimensions;
-exports.getDimensionTypeByAxis = getDimensionTypeByAxis;
-
-/***/ }),
-/* 57 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var numberUtil = __webpack_require__(5);
-
-var formatUtil = __webpack_require__(9);
-
-var Scale = __webpack_require__(44);
-
-var helper = __webpack_require__(103);
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-
-/**
- * Interval scale
- * @module echarts/scale/Interval
- */
-var roundNumber = numberUtil.round;
-/**
- * @alias module:echarts/coord/scale/Interval
- * @constructor
- */
-
-var IntervalScale = Scale.extend({
-  type: 'interval',
-  _interval: 0,
-  _intervalPrecision: 2,
-  setExtent: function (start, end) {
-    var thisExtent = this._extent; //start,end may be a Number like '25',so...
-
-    if (!isNaN(start)) {
-      thisExtent[0] = parseFloat(start);
-    }
-
-    if (!isNaN(end)) {
-      thisExtent[1] = parseFloat(end);
-    }
-  },
-  unionExtent: function (other) {
-    var extent = this._extent;
-    other[0] < extent[0] && (extent[0] = other[0]);
-    other[1] > extent[1] && (extent[1] = other[1]); // unionExtent may called by it's sub classes
-
-    IntervalScale.prototype.setExtent.call(this, extent[0], extent[1]);
-  },
-
-  /**
-   * Get interval
-   */
-  getInterval: function () {
-    return this._interval;
-  },
-
-  /**
-   * Set interval
-   */
-  setInterval: function (interval) {
-    this._interval = interval; // Dropped auto calculated niceExtent and use user setted extent
-    // We assume user wan't to set both interval, min, max to get a better result
-
-    this._niceExtent = this._extent.slice();
-    this._intervalPrecision = helper.getIntervalPrecision(interval);
-  },
-
-  /**
-   * @return {Array.<number>}
-   */
-  getTicks: function () {
-    return helper.intervalScaleGetTicks(this._interval, this._extent, this._niceExtent, this._intervalPrecision);
-  },
-
-  /**
-   * @param {number} data
-   * @param {Object} [opt]
-   * @param {number|string} [opt.precision] If 'auto', use nice presision.
-   * @param {boolean} [opt.pad] returns 1.50 but not 1.5 if precision is 2.
-   * @return {string}
-   */
-  getLabel: function (data, opt) {
-    if (data == null) {
-      return '';
-    }
-
-    var precision = opt && opt.precision;
-
-    if (precision == null) {
-      precision = numberUtil.getPrecisionSafe(data) || 0;
-    } else if (precision === 'auto') {
-      // Should be more precise then tick.
-      precision = this._intervalPrecision;
-    } // (1) If `precision` is set, 12.005 should be display as '12.00500'.
-    // (2) Use roundNumber (toFixed) to avoid scientific notation like '3.5e-7'.
-
-
-    data = roundNumber(data, precision, true);
-    return formatUtil.addCommas(data);
-  },
-
-  /**
-   * Update interval and extent of intervals for nice ticks
-   *
-   * @param {number} [splitNumber = 5] Desired number of ticks
-   * @param {number} [minInterval]
-   * @param {number} [maxInterval]
-   */
-  niceTicks: function (splitNumber, minInterval, maxInterval) {
-    splitNumber = splitNumber || 5;
-    var extent = this._extent;
-    var span = extent[1] - extent[0];
-
-    if (!isFinite(span)) {
-      return;
-    } // User may set axis min 0 and data are all negative
-    // FIXME If it needs to reverse ?
-
-
-    if (span < 0) {
-      span = -span;
-      extent.reverse();
-    }
-
-    var result = helper.intervalScaleNiceTicks(extent, splitNumber, minInterval, maxInterval);
-    this._intervalPrecision = result.intervalPrecision;
-    this._interval = result.interval;
-    this._niceExtent = result.niceTickExtent;
-  },
-
-  /**
-   * Nice extent.
-   * @param {Object} opt
-   * @param {number} [opt.splitNumber = 5] Given approx tick number
-   * @param {boolean} [opt.fixMin=false]
-   * @param {boolean} [opt.fixMax=false]
-   * @param {boolean} [opt.minInterval]
-   * @param {boolean} [opt.maxInterval]
-   */
-  niceExtent: function (opt) {
-    var extent = this._extent; // If extent start and end are same, expand them
-
-    if (extent[0] === extent[1]) {
-      if (extent[0] !== 0) {
-        // Expand extent
-        var expandSize = extent[0]; // In the fowllowing case
-        //      Axis has been fixed max 100
-        //      Plus data are all 100 and axis extent are [100, 100].
-        // Extend to the both side will cause expanded max is larger than fixed max.
-        // So only expand to the smaller side.
-
-        if (!opt.fixMax) {
-          extent[1] += expandSize / 2;
-          extent[0] -= expandSize / 2;
-        } else {
-          extent[0] -= expandSize / 2;
-        }
-      } else {
-        extent[1] = 1;
-      }
-    }
-
-    var span = extent[1] - extent[0]; // If there are no data and extent are [Infinity, -Infinity]
-
-    if (!isFinite(span)) {
-      extent[0] = 0;
-      extent[1] = 1;
-    }
-
-    this.niceTicks(opt.splitNumber, opt.minInterval, opt.maxInterval); // var extent = this._extent;
-
-    var interval = this._interval;
-
-    if (!opt.fixMin) {
-      extent[0] = roundNumber(Math.floor(extent[0] / interval) * interval);
-    }
-
-    if (!opt.fixMax) {
-      extent[1] = roundNumber(Math.ceil(extent[1] / interval) * interval);
-    }
-  }
-});
-/**
- * @return {module:echarts/scale/Time}
- */
-
-IntervalScale.create = function () {
-  return new IntervalScale();
-};
-
-var _default = IntervalScale;
-module.exports = _default;
-
-/***/ }),
-/* 58 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var zrUtil = __webpack_require__(0);
-
-var _symbol = __webpack_require__(16);
-
-var createSymbol = _symbol.createSymbol;
-
-var graphic = __webpack_require__(3);
-
-var _number = __webpack_require__(5);
-
-var parsePercent = _number.parsePercent;
-
-var _labelHelper = __webpack_require__(228);
-
-var getDefaultLabel = _labelHelper.getDefaultLabel;
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-
-/**
- * @module echarts/chart/helper/Symbol
- */
-
-/**
- * @constructor
- * @alias {module:echarts/chart/helper/Symbol}
- * @param {module:echarts/data/List} data
- * @param {number} idx
- * @extends {module:zrender/graphic/Group}
- */
-function SymbolClz(data, idx, seriesScope) {
-  graphic.Group.call(this);
-  this.updateData(data, idx, seriesScope);
-}
-
-var symbolProto = SymbolClz.prototype;
-/**
- * @public
- * @static
- * @param {module:echarts/data/List} data
- * @param {number} dataIndex
- * @return {Array.<number>} [width, height]
- */
-
-var getSymbolSize = SymbolClz.getSymbolSize = function (data, idx) {
-  var symbolSize = data.getItemVisual(idx, 'symbolSize');
-  return symbolSize instanceof Array ? symbolSize.slice() : [+symbolSize, +symbolSize];
-};
-
-function getScale(symbolSize) {
-  return [symbolSize[0] / 2, symbolSize[1] / 2];
-}
-
-function driftSymbol(dx, dy) {
-  this.parent.drift(dx, dy);
-}
-
-symbolProto._createSymbol = function (symbolType, data, idx, symbolSize, keepAspect) {
-  // Remove paths created before
-  this.removeAll();
-  var color = data.getItemVisual(idx, 'color'); // var symbolPath = createSymbol(
-  //     symbolType, -0.5, -0.5, 1, 1, color
-  // );
-  // If width/height are set too small (e.g., set to 1) on ios10
-  // and macOS Sierra, a circle stroke become a rect, no matter what
-  // the scale is set. So we set width/height as 2. See #4150.
-
-  var symbolPath = createSymbol(symbolType, -1, -1, 2, 2, color, keepAspect);
-  symbolPath.attr({
-    z2: 100,
-    culling: true,
-    scale: getScale(symbolSize)
-  }); // Rewrite drift method
-
-  symbolPath.drift = driftSymbol;
-  this._symbolType = symbolType;
-  this.add(symbolPath);
-};
-/**
- * Stop animation
- * @param {boolean} toLastFrame
- */
-
-
-symbolProto.stopSymbolAnimation = function (toLastFrame) {
-  this.childAt(0).stopAnimation(toLastFrame);
-};
-/**
- * FIXME:
- * Caution: This method breaks the encapsulation of this module,
- * but it indeed brings convenience. So do not use the method
- * unless you detailedly know all the implements of `Symbol`,
- * especially animation.
- *
- * Get symbol path element.
- */
-
-
-symbolProto.getSymbolPath = function () {
-  return this.childAt(0);
-};
-/**
- * Get scale(aka, current symbol size).
- * Including the change caused by animation
- */
-
-
-symbolProto.getScale = function () {
-  return this.childAt(0).scale;
-};
-/**
- * Highlight symbol
- */
-
-
-symbolProto.highlight = function () {
-  this.childAt(0).trigger('emphasis');
-};
-/**
- * Downplay symbol
- */
-
-
-symbolProto.downplay = function () {
-  this.childAt(0).trigger('normal');
-};
-/**
- * @param {number} zlevel
- * @param {number} z
- */
-
-
-symbolProto.setZ = function (zlevel, z) {
-  var symbolPath = this.childAt(0);
-  symbolPath.zlevel = zlevel;
-  symbolPath.z = z;
-};
-
-symbolProto.setDraggable = function (draggable) {
-  var symbolPath = this.childAt(0);
-  symbolPath.draggable = draggable;
-  symbolPath.cursor = draggable ? 'move' : 'pointer';
-};
-/**
- * Update symbol properties
- * @param {module:echarts/data/List} data
- * @param {number} idx
- * @param {Object} [seriesScope]
- * @param {Object} [seriesScope.itemStyle]
- * @param {Object} [seriesScope.hoverItemStyle]
- * @param {Object} [seriesScope.symbolRotate]
- * @param {Object} [seriesScope.symbolOffset]
- * @param {module:echarts/model/Model} [seriesScope.labelModel]
- * @param {module:echarts/model/Model} [seriesScope.hoverLabelModel]
- * @param {boolean} [seriesScope.hoverAnimation]
- * @param {Object} [seriesScope.cursorStyle]
- * @param {module:echarts/model/Model} [seriesScope.itemModel]
- * @param {string} [seriesScope.symbolInnerColor]
- * @param {Object} [seriesScope.fadeIn=false]
- */
-
-
-symbolProto.updateData = function (data, idx, seriesScope) {
-  this.silent = false;
-  var symbolType = data.getItemVisual(idx, 'symbol') || 'circle';
-  var seriesModel = data.hostModel;
-  var symbolSize = getSymbolSize(data, idx);
-  var isInit = symbolType !== this._symbolType;
-
-  if (isInit) {
-    var keepAspect = data.getItemVisual(idx, 'symbolKeepAspect');
-
-    this._createSymbol(symbolType, data, idx, symbolSize, keepAspect);
-  } else {
-    var symbolPath = this.childAt(0);
-    symbolPath.silent = false;
-    graphic.updateProps(symbolPath, {
-      scale: getScale(symbolSize)
-    }, seriesModel, idx);
-  }
-
-  this._updateCommon(data, idx, symbolSize, seriesScope);
-
-  if (isInit) {
-    var symbolPath = this.childAt(0);
-    var fadeIn = seriesScope && seriesScope.fadeIn;
-    var target = {
-      scale: symbolPath.scale.slice()
-    };
-    fadeIn && (target.style = {
-      opacity: symbolPath.style.opacity
-    });
-    symbolPath.scale = [0, 0];
-    fadeIn && (symbolPath.style.opacity = 0);
-    graphic.initProps(symbolPath, target, seriesModel, idx);
-  }
-
-  this._seriesModel = seriesModel;
-}; // Update common properties
-
-
-var normalStyleAccessPath = ['itemStyle'];
-var emphasisStyleAccessPath = ['emphasis', 'itemStyle'];
-var normalLabelAccessPath = ['label'];
-var emphasisLabelAccessPath = ['emphasis', 'label'];
-/**
- * @param {module:echarts/data/List} data
- * @param {number} idx
- * @param {Array.<number>} symbolSize
- * @param {Object} [seriesScope]
- */
-
-symbolProto._updateCommon = function (data, idx, symbolSize, seriesScope) {
-  var symbolPath = this.childAt(0);
-  var seriesModel = data.hostModel;
-  var color = data.getItemVisual(idx, 'color'); // Reset style
-
-  if (symbolPath.type !== 'image') {
-    symbolPath.useStyle({
-      strokeNoScale: true
-    });
-  }
-
-  var itemStyle = seriesScope && seriesScope.itemStyle;
-  var hoverItemStyle = seriesScope && seriesScope.hoverItemStyle;
-  var symbolRotate = seriesScope && seriesScope.symbolRotate;
-  var symbolOffset = seriesScope && seriesScope.symbolOffset;
-  var labelModel = seriesScope && seriesScope.labelModel;
-  var hoverLabelModel = seriesScope && seriesScope.hoverLabelModel;
-  var hoverAnimation = seriesScope && seriesScope.hoverAnimation;
-  var cursorStyle = seriesScope && seriesScope.cursorStyle;
-
-  if (!seriesScope || data.hasItemOption) {
-    var itemModel = seriesScope && seriesScope.itemModel ? seriesScope.itemModel : data.getItemModel(idx); // Color must be excluded.
-    // Because symbol provide setColor individually to set fill and stroke
-
-    itemStyle = itemModel.getModel(normalStyleAccessPath).getItemStyle(['color']);
-    hoverItemStyle = itemModel.getModel(emphasisStyleAccessPath).getItemStyle();
-    symbolRotate = itemModel.getShallow('symbolRotate');
-    symbolOffset = itemModel.getShallow('symbolOffset');
-    labelModel = itemModel.getModel(normalLabelAccessPath);
-    hoverLabelModel = itemModel.getModel(emphasisLabelAccessPath);
-    hoverAnimation = itemModel.getShallow('hoverAnimation');
-    cursorStyle = itemModel.getShallow('cursor');
-  } else {
-    hoverItemStyle = zrUtil.extend({}, hoverItemStyle);
-  }
-
-  var elStyle = symbolPath.style;
-  symbolPath.attr('rotation', (symbolRotate || 0) * Math.PI / 180 || 0);
-
-  if (symbolOffset) {
-    symbolPath.attr('position', [parsePercent(symbolOffset[0], symbolSize[0]), parsePercent(symbolOffset[1], symbolSize[1])]);
-  }
-
-  cursorStyle && symbolPath.attr('cursor', cursorStyle); // PENDING setColor before setStyle!!!
-
-  symbolPath.setColor(color, seriesScope && seriesScope.symbolInnerColor);
-  symbolPath.setStyle(itemStyle);
-  var opacity = data.getItemVisual(idx, 'opacity');
-
-  if (opacity != null) {
-    elStyle.opacity = opacity;
-  }
-
-  var liftZ = data.getItemVisual(idx, 'liftZ');
-  var z2Origin = symbolPath.__z2Origin;
-
-  if (liftZ != null) {
-    if (z2Origin == null) {
-      symbolPath.__z2Origin = symbolPath.z2;
-      symbolPath.z2 += liftZ;
-    }
-  } else if (z2Origin != null) {
-    symbolPath.z2 = z2Origin;
-    symbolPath.__z2Origin = null;
-  }
-
-  var useNameLabel = seriesScope && seriesScope.useNameLabel;
-  graphic.setLabelStyle(elStyle, hoverItemStyle, labelModel, hoverLabelModel, {
-    labelFetcher: seriesModel,
-    labelDataIndex: idx,
-    defaultText: getLabelDefaultText,
-    isRectText: true,
-    autoColor: color
-  }); // Do not execute util needed.
-
-  function getLabelDefaultText(idx, opt) {
-    return useNameLabel ? data.getName(idx) : getDefaultLabel(data, idx);
-  }
-
-  symbolPath.off('mouseover').off('mouseout').off('emphasis').off('normal');
-  symbolPath.hoverStyle = hoverItemStyle; // FIXME
-  // Do not use symbol.trigger('emphasis'), but use symbol.highlight() instead.
-
-  graphic.setHoverStyle(symbolPath);
-  var scale = getScale(symbolSize);
-
-  if (hoverAnimation && seriesModel.isAnimationEnabled()) {
-    var onEmphasis = function () {
-      // Do not support this hover animation util some scenario required.
-      // Animation can only be supported in hover layer when using `el.incremetal`.
-      if (this.incremental) {
-        return;
-      }
-
-      var ratio = scale[1] / scale[0];
-      this.animateTo({
-        scale: [Math.max(scale[0] * 1.1, scale[0] + 3), Math.max(scale[1] * 1.1, scale[1] + 3 * ratio)]
-      }, 400, 'elasticOut');
-    };
-
-    var onNormal = function () {
-      if (this.incremental) {
-        return;
-      }
-
-      this.animateTo({
-        scale: scale
-      }, 400, 'elasticOut');
-    };
-
-    symbolPath.on('mouseover', onEmphasis).on('mouseout', onNormal).on('emphasis', onEmphasis).on('normal', onNormal);
-  }
-};
-/**
- * @param {Function} cb
- * @param {Object} [opt]
- * @param {Object} [opt.keepLabel=true]
- */
-
-
-symbolProto.fadeOut = function (cb, opt) {
-  var symbolPath = this.childAt(0); // Avoid mistaken hover when fading out
-
-  this.silent = symbolPath.silent = true; // Not show text when animating
-
-  !(opt && opt.keepLabel) && (symbolPath.style.text = null);
-  graphic.updateProps(symbolPath, {
-    style: {
-      opacity: 0
-    },
-    scale: [0, 0]
-  }, this._seriesModel, this.dataIndex, cb);
-};
-
-zrUtil.inherits(SymbolClz, graphic.Group);
-var _default = SymbolClz;
-module.exports = _default;
-
-/***/ }),
-/* 59 */
-/***/ (function(module, exports) {
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-function _default(seriesType, defaultSymbolType, legendSymbol) {
-  // Encoding visual for all series include which is filtered for legend drawing
-  return {
-    seriesType: seriesType,
-    // For legend.
-    performRawSeries: true,
-    reset: function (seriesModel, ecModel, api) {
-      var data = seriesModel.getData();
-      var symbolType = seriesModel.get('symbol') || defaultSymbolType;
-      var symbolSize = seriesModel.get('symbolSize');
-      var keepAspect = seriesModel.get('symbolKeepAspect');
-      data.setVisual({
-        legendSymbol: legendSymbol || symbolType,
-        symbol: symbolType,
-        symbolSize: symbolSize,
-        symbolKeepAspect: keepAspect
-      }); // Only visible series has each data be visual encoded
-
-      if (ecModel.isSeriesFiltered(seriesModel)) {
-        return;
-      }
-
-      var hasCallback = typeof symbolSize === 'function';
-
-      function dataEach(data, idx) {
-        if (typeof symbolSize === 'function') {
-          var rawValue = seriesModel.getRawValue(idx); // FIXME
-
-          var params = seriesModel.getDataParams(idx);
-          data.setItemVisual(idx, 'symbolSize', symbolSize(rawValue, params));
-        }
-
-        if (data.hasItemOption) {
-          var itemModel = data.getItemModel(idx);
-          var itemSymbolType = itemModel.getShallow('symbol', true);
-          var itemSymbolSize = itemModel.getShallow('symbolSize', true);
-          var itemSymbolKeepAspect = itemModel.getShallow('symbolKeepAspect', true); // If has item symbol
-
-          if (itemSymbolType != null) {
-            data.setItemVisual(idx, 'symbol', itemSymbolType);
-          }
-
-          if (itemSymbolSize != null) {
-            // PENDING Transform symbolSize ?
-            data.setItemVisual(idx, 'symbolSize', itemSymbolSize);
-          }
-
-          if (itemSymbolKeepAspect != null) {
-            data.setItemVisual(idx, 'symbolKeepAspect', itemSymbolKeepAspect);
-          }
-        }
-      }
-
-      return {
-        dataEach: data.hasItemOption || hasCallback ? dataEach : null
-      };
-    }
-  };
-}
-
-module.exports = _default;
-
-/***/ }),
-/* 60 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var echarts = __webpack_require__(1);
-
-var zrUtil = __webpack_require__(0);
-
-var graphic = __webpack_require__(3);
-
-__webpack_require__(232);
-
-__webpack_require__(239);
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-// Grid view
-echarts.extendComponentView({
-  type: 'grid',
-  render: function (gridModel, ecModel) {
-    this.group.removeAll();
-
-    if (gridModel.get('show')) {
-      this.group.add(new graphic.Rect({
-        shape: gridModel.coordinateSystem.getRect(),
-        style: zrUtil.defaults({
-          fill: gridModel.get('backgroundColor')
-        }, gridModel.getItemStyle()),
-        silent: true,
-        z2: -1
-      }));
-    }
-  }
-});
-echarts.registerPreprocessor(function (option) {
-  // Only create grid when need
-  if (option.xAxis && option.yAxis && !option.grid) {
-    option.grid = {};
-  }
-});
-
-/***/ }),
-/* 61 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var zrUtil = __webpack_require__(0);
-
-var vector = __webpack_require__(7);
-
-var symbolUtil = __webpack_require__(16);
-
-var LinePath = __webpack_require__(244);
-
-var graphic = __webpack_require__(3);
-
-var _number = __webpack_require__(5);
-
-var round = _number.round;
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-
-/**
- * @module echarts/chart/helper/Line
- */
-var SYMBOL_CATEGORIES = ['fromSymbol', 'toSymbol'];
-
-function makeSymbolTypeKey(symbolCategory) {
-  return '_' + symbolCategory + 'Type';
-}
-/**
- * @inner
- */
-
-
-function createSymbol(name, lineData, idx) {
-  var color = lineData.getItemVisual(idx, 'color');
-  var symbolType = lineData.getItemVisual(idx, name);
-  var symbolSize = lineData.getItemVisual(idx, name + 'Size');
-
-  if (!symbolType || symbolType === 'none') {
-    return;
-  }
-
-  if (!zrUtil.isArray(symbolSize)) {
-    symbolSize = [symbolSize, symbolSize];
-  }
-
-  var symbolPath = symbolUtil.createSymbol(symbolType, -symbolSize[0] / 2, -symbolSize[1] / 2, symbolSize[0], symbolSize[1], color);
-  symbolPath.name = name;
-  return symbolPath;
-}
-
-function createLine(points) {
-  var line = new LinePath({
-    name: 'line'
-  });
-  setLinePoints(line.shape, points);
-  return line;
-}
-
-function setLinePoints(targetShape, points) {
-  var p1 = points[0];
-  var p2 = points[1];
-  var cp1 = points[2];
-  targetShape.x1 = p1[0];
-  targetShape.y1 = p1[1];
-  targetShape.x2 = p2[0];
-  targetShape.y2 = p2[1];
-  targetShape.percent = 1;
-
-  if (cp1) {
-    targetShape.cpx1 = cp1[0];
-    targetShape.cpy1 = cp1[1];
-  } else {
-    targetShape.cpx1 = NaN;
-    targetShape.cpy1 = NaN;
-  }
-}
-
-function updateSymbolAndLabelBeforeLineUpdate() {
-  var lineGroup = this;
-  var symbolFrom = lineGroup.childOfName('fromSymbol');
-  var symbolTo = lineGroup.childOfName('toSymbol');
-  var label = lineGroup.childOfName('label'); // Quick reject
-
-  if (!symbolFrom && !symbolTo && label.ignore) {
-    return;
-  }
-
-  var invScale = 1;
-  var parentNode = this.parent;
-
-  while (parentNode) {
-    if (parentNode.scale) {
-      invScale /= parentNode.scale[0];
-    }
-
-    parentNode = parentNode.parent;
-  }
-
-  var line = lineGroup.childOfName('line'); // If line not changed
-  // FIXME Parent scale changed
-
-  if (!this.__dirty && !line.__dirty) {
-    return;
-  }
-
-  var percent = line.shape.percent;
-  var fromPos = line.pointAt(0);
-  var toPos = line.pointAt(percent);
-  var d = vector.sub([], toPos, fromPos);
-  vector.normalize(d, d);
-
-  if (symbolFrom) {
-    symbolFrom.attr('position', fromPos);
-    var tangent = line.tangentAt(0);
-    symbolFrom.attr('rotation', Math.PI / 2 - Math.atan2(tangent[1], tangent[0]));
-    symbolFrom.attr('scale', [invScale * percent, invScale * percent]);
-  }
-
-  if (symbolTo) {
-    symbolTo.attr('position', toPos);
-    var tangent = line.tangentAt(1);
-    symbolTo.attr('rotation', -Math.PI / 2 - Math.atan2(tangent[1], tangent[0]));
-    symbolTo.attr('scale', [invScale * percent, invScale * percent]);
-  }
-
-  if (!label.ignore) {
-    label.attr('position', toPos);
-    var textPosition;
-    var textAlign;
-    var textVerticalAlign;
-    var distance = 5 * invScale; // End
-
-    if (label.__position === 'end') {
-      textPosition = [d[0] * distance + toPos[0], d[1] * distance + toPos[1]];
-      textAlign = d[0] > 0.8 ? 'left' : d[0] < -0.8 ? 'right' : 'center';
-      textVerticalAlign = d[1] > 0.8 ? 'top' : d[1] < -0.8 ? 'bottom' : 'middle';
-    } // Middle
-    else if (label.__position === 'middle') {
-        var halfPercent = percent / 2;
-        var tangent = line.tangentAt(halfPercent);
-        var n = [tangent[1], -tangent[0]];
-        var cp = line.pointAt(halfPercent);
-
-        if (n[1] > 0) {
-          n[0] = -n[0];
-          n[1] = -n[1];
-        }
-
-        textPosition = [cp[0] + n[0] * distance, cp[1] + n[1] * distance];
-        textAlign = 'center';
-        textVerticalAlign = 'bottom';
-        var rotation = -Math.atan2(tangent[1], tangent[0]);
-
-        if (toPos[0] < fromPos[0]) {
-          rotation = Math.PI + rotation;
-        }
-
-        label.attr('rotation', rotation);
-      } // Start
-      else {
-          textPosition = [-d[0] * distance + fromPos[0], -d[1] * distance + fromPos[1]];
-          textAlign = d[0] > 0.8 ? 'right' : d[0] < -0.8 ? 'left' : 'center';
-          textVerticalAlign = d[1] > 0.8 ? 'bottom' : d[1] < -0.8 ? 'top' : 'middle';
-        }
-
-    label.attr({
-      style: {
-        // Use the user specified text align and baseline first
-        textVerticalAlign: label.__verticalAlign || textVerticalAlign,
-        textAlign: label.__textAlign || textAlign
-      },
-      position: textPosition,
-      scale: [invScale, invScale]
-    });
-  }
-}
-/**
- * @constructor
- * @extends {module:zrender/graphic/Group}
- * @alias {module:echarts/chart/helper/Line}
- */
-
-
-function Line(lineData, idx, seriesScope) {
-  graphic.Group.call(this);
-
-  this._createLine(lineData, idx, seriesScope);
-}
-
-var lineProto = Line.prototype; // Update symbol position and rotation
-
-lineProto.beforeUpdate = updateSymbolAndLabelBeforeLineUpdate;
-
-lineProto._createLine = function (lineData, idx, seriesScope) {
-  var seriesModel = lineData.hostModel;
-  var linePoints = lineData.getItemLayout(idx);
-  var line = createLine(linePoints);
-  line.shape.percent = 0;
-  graphic.initProps(line, {
-    shape: {
-      percent: 1
-    }
-  }, seriesModel, idx);
-  this.add(line);
-  var label = new graphic.Text({
-    name: 'label'
-  });
-  this.add(label);
-  zrUtil.each(SYMBOL_CATEGORIES, function (symbolCategory) {
-    var symbol = createSymbol(symbolCategory, lineData, idx); // symbols must added after line to make sure
-    // it will be updated after line#update.
-    // Or symbol position and rotation update in line#beforeUpdate will be one frame slow
-
-    this.add(symbol);
-    this[makeSymbolTypeKey(symbolCategory)] = lineData.getItemVisual(idx, symbolCategory);
-  }, this);
-
-  this._updateCommonStl(lineData, idx, seriesScope);
-};
-
-lineProto.updateData = function (lineData, idx, seriesScope) {
-  var seriesModel = lineData.hostModel;
-  var line = this.childOfName('line');
-  var linePoints = lineData.getItemLayout(idx);
-  var target = {
-    shape: {}
-  };
-  setLinePoints(target.shape, linePoints);
-  graphic.updateProps(line, target, seriesModel, idx);
-  zrUtil.each(SYMBOL_CATEGORIES, function (symbolCategory) {
-    var symbolType = lineData.getItemVisual(idx, symbolCategory);
-    var key = makeSymbolTypeKey(symbolCategory); // Symbol changed
-
-    if (this[key] !== symbolType) {
-      this.remove(this.childOfName(symbolCategory));
-      var symbol = createSymbol(symbolCategory, lineData, idx);
-      this.add(symbol);
-    }
-
-    this[key] = symbolType;
-  }, this);
-
-  this._updateCommonStl(lineData, idx, seriesScope);
-};
-
-lineProto._updateCommonStl = function (lineData, idx, seriesScope) {
-  var seriesModel = lineData.hostModel;
-  var line = this.childOfName('line');
-  var lineStyle = seriesScope && seriesScope.lineStyle;
-  var hoverLineStyle = seriesScope && seriesScope.hoverLineStyle;
-  var labelModel = seriesScope && seriesScope.labelModel;
-  var hoverLabelModel = seriesScope && seriesScope.hoverLabelModel; // Optimization for large dataset
-
-  if (!seriesScope || lineData.hasItemOption) {
-    var itemModel = lineData.getItemModel(idx);
-    lineStyle = itemModel.getModel('lineStyle').getLineStyle();
-    hoverLineStyle = itemModel.getModel('emphasis.lineStyle').getLineStyle();
-    labelModel = itemModel.getModel('label');
-    hoverLabelModel = itemModel.getModel('emphasis.label');
-  }
-
-  var visualColor = lineData.getItemVisual(idx, 'color');
-  var visualOpacity = zrUtil.retrieve3(lineData.getItemVisual(idx, 'opacity'), lineStyle.opacity, 1);
-  line.useStyle(zrUtil.defaults({
-    strokeNoScale: true,
-    fill: 'none',
-    stroke: visualColor,
-    opacity: visualOpacity
-  }, lineStyle));
-  line.hoverStyle = hoverLineStyle; // Update symbol
-
-  zrUtil.each(SYMBOL_CATEGORIES, function (symbolCategory) {
-    var symbol = this.childOfName(symbolCategory);
-
-    if (symbol) {
-      symbol.setColor(visualColor);
-      symbol.setStyle({
-        opacity: visualOpacity
-      });
-    }
-  }, this);
-  var showLabel = labelModel.getShallow('show');
-  var hoverShowLabel = hoverLabelModel.getShallow('show');
-  var label = this.childOfName('label');
-  var defaultLabelColor;
-  var baseText; // FIXME: the logic below probably should be merged to `graphic.setLabelStyle`.
-
-  if (showLabel || hoverShowLabel) {
-    defaultLabelColor = visualColor || '#000';
-    baseText = seriesModel.getFormattedLabel(idx, 'normal', lineData.dataType);
-
-    if (baseText == null) {
-      var rawVal = seriesModel.getRawValue(idx);
-      baseText = rawVal == null ? lineData.getName(idx) : isFinite(rawVal) ? round(rawVal) : rawVal;
-    }
-  }
-
-  var normalText = showLabel ? baseText : null;
-  var emphasisText = hoverShowLabel ? zrUtil.retrieve2(seriesModel.getFormattedLabel(idx, 'emphasis', lineData.dataType), baseText) : null;
-  var labelStyle = label.style; // Always set `textStyle` even if `normalStyle.text` is null, because default
-  // values have to be set on `normalStyle`.
-
-  if (normalText != null || emphasisText != null) {
-    graphic.setTextStyle(label.style, labelModel, {
-      text: normalText
-    }, {
-      autoColor: defaultLabelColor
-    });
-    label.__textAlign = labelStyle.textAlign;
-    label.__verticalAlign = labelStyle.textVerticalAlign; // 'start', 'middle', 'end'
-
-    label.__position = labelModel.get('position') || 'middle';
-  }
-
-  if (emphasisText != null) {
-    // Only these properties supported in this emphasis style here.
-    label.hoverStyle = {
-      text: emphasisText,
-      textFill: hoverLabelModel.getTextColor(true),
-      // For merging hover style to normal style, do not use
-      // `hoverLabelModel.getFont()` here.
-      fontStyle: hoverLabelModel.getShallow('fontStyle'),
-      fontWeight: hoverLabelModel.getShallow('fontWeight'),
-      fontSize: hoverLabelModel.getShallow('fontSize'),
-      fontFamily: hoverLabelModel.getShallow('fontFamily')
-    };
-  } else {
-    label.hoverStyle = {
-      text: null
-    };
-  }
-
-  label.ignore = !showLabel && !hoverShowLabel;
-  graphic.setHoverStyle(this);
-};
-
-lineProto.highlight = function () {
-  this.trigger('emphasis');
-};
-
-lineProto.downplay = function () {
-  this.trigger('normal');
-};
-
-lineProto.updateLayout = function (lineData, idx) {
-  this.setLinePoints(lineData.getItemLayout(idx));
-};
-
-lineProto.setLinePoints = function (points) {
-  var linePath = this.childOfName('line');
-  setLinePoints(linePath.shape, points);
-  linePath.dirty();
-};
-
-zrUtil.inherits(Line, graphic.Group);
-var _default = Line;
-module.exports = _default;
-
-/***/ }),
-/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {/**
@@ -24871,7 +22001,2877 @@ function stubFalse() {
 
 module.exports = isEqual;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(48), __webpack_require__(68)(module)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(49), __webpack_require__(68)(module)))
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+var utils = __webpack_require__(11);
+var normalizeHeaderName = __webpack_require__(142);
+
+var DEFAULT_CONTENT_TYPE = {
+  'Content-Type': 'application/x-www-form-urlencoded'
+};
+
+function setContentTypeIfUnset(headers, value) {
+  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
+    headers['Content-Type'] = value;
+  }
+}
+
+function getDefaultAdapter() {
+  var adapter;
+  if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = __webpack_require__(64);
+  } else if (typeof process !== 'undefined') {
+    // For node use HTTP adapter
+    adapter = __webpack_require__(64);
+  }
+  return adapter;
+}
+
+var defaults = {
+  adapter: getDefaultAdapter(),
+
+  transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Content-Type');
+    if (utils.isFormData(data) ||
+      utils.isArrayBuffer(data) ||
+      utils.isBuffer(data) ||
+      utils.isStream(data) ||
+      utils.isFile(data) ||
+      utils.isBlob(data)
+    ) {
+      return data;
+    }
+    if (utils.isArrayBufferView(data)) {
+      return data.buffer;
+    }
+    if (utils.isURLSearchParams(data)) {
+      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+      return data.toString();
+    }
+    if (utils.isObject(data)) {
+      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+      return JSON.stringify(data);
+    }
+    return data;
+  }],
+
+  transformResponse: [function transformResponse(data) {
+    /*eslint no-param-reassign:0*/
+    if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data);
+      } catch (e) { /* Ignore */ }
+    }
+    return data;
+  }],
+
+  /**
+   * A timeout in milliseconds to abort a request. If set to 0 (default) a
+   * timeout is not created.
+   */
+  timeout: 0,
+
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+
+  maxContentLength: -1,
+
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  }
+};
+
+defaults.headers = {
+  common: {
+    'Accept': 'application/json, text/plain, */*'
+  }
+};
+
+utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
+  defaults.headers[method] = {};
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
+});
+
+module.exports = defaults;
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(141)))
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1, eval)("this");
+} catch (e) {
+	// This works if the window reference is available
+	if (typeof window === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports) {
+
+// https://github.com/mziccard/node-timsort
+var DEFAULT_MIN_MERGE = 32;
+var DEFAULT_MIN_GALLOPING = 7;
+var DEFAULT_TMP_STORAGE_LENGTH = 256;
+
+function minRunLength(n) {
+  var r = 0;
+
+  while (n >= DEFAULT_MIN_MERGE) {
+    r |= n & 1;
+    n >>= 1;
+  }
+
+  return n + r;
+}
+
+function makeAscendingRun(array, lo, hi, compare) {
+  var runHi = lo + 1;
+
+  if (runHi === hi) {
+    return 1;
+  }
+
+  if (compare(array[runHi++], array[lo]) < 0) {
+    while (runHi < hi && compare(array[runHi], array[runHi - 1]) < 0) {
+      runHi++;
+    }
+
+    reverseRun(array, lo, runHi);
+  } else {
+    while (runHi < hi && compare(array[runHi], array[runHi - 1]) >= 0) {
+      runHi++;
+    }
+  }
+
+  return runHi - lo;
+}
+
+function reverseRun(array, lo, hi) {
+  hi--;
+
+  while (lo < hi) {
+    var t = array[lo];
+    array[lo++] = array[hi];
+    array[hi--] = t;
+  }
+}
+
+function binaryInsertionSort(array, lo, hi, start, compare) {
+  if (start === lo) {
+    start++;
+  }
+
+  for (; start < hi; start++) {
+    var pivot = array[start];
+    var left = lo;
+    var right = start;
+    var mid;
+
+    while (left < right) {
+      mid = left + right >>> 1;
+
+      if (compare(pivot, array[mid]) < 0) {
+        right = mid;
+      } else {
+        left = mid + 1;
+      }
+    }
+
+    var n = start - left;
+
+    switch (n) {
+      case 3:
+        array[left + 3] = array[left + 2];
+
+      case 2:
+        array[left + 2] = array[left + 1];
+
+      case 1:
+        array[left + 1] = array[left];
+        break;
+
+      default:
+        while (n > 0) {
+          array[left + n] = array[left + n - 1];
+          n--;
+        }
+
+    }
+
+    array[left] = pivot;
+  }
+}
+
+function gallopLeft(value, array, start, length, hint, compare) {
+  var lastOffset = 0;
+  var maxOffset = 0;
+  var offset = 1;
+
+  if (compare(value, array[start + hint]) > 0) {
+    maxOffset = length - hint;
+
+    while (offset < maxOffset && compare(value, array[start + hint + offset]) > 0) {
+      lastOffset = offset;
+      offset = (offset << 1) + 1;
+
+      if (offset <= 0) {
+        offset = maxOffset;
+      }
+    }
+
+    if (offset > maxOffset) {
+      offset = maxOffset;
+    }
+
+    lastOffset += hint;
+    offset += hint;
+  } else {
+    maxOffset = hint + 1;
+
+    while (offset < maxOffset && compare(value, array[start + hint - offset]) <= 0) {
+      lastOffset = offset;
+      offset = (offset << 1) + 1;
+
+      if (offset <= 0) {
+        offset = maxOffset;
+      }
+    }
+
+    if (offset > maxOffset) {
+      offset = maxOffset;
+    }
+
+    var tmp = lastOffset;
+    lastOffset = hint - offset;
+    offset = hint - tmp;
+  }
+
+  lastOffset++;
+
+  while (lastOffset < offset) {
+    var m = lastOffset + (offset - lastOffset >>> 1);
+
+    if (compare(value, array[start + m]) > 0) {
+      lastOffset = m + 1;
+    } else {
+      offset = m;
+    }
+  }
+
+  return offset;
+}
+
+function gallopRight(value, array, start, length, hint, compare) {
+  var lastOffset = 0;
+  var maxOffset = 0;
+  var offset = 1;
+
+  if (compare(value, array[start + hint]) < 0) {
+    maxOffset = hint + 1;
+
+    while (offset < maxOffset && compare(value, array[start + hint - offset]) < 0) {
+      lastOffset = offset;
+      offset = (offset << 1) + 1;
+
+      if (offset <= 0) {
+        offset = maxOffset;
+      }
+    }
+
+    if (offset > maxOffset) {
+      offset = maxOffset;
+    }
+
+    var tmp = lastOffset;
+    lastOffset = hint - offset;
+    offset = hint - tmp;
+  } else {
+    maxOffset = length - hint;
+
+    while (offset < maxOffset && compare(value, array[start + hint + offset]) >= 0) {
+      lastOffset = offset;
+      offset = (offset << 1) + 1;
+
+      if (offset <= 0) {
+        offset = maxOffset;
+      }
+    }
+
+    if (offset > maxOffset) {
+      offset = maxOffset;
+    }
+
+    lastOffset += hint;
+    offset += hint;
+  }
+
+  lastOffset++;
+
+  while (lastOffset < offset) {
+    var m = lastOffset + (offset - lastOffset >>> 1);
+
+    if (compare(value, array[start + m]) < 0) {
+      offset = m;
+    } else {
+      lastOffset = m + 1;
+    }
+  }
+
+  return offset;
+}
+
+function TimSort(array, compare) {
+  var minGallop = DEFAULT_MIN_GALLOPING;
+  var length = 0;
+  var tmpStorageLength = DEFAULT_TMP_STORAGE_LENGTH;
+  var stackLength = 0;
+  var runStart;
+  var runLength;
+  var stackSize = 0;
+  length = array.length;
+
+  if (length < 2 * DEFAULT_TMP_STORAGE_LENGTH) {
+    tmpStorageLength = length >>> 1;
+  }
+
+  var tmp = [];
+  stackLength = length < 120 ? 5 : length < 1542 ? 10 : length < 119151 ? 19 : 40;
+  runStart = [];
+  runLength = [];
+
+  function pushRun(_runStart, _runLength) {
+    runStart[stackSize] = _runStart;
+    runLength[stackSize] = _runLength;
+    stackSize += 1;
+  }
+
+  function mergeRuns() {
+    while (stackSize > 1) {
+      var n = stackSize - 2;
+
+      if (n >= 1 && runLength[n - 1] <= runLength[n] + runLength[n + 1] || n >= 2 && runLength[n - 2] <= runLength[n] + runLength[n - 1]) {
+        if (runLength[n - 1] < runLength[n + 1]) {
+          n--;
+        }
+      } else if (runLength[n] > runLength[n + 1]) {
+        break;
+      }
+
+      mergeAt(n);
+    }
+  }
+
+  function forceMergeRuns() {
+    while (stackSize > 1) {
+      var n = stackSize - 2;
+
+      if (n > 0 && runLength[n - 1] < runLength[n + 1]) {
+        n--;
+      }
+
+      mergeAt(n);
+    }
+  }
+
+  function mergeAt(i) {
+    var start1 = runStart[i];
+    var length1 = runLength[i];
+    var start2 = runStart[i + 1];
+    var length2 = runLength[i + 1];
+    runLength[i] = length1 + length2;
+
+    if (i === stackSize - 3) {
+      runStart[i + 1] = runStart[i + 2];
+      runLength[i + 1] = runLength[i + 2];
+    }
+
+    stackSize--;
+    var k = gallopRight(array[start2], array, start1, length1, 0, compare);
+    start1 += k;
+    length1 -= k;
+
+    if (length1 === 0) {
+      return;
+    }
+
+    length2 = gallopLeft(array[start1 + length1 - 1], array, start2, length2, length2 - 1, compare);
+
+    if (length2 === 0) {
+      return;
+    }
+
+    if (length1 <= length2) {
+      mergeLow(start1, length1, start2, length2);
+    } else {
+      mergeHigh(start1, length1, start2, length2);
+    }
+  }
+
+  function mergeLow(start1, length1, start2, length2) {
+    var i = 0;
+
+    for (i = 0; i < length1; i++) {
+      tmp[i] = array[start1 + i];
+    }
+
+    var cursor1 = 0;
+    var cursor2 = start2;
+    var dest = start1;
+    array[dest++] = array[cursor2++];
+
+    if (--length2 === 0) {
+      for (i = 0; i < length1; i++) {
+        array[dest + i] = tmp[cursor1 + i];
+      }
+
+      return;
+    }
+
+    if (length1 === 1) {
+      for (i = 0; i < length2; i++) {
+        array[dest + i] = array[cursor2 + i];
+      }
+
+      array[dest + length2] = tmp[cursor1];
+      return;
+    }
+
+    var _minGallop = minGallop;
+    var count1, count2, exit;
+
+    while (1) {
+      count1 = 0;
+      count2 = 0;
+      exit = false;
+
+      do {
+        if (compare(array[cursor2], tmp[cursor1]) < 0) {
+          array[dest++] = array[cursor2++];
+          count2++;
+          count1 = 0;
+
+          if (--length2 === 0) {
+            exit = true;
+            break;
+          }
+        } else {
+          array[dest++] = tmp[cursor1++];
+          count1++;
+          count2 = 0;
+
+          if (--length1 === 1) {
+            exit = true;
+            break;
+          }
+        }
+      } while ((count1 | count2) < _minGallop);
+
+      if (exit) {
+        break;
+      }
+
+      do {
+        count1 = gallopRight(array[cursor2], tmp, cursor1, length1, 0, compare);
+
+        if (count1 !== 0) {
+          for (i = 0; i < count1; i++) {
+            array[dest + i] = tmp[cursor1 + i];
+          }
+
+          dest += count1;
+          cursor1 += count1;
+          length1 -= count1;
+
+          if (length1 <= 1) {
+            exit = true;
+            break;
+          }
+        }
+
+        array[dest++] = array[cursor2++];
+
+        if (--length2 === 0) {
+          exit = true;
+          break;
+        }
+
+        count2 = gallopLeft(tmp[cursor1], array, cursor2, length2, 0, compare);
+
+        if (count2 !== 0) {
+          for (i = 0; i < count2; i++) {
+            array[dest + i] = array[cursor2 + i];
+          }
+
+          dest += count2;
+          cursor2 += count2;
+          length2 -= count2;
+
+          if (length2 === 0) {
+            exit = true;
+            break;
+          }
+        }
+
+        array[dest++] = tmp[cursor1++];
+
+        if (--length1 === 1) {
+          exit = true;
+          break;
+        }
+
+        _minGallop--;
+      } while (count1 >= DEFAULT_MIN_GALLOPING || count2 >= DEFAULT_MIN_GALLOPING);
+
+      if (exit) {
+        break;
+      }
+
+      if (_minGallop < 0) {
+        _minGallop = 0;
+      }
+
+      _minGallop += 2;
+    }
+
+    minGallop = _minGallop;
+    minGallop < 1 && (minGallop = 1);
+
+    if (length1 === 1) {
+      for (i = 0; i < length2; i++) {
+        array[dest + i] = array[cursor2 + i];
+      }
+
+      array[dest + length2] = tmp[cursor1];
+    } else if (length1 === 0) {
+      throw new Error(); // throw new Error('mergeLow preconditions were not respected');
+    } else {
+      for (i = 0; i < length1; i++) {
+        array[dest + i] = tmp[cursor1 + i];
+      }
+    }
+  }
+
+  function mergeHigh(start1, length1, start2, length2) {
+    var i = 0;
+
+    for (i = 0; i < length2; i++) {
+      tmp[i] = array[start2 + i];
+    }
+
+    var cursor1 = start1 + length1 - 1;
+    var cursor2 = length2 - 1;
+    var dest = start2 + length2 - 1;
+    var customCursor = 0;
+    var customDest = 0;
+    array[dest--] = array[cursor1--];
+
+    if (--length1 === 0) {
+      customCursor = dest - (length2 - 1);
+
+      for (i = 0; i < length2; i++) {
+        array[customCursor + i] = tmp[i];
+      }
+
+      return;
+    }
+
+    if (length2 === 1) {
+      dest -= length1;
+      cursor1 -= length1;
+      customDest = dest + 1;
+      customCursor = cursor1 + 1;
+
+      for (i = length1 - 1; i >= 0; i--) {
+        array[customDest + i] = array[customCursor + i];
+      }
+
+      array[dest] = tmp[cursor2];
+      return;
+    }
+
+    var _minGallop = minGallop;
+
+    while (true) {
+      var count1 = 0;
+      var count2 = 0;
+      var exit = false;
+
+      do {
+        if (compare(tmp[cursor2], array[cursor1]) < 0) {
+          array[dest--] = array[cursor1--];
+          count1++;
+          count2 = 0;
+
+          if (--length1 === 0) {
+            exit = true;
+            break;
+          }
+        } else {
+          array[dest--] = tmp[cursor2--];
+          count2++;
+          count1 = 0;
+
+          if (--length2 === 1) {
+            exit = true;
+            break;
+          }
+        }
+      } while ((count1 | count2) < _minGallop);
+
+      if (exit) {
+        break;
+      }
+
+      do {
+        count1 = length1 - gallopRight(tmp[cursor2], array, start1, length1, length1 - 1, compare);
+
+        if (count1 !== 0) {
+          dest -= count1;
+          cursor1 -= count1;
+          length1 -= count1;
+          customDest = dest + 1;
+          customCursor = cursor1 + 1;
+
+          for (i = count1 - 1; i >= 0; i--) {
+            array[customDest + i] = array[customCursor + i];
+          }
+
+          if (length1 === 0) {
+            exit = true;
+            break;
+          }
+        }
+
+        array[dest--] = tmp[cursor2--];
+
+        if (--length2 === 1) {
+          exit = true;
+          break;
+        }
+
+        count2 = length2 - gallopLeft(array[cursor1], tmp, 0, length2, length2 - 1, compare);
+
+        if (count2 !== 0) {
+          dest -= count2;
+          cursor2 -= count2;
+          length2 -= count2;
+          customDest = dest + 1;
+          customCursor = cursor2 + 1;
+
+          for (i = 0; i < count2; i++) {
+            array[customDest + i] = tmp[customCursor + i];
+          }
+
+          if (length2 <= 1) {
+            exit = true;
+            break;
+          }
+        }
+
+        array[dest--] = array[cursor1--];
+
+        if (--length1 === 0) {
+          exit = true;
+          break;
+        }
+
+        _minGallop--;
+      } while (count1 >= DEFAULT_MIN_GALLOPING || count2 >= DEFAULT_MIN_GALLOPING);
+
+      if (exit) {
+        break;
+      }
+
+      if (_minGallop < 0) {
+        _minGallop = 0;
+      }
+
+      _minGallop += 2;
+    }
+
+    minGallop = _minGallop;
+
+    if (minGallop < 1) {
+      minGallop = 1;
+    }
+
+    if (length2 === 1) {
+      dest -= length1;
+      cursor1 -= length1;
+      customDest = dest + 1;
+      customCursor = cursor1 + 1;
+
+      for (i = length1 - 1; i >= 0; i--) {
+        array[customDest + i] = array[customCursor + i];
+      }
+
+      array[dest] = tmp[cursor2];
+    } else if (length2 === 0) {
+      throw new Error(); // throw new Error('mergeHigh preconditions were not respected');
+    } else {
+      customCursor = dest - (length2 - 1);
+
+      for (i = 0; i < length2; i++) {
+        array[customCursor + i] = tmp[i];
+      }
+    }
+  }
+
+  this.mergeRuns = mergeRuns;
+  this.forceMergeRuns = forceMergeRuns;
+  this.pushRun = pushRun;
+}
+
+function sort(array, compare, lo, hi) {
+  if (!lo) {
+    lo = 0;
+  }
+
+  if (!hi) {
+    hi = array.length;
+  }
+
+  var remaining = hi - lo;
+
+  if (remaining < 2) {
+    return;
+  }
+
+  var runLength = 0;
+
+  if (remaining < DEFAULT_MIN_MERGE) {
+    runLength = makeAscendingRun(array, lo, hi, compare);
+    binaryInsertionSort(array, lo, hi, lo + runLength, compare);
+    return;
+  }
+
+  var ts = new TimSort(array, compare);
+  var minRun = minRunLength(remaining);
+
+  do {
+    runLength = makeAscendingRun(array, lo, hi, compare);
+
+    if (runLength < minRun) {
+      var force = remaining;
+
+      if (force > minRun) {
+        force = minRun;
+      }
+
+      binaryInsertionSort(array, lo, lo + force, lo + runLength, compare);
+      runLength = force;
+    }
+
+    ts.pushRun(lo, runLength);
+    ts.mergeRuns();
+    remaining -= runLength;
+    lo += runLength;
+  } while (remaining !== 0);
+
+  ts.forceMergeRuns();
+}
+
+module.exports = sort;
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var LRU = __webpack_require__(76);
+
+var globalImageCache = new LRU(50);
+/**
+ * @param {string|HTMLImageElement|HTMLCanvasElement|Canvas} newImageOrSrc
+ * @return {HTMLImageElement|HTMLCanvasElement|Canvas} image
+ */
+
+function findExistImage(newImageOrSrc) {
+  if (typeof newImageOrSrc === 'string') {
+    var cachedImgObj = globalImageCache.get(newImageOrSrc);
+    return cachedImgObj && cachedImgObj.image;
+  } else {
+    return newImageOrSrc;
+  }
+}
+/**
+ * Caution: User should cache loaded images, but not just count on LRU.
+ * Consider if required images more than LRU size, will dead loop occur?
+ *
+ * @param {string|HTMLImageElement|HTMLCanvasElement|Canvas} newImageOrSrc
+ * @param {HTMLImageElement|HTMLCanvasElement|Canvas} image Existent image.
+ * @param {module:zrender/Element} [hostEl] For calling `dirty`.
+ * @param {Function} [cb] params: (image, cbPayload)
+ * @param {Object} [cbPayload] Payload on cb calling.
+ * @return {HTMLImageElement|HTMLCanvasElement|Canvas} image
+ */
+
+
+function createOrUpdateImage(newImageOrSrc, image, hostEl, cb, cbPayload) {
+  if (!newImageOrSrc) {
+    return image;
+  } else if (typeof newImageOrSrc === 'string') {
+    // Image should not be loaded repeatly.
+    if (image && image.__zrImageSrc === newImageOrSrc || !hostEl) {
+      return image;
+    } // Only when there is no existent image or existent image src
+    // is different, this method is responsible for load.
+
+
+    var cachedImgObj = globalImageCache.get(newImageOrSrc);
+    var pendingWrap = {
+      hostEl: hostEl,
+      cb: cb,
+      cbPayload: cbPayload
+    };
+
+    if (cachedImgObj) {
+      image = cachedImgObj.image;
+      !isImageReady(image) && cachedImgObj.pending.push(pendingWrap);
+    } else {
+      !image && (image = new Image());
+      image.onload = imageOnLoad;
+      globalImageCache.put(newImageOrSrc, image.__cachedImgObj = {
+        image: image,
+        pending: [pendingWrap]
+      });
+      image.src = image.__zrImageSrc = newImageOrSrc;
+    }
+
+    return image;
+  } // newImageOrSrc is an HTMLImageElement or HTMLCanvasElement or Canvas
+  else {
+      return newImageOrSrc;
+    }
+}
+
+function imageOnLoad() {
+  var cachedImgObj = this.__cachedImgObj;
+  this.onload = this.__cachedImgObj = null;
+
+  for (var i = 0; i < cachedImgObj.pending.length; i++) {
+    var pendingWrap = cachedImgObj.pending[i];
+    var cb = pendingWrap.cb;
+    cb && cb(this, pendingWrap.cbPayload);
+    pendingWrap.hostEl.dirty();
+  }
+
+  cachedImgObj.pending.length = 0;
+}
+
+function isImageReady(image) {
+  return image && image.width && image.height;
+}
+
+exports.findExistImage = findExistImage;
+exports.createOrUpdateImage = createOrUpdateImage;
+exports.isImageReady = isImageReady;
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var zrUtil = __webpack_require__(0);
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+// TODO Parse shadow style
+// TODO Only shallow path support
+function _default(properties) {
+  // Normalize
+  for (var i = 0; i < properties.length; i++) {
+    if (!properties[i][1]) {
+      properties[i][1] = properties[i][0];
+    }
+  }
+
+  return function (model, excludes, includes) {
+    var style = {};
+
+    for (var i = 0; i < properties.length; i++) {
+      var propName = properties[i][1];
+
+      if (excludes && zrUtil.indexOf(excludes, propName) >= 0 || includes && zrUtil.indexOf(includes, propName) < 0) {
+        continue;
+      }
+
+      var val = model.getShallow(propName);
+
+      if (val != null) {
+        style[properties[i][0]] = val;
+      }
+    }
+
+    return style;
+  };
+}
+
+module.exports = _default;
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports) {
+
+/**
+ * @param {Array.<Object>} colorStops
+ */
+var Gradient = function (colorStops) {
+  this.colorStops = colorStops || [];
+};
+
+Gradient.prototype = {
+  constructor: Gradient,
+  addColorStop: function (offset, color) {
+    this.colorStops.push({
+      offset: offset,
+      color: color
+    });
+  }
+};
+var _default = Gradient;
+module.exports = _default;
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _util = __webpack_require__(0);
+
+var inherits = _util.inherits;
+
+var Displayble = __webpack_require__(37);
+
+var BoundingRect = __webpack_require__(12);
+
+/**
+ * Displayable for incremental rendering. It will be rendered in a separate layer
+ * IncrementalDisplay have too main methods. `clearDisplayables` and `addDisplayables`
+ * addDisplayables will render the added displayables incremetally.
+ *
+ * It use a not clearFlag to tell the painter don't clear the layer if it's the first element.
+ */
+// TODO Style override ?
+function IncrementalDisplayble(opts) {
+  Displayble.call(this, opts);
+  this._displayables = [];
+  this._temporaryDisplayables = [];
+  this._cursor = 0;
+  this.notClear = true;
+}
+
+IncrementalDisplayble.prototype.incremental = true;
+
+IncrementalDisplayble.prototype.clearDisplaybles = function () {
+  this._displayables = [];
+  this._temporaryDisplayables = [];
+  this._cursor = 0;
+  this.dirty();
+  this.notClear = false;
+};
+
+IncrementalDisplayble.prototype.addDisplayable = function (displayable, notPersistent) {
+  if (notPersistent) {
+    this._temporaryDisplayables.push(displayable);
+  } else {
+    this._displayables.push(displayable);
+  }
+
+  this.dirty();
+};
+
+IncrementalDisplayble.prototype.addDisplayables = function (displayables, notPersistent) {
+  notPersistent = notPersistent || false;
+
+  for (var i = 0; i < displayables.length; i++) {
+    this.addDisplayable(displayables[i], notPersistent);
+  }
+};
+
+IncrementalDisplayble.prototype.eachPendingDisplayable = function (cb) {
+  for (var i = this._cursor; i < this._displayables.length; i++) {
+    cb && cb(this._displayables[i]);
+  }
+
+  for (var i = 0; i < this._temporaryDisplayables.length; i++) {
+    cb && cb(this._temporaryDisplayables[i]);
+  }
+};
+
+IncrementalDisplayble.prototype.update = function () {
+  this.updateTransform();
+
+  for (var i = this._cursor; i < this._displayables.length; i++) {
+    var displayable = this._displayables[i]; // PENDING
+
+    displayable.parent = this;
+    displayable.update();
+    displayable.parent = null;
+  }
+
+  for (var i = 0; i < this._temporaryDisplayables.length; i++) {
+    var displayable = this._temporaryDisplayables[i]; // PENDING
+
+    displayable.parent = this;
+    displayable.update();
+    displayable.parent = null;
+  }
+};
+
+IncrementalDisplayble.prototype.brush = function (ctx, prevEl) {
+  // Render persistant displayables.
+  for (var i = this._cursor; i < this._displayables.length; i++) {
+    var displayable = this._displayables[i];
+    displayable.beforeBrush && displayable.beforeBrush(ctx);
+    displayable.brush(ctx, i === this._cursor ? null : this._displayables[i - 1]);
+    displayable.afterBrush && displayable.afterBrush(ctx);
+  }
+
+  this._cursor = i; // Render temporary displayables.
+
+  for (var i = 0; i < this._temporaryDisplayables.length; i++) {
+    var displayable = this._temporaryDisplayables[i];
+    displayable.beforeBrush && displayable.beforeBrush(ctx);
+    displayable.brush(ctx, i === 0 ? null : this._temporaryDisplayables[i - 1]);
+    displayable.afterBrush && displayable.afterBrush(ctx);
+  }
+
+  this._temporaryDisplayables = [];
+  this.notClear = true;
+};
+
+var m = [];
+
+IncrementalDisplayble.prototype.getBoundingRect = function () {
+  if (!this._rect) {
+    var rect = new BoundingRect(Infinity, Infinity, -Infinity, -Infinity);
+
+    for (var i = 0; i < this._displayables.length; i++) {
+      var displayable = this._displayables[i];
+      var childRect = displayable.getBoundingRect().clone();
+
+      if (displayable.needLocalTransform()) {
+        childRect.applyTransform(displayable.getLocalTransform(m));
+      }
+
+      rect.union(childRect);
+    }
+
+    this._rect = rect;
+  }
+
+  return this._rect;
+};
+
+IncrementalDisplayble.prototype.contain = function (x, y) {
+  var localPos = this.transformCoordToLocal(x, y);
+  var rect = this.getBoundingRect();
+
+  if (rect.contain(localPos[0], localPos[1])) {
+    for (var i = 0; i < this._displayables.length; i++) {
+      var displayable = this._displayables[i];
+
+      if (displayable.contain(x, y)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
+
+inherits(IncrementalDisplayble, Displayble);
+var _default = IncrementalDisplayble;
+module.exports = _default;
+
+/***/ }),
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _util = __webpack_require__(0);
+
+var assert = _util.assert;
+var isArray = _util.isArray;
+
+var _config = __webpack_require__(6);
+
+var __DEV__ = _config.__DEV__;
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
+/**
+ * @param {Object} define
+ * @return See the return of `createTask`.
+ */
+function createTask(define) {
+  return new Task(define);
+}
+/**
+ * @constructor
+ * @param {Object} define
+ * @param {Function} define.reset Custom reset
+ * @param {Function} [define.plan] Returns 'reset' indicate reset immediately.
+ * @param {Function} [define.count] count is used to determin data task.
+ * @param {Function} [define.onDirty] count is used to determin data task.
+ */
+
+
+function Task(define) {
+  define = define || {};
+  this._reset = define.reset;
+  this._plan = define.plan;
+  this._count = define.count;
+  this._onDirty = define.onDirty;
+  this._dirty = true; // Context must be specified implicitly, to
+  // avoid miss update context when model changed.
+
+  this.context;
+}
+
+var taskProto = Task.prototype;
+/**
+ * @param {Object} performArgs
+ * @param {number} [performArgs.step] Specified step.
+ * @param {number} [performArgs.skip] Skip customer perform call.
+ * @param {number} [performArgs.modBy] Sampling window size.
+ * @param {number} [performArgs.modDataCount] Sampling count.
+ */
+
+taskProto.perform = function (performArgs) {
+  var upTask = this._upstream;
+  var skip = performArgs && performArgs.skip; // TODO some refactor.
+  // Pull data. Must pull data each time, because context.data
+  // may be updated by Series.setData.
+
+  if (this._dirty && upTask) {
+    var context = this.context;
+    context.data = context.outputData = upTask.context.outputData;
+  }
+
+  if (this.__pipeline) {
+    this.__pipeline.currentTask = this;
+  }
+
+  var planResult;
+
+  if (this._plan && !skip) {
+    planResult = this._plan(this.context);
+  } // Support sharding by mod, which changes the render sequence and makes the rendered graphic
+  // elements uniformed distributed when progress, especially when moving or zooming.
+
+
+  var lastModBy = normalizeModBy(this._modBy);
+  var lastModDataCount = this._modDataCount || 0;
+  var modBy = normalizeModBy(performArgs && performArgs.modBy);
+  var modDataCount = performArgs && performArgs.modDataCount || 0;
+
+  if (lastModBy !== modBy || lastModDataCount !== modDataCount) {
+    planResult = 'reset';
+  }
+
+  function normalizeModBy(val) {
+    !(val >= 1) && (val = 1); // jshint ignore:line
+
+    return val;
+  }
+
+  var forceFirstProgress;
+
+  if (this._dirty || planResult === 'reset') {
+    this._dirty = false;
+    forceFirstProgress = reset(this, skip);
+  }
+
+  this._modBy = modBy;
+  this._modDataCount = modDataCount;
+  var step = performArgs && performArgs.step;
+
+  if (upTask) {
+    this._dueEnd = upTask._outputDueEnd;
+  } // DataTask or overallTask
+  else {
+      this._dueEnd = this._count ? this._count(this.context) : Infinity;
+    } // Note: Stubs, that its host overall task let it has progress, has progress.
+  // If no progress, pass index from upstream to downstream each time plan called.
+
+
+  if (this._progress) {
+    var start = this._dueIndex;
+    var end = Math.min(step != null ? this._dueIndex + step : Infinity, this._dueEnd);
+
+    if (!skip && (forceFirstProgress || start < end)) {
+      var progress = this._progress;
+
+      if (isArray(progress)) {
+        for (var i = 0; i < progress.length; i++) {
+          doProgress(this, progress[i], start, end, modBy, modDataCount);
+        }
+      } else {
+        doProgress(this, progress, start, end, modBy, modDataCount);
+      }
+    }
+
+    this._dueIndex = end; // If no `outputDueEnd`, assume that output data and
+    // input data is the same, so use `dueIndex` as `outputDueEnd`.
+
+    var outputDueEnd = this._settedOutputEnd != null ? this._settedOutputEnd : end;
+    this._outputDueEnd = outputDueEnd;
+  } else {
+    // (1) Some overall task has no progress.
+    // (2) Stubs, that its host overall task do not let it has progress, has no progress.
+    // This should always be performed so it can be passed to downstream.
+    this._dueIndex = this._outputDueEnd = this._settedOutputEnd != null ? this._settedOutputEnd : this._dueEnd;
+  }
+
+  return this.unfinished();
+};
+
+var iterator = function () {
+  var end;
+  var current;
+  var modBy;
+  var modDataCount;
+  var winCount;
+  var it = {
+    reset: function (s, e, sStep, sCount) {
+      current = s;
+      end = e;
+      modBy = sStep;
+      modDataCount = sCount;
+      winCount = Math.ceil(modDataCount / modBy);
+      it.next = modBy > 1 && modDataCount > 0 ? modNext : sequentialNext;
+    }
+  };
+  return it;
+
+  function sequentialNext() {
+    return current < end ? current++ : null;
+  }
+
+  function modNext() {
+    var dataIndex = current % winCount * modBy + Math.ceil(current / winCount);
+    var result = current >= end ? null : dataIndex < modDataCount ? dataIndex // If modDataCount is smaller than data.count() (consider `appendData` case),
+    // Use normal linear rendering mode.
+    : current;
+    current++;
+    return result;
+  }
+}();
+
+taskProto.dirty = function () {
+  this._dirty = true;
+  this._onDirty && this._onDirty(this.context);
+};
+
+function doProgress(taskIns, progress, start, end, modBy, modDataCount) {
+  iterator.reset(start, end, modBy, modDataCount);
+  taskIns._callingProgress = progress;
+
+  taskIns._callingProgress({
+    start: start,
+    end: end,
+    count: end - start,
+    next: iterator.next
+  }, taskIns.context);
+}
+
+function reset(taskIns, skip) {
+  taskIns._dueIndex = taskIns._outputDueEnd = taskIns._dueEnd = 0;
+  taskIns._settedOutputEnd = null;
+  var progress;
+  var forceFirstProgress;
+
+  if (!skip && taskIns._reset) {
+    progress = taskIns._reset(taskIns.context);
+
+    if (progress && progress.progress) {
+      forceFirstProgress = progress.forceFirstProgress;
+      progress = progress.progress;
+    } // To simplify no progress checking, array must has item.
+
+
+    if (isArray(progress) && !progress.length) {
+      progress = null;
+    }
+  }
+
+  taskIns._progress = progress;
+  taskIns._modBy = taskIns._modDataCount = null;
+  var downstream = taskIns._downstream;
+  downstream && downstream.dirty();
+  return forceFirstProgress;
+}
+/**
+ * @return {boolean}
+ */
+
+
+taskProto.unfinished = function () {
+  return this._progress && this._dueIndex < this._dueEnd;
+};
+/**
+ * @param {Object} downTask The downstream task.
+ * @return {Object} The downstream task.
+ */
+
+
+taskProto.pipe = function (downTask) {
+  // If already downstream, do not dirty downTask.
+  if (this._downstream !== downTask || this._dirty) {
+    this._downstream = downTask;
+    downTask._upstream = this;
+    downTask.dirty();
+  }
+};
+
+taskProto.dispose = function () {
+  if (this._disposed) {
+    return;
+  }
+
+  this._upstream && (this._upstream._downstream = null);
+  this._downstream && (this._downstream._upstream = null);
+  this._dirty = false;
+  this._disposed = true;
+};
+
+taskProto.getUpstream = function () {
+  return this._upstream;
+};
+
+taskProto.getDownstream = function () {
+  return this._downstream;
+};
+
+taskProto.setOutputEnd = function (end) {
+  // This only happend in dataTask, dataZoom, map, currently.
+  // where dataZoom do not set end each time, but only set
+  // when reset. So we should record the setted end, in case
+  // that the stub of dataZoom perform again and earse the
+  // setted end by upstream.
+  this._outputDueEnd = this._settedOutputEnd = end;
+}; ///////////////////////////////////////////////////////////
+// For stream debug (Should be commented out after used!)
+// Usage: printTask(this, 'begin');
+// Usage: printTask(this, null, {someExtraProp});
+// function printTask(task, prefix, extra) {
+//     window.ecTaskUID == null && (window.ecTaskUID = 0);
+//     task.uidDebug == null && (task.uidDebug = `task_${window.ecTaskUID++}`);
+//     task.agent && task.agent.uidDebug == null && (task.agent.uidDebug = `task_${window.ecTaskUID++}`);
+//     var props = [];
+//     if (task.__pipeline) {
+//         var val = `${task.__idxInPipeline}/${task.__pipeline.tail.__idxInPipeline} ${task.agent ? '(stub)' : ''}`;
+//         props.push({text: 'idx', value: val});
+//     } else {
+//         var stubCount = 0;
+//         task.agentStubMap.each(() => stubCount++);
+//         props.push({text: 'idx', value: `overall (stubs: ${stubCount})`});
+//     }
+//     props.push({text: 'uid', value: task.uidDebug});
+//     if (task.__pipeline) {
+//         props.push({text: 'pid', value: task.__pipeline.id});
+//         task.agent && props.push(
+//             {text: 'stubFor', value: task.agent.uidDebug}
+//         );
+//     }
+//     props.push(
+//         {text: 'dirty', value: task._dirty},
+//         {text: 'dueIndex', value: task._dueIndex},
+//         {text: 'dueEnd', value: task._dueEnd},
+//         {text: 'outputDueEnd', value: task._outputDueEnd}
+//     );
+//     if (extra) {
+//         Object.keys(extra).forEach(key => {
+//             props.push({text: key, value: extra[key]});
+//         });
+//     }
+//     var args = ['color: blue'];
+//     var msg = `%c[${prefix || 'T'}] %c` + props.map(item => (
+//         args.push('color: black', 'color: red'),
+//         `${item.text}: %c${item.value}`
+//     )).join('%c, ');
+//     console.log.apply(console, [msg].concat(args));
+//     // console.log(this);
+// }
+
+
+exports.createTask = createTask;
+
+/***/ }),
+/* 56 */
+/***/ (function(module, exports) {
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+var ORIGIN_METHOD = '\0__throttleOriginMethod';
+var RATE = '\0__throttleRate';
+var THROTTLE_TYPE = '\0__throttleType';
+/**
+ * @public
+ * @param {(Function)} fn
+ * @param {number} [delay=0] Unit: ms.
+ * @param {boolean} [debounce=false]
+ *        true: If call interval less than `delay`, only the last call works.
+ *        false: If call interval less than `delay, call works on fixed rate.
+ * @return {(Function)} throttled fn.
+ */
+
+function throttle(fn, delay, debounce) {
+  var currCall;
+  var lastCall = 0;
+  var lastExec = 0;
+  var timer = null;
+  var diff;
+  var scope;
+  var args;
+  var debounceNextCall;
+  delay = delay || 0;
+
+  function exec() {
+    lastExec = new Date().getTime();
+    timer = null;
+    fn.apply(scope, args || []);
+  }
+
+  var cb = function () {
+    currCall = new Date().getTime();
+    scope = this;
+    args = arguments;
+    var thisDelay = debounceNextCall || delay;
+    var thisDebounce = debounceNextCall || debounce;
+    debounceNextCall = null;
+    diff = currCall - (thisDebounce ? lastCall : lastExec) - thisDelay;
+    clearTimeout(timer); // Here we should make sure that: the `exec` SHOULD NOT be called later
+    // than a new call of `cb`, that is, preserving the command order. Consider
+    // calculating "scale rate" when roaming as an example. When a call of `cb`
+    // happens, either the `exec` is called dierectly, or the call is delayed.
+    // But the delayed call should never be later than next call of `cb`. Under
+    // this assurance, we can simply update view state each time `dispatchAction`
+    // triggered by user roaming, but not need to add extra code to avoid the
+    // state being "rolled-back".
+
+    if (thisDebounce) {
+      timer = setTimeout(exec, thisDelay);
+    } else {
+      if (diff >= 0) {
+        exec();
+      } else {
+        timer = setTimeout(exec, -diff);
+      }
+    }
+
+    lastCall = currCall;
+  };
+  /**
+   * Clear throttle.
+   * @public
+   */
+
+
+  cb.clear = function () {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  };
+  /**
+   * Enable debounce once.
+   */
+
+
+  cb.debounceNextCall = function (debounceDelay) {
+    debounceNextCall = debounceDelay;
+  };
+
+  return cb;
+}
+/**
+ * Create throttle method or update throttle rate.
+ *
+ * @example
+ * ComponentView.prototype.render = function () {
+ *     ...
+ *     throttle.createOrUpdate(
+ *         this,
+ *         '_dispatchAction',
+ *         this.model.get('throttle'),
+ *         'fixRate'
+ *     );
+ * };
+ * ComponentView.prototype.remove = function () {
+ *     throttle.clear(this, '_dispatchAction');
+ * };
+ * ComponentView.prototype.dispose = function () {
+ *     throttle.clear(this, '_dispatchAction');
+ * };
+ *
+ * @public
+ * @param {Object} obj
+ * @param {string} fnAttr
+ * @param {number} [rate]
+ * @param {string} [throttleType='fixRate'] 'fixRate' or 'debounce'
+ * @return {Function} throttled function.
+ */
+
+
+function createOrUpdate(obj, fnAttr, rate, throttleType) {
+  var fn = obj[fnAttr];
+
+  if (!fn) {
+    return;
+  }
+
+  var originFn = fn[ORIGIN_METHOD] || fn;
+  var lastThrottleType = fn[THROTTLE_TYPE];
+  var lastRate = fn[RATE];
+
+  if (lastRate !== rate || lastThrottleType !== throttleType) {
+    if (rate == null || !throttleType) {
+      return obj[fnAttr] = originFn;
+    }
+
+    fn = obj[fnAttr] = throttle(originFn, rate, throttleType === 'debounce');
+    fn[ORIGIN_METHOD] = originFn;
+    fn[THROTTLE_TYPE] = throttleType;
+    fn[RATE] = rate;
+  }
+
+  return fn;
+}
+/**
+ * Clear throttle. Example see throttle.createOrUpdate.
+ *
+ * @public
+ * @param {Object} obj
+ * @param {string} fnAttr
+ */
+
+
+function clear(obj, fnAttr) {
+  var fn = obj[fnAttr];
+
+  if (fn && fn[ORIGIN_METHOD]) {
+    obj[fnAttr] = fn[ORIGIN_METHOD];
+  }
+}
+
+exports.throttle = throttle;
+exports.createOrUpdate = createOrUpdate;
+exports.clear = clear;
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _util = __webpack_require__(0);
+
+var each = _util.each;
+var createHashMap = _util.createHashMap;
+var assert = _util.assert;
+
+var _config = __webpack_require__(6);
+
+var __DEV__ = _config.__DEV__;
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+var OTHER_DIMENSIONS = createHashMap(['tooltip', 'label', 'itemName', 'itemId', 'seriesName']);
+
+function summarizeDimensions(data) {
+  var summary = {};
+  var encode = summary.encode = {};
+  var notExtraCoordDimMap = createHashMap();
+  var defaultedLabel = [];
+  var defaultedTooltip = [];
+  each(data.dimensions, function (dimName) {
+    var dimItem = data.getDimensionInfo(dimName);
+    var coordDim = dimItem.coordDim;
+
+    if (coordDim) {
+      var coordDimArr = encode[coordDim];
+
+      if (!encode.hasOwnProperty(coordDim)) {
+        coordDimArr = encode[coordDim] = [];
+      }
+
+      coordDimArr[dimItem.coordDimIndex] = dimName;
+
+      if (!dimItem.isExtraCoord) {
+        notExtraCoordDimMap.set(coordDim, 1); // Use the last coord dim (and label friendly) as default label,
+        // because when dataset is used, it is hard to guess which dimension
+        // can be value dimension. If both show x, y on label is not look good,
+        // and conventionally y axis is focused more.
+
+        if (mayLabelDimType(dimItem.type)) {
+          defaultedLabel[0] = dimName;
+        }
+      }
+
+      if (dimItem.defaultTooltip) {
+        defaultedTooltip.push(dimName);
+      }
+    }
+
+    OTHER_DIMENSIONS.each(function (v, otherDim) {
+      var otherDimArr = encode[otherDim];
+
+      if (!encode.hasOwnProperty(otherDim)) {
+        otherDimArr = encode[otherDim] = [];
+      }
+
+      var dimIndex = dimItem.otherDims[otherDim];
+
+      if (dimIndex != null && dimIndex !== false) {
+        otherDimArr[dimIndex] = dimItem.name;
+      }
+    });
+  });
+  var dataDimsOnCoord = [];
+  var encodeFirstDimNotExtra = {};
+  notExtraCoordDimMap.each(function (v, coordDim) {
+    var dimArr = encode[coordDim]; // ??? FIXME extra coord should not be set in dataDimsOnCoord.
+    // But should fix the case that radar axes: simplify the logic
+    // of `completeDimension`, remove `extraPrefix`.
+
+    encodeFirstDimNotExtra[coordDim] = dimArr[0]; // Not necessary to remove duplicate, because a data
+    // dim canot on more than one coordDim.
+
+    dataDimsOnCoord = dataDimsOnCoord.concat(dimArr);
+  });
+  summary.dataDimsOnCoord = dataDimsOnCoord;
+  summary.encodeFirstDimNotExtra = encodeFirstDimNotExtra;
+  var encodeLabel = encode.label; // FIXME `encode.label` is not recommanded, because formatter can not be set
+  // in this way. Use label.formatter instead. May be remove this approach someday.
+
+  if (encodeLabel && encodeLabel.length) {
+    defaultedLabel = encodeLabel.slice();
+  }
+
+  var encodeTooltip = encode.tooltip;
+
+  if (encodeTooltip && encodeTooltip.length) {
+    defaultedTooltip = encodeTooltip.slice();
+  } else if (!defaultedTooltip.length) {
+    defaultedTooltip = defaultedLabel.slice();
+  }
+
+  encode.defaultedLabel = defaultedLabel;
+  encode.defaultedTooltip = defaultedTooltip;
+  return summary;
+}
+
+function getDimensionTypeByAxis(axisType) {
+  return axisType === 'category' ? 'ordinal' : axisType === 'time' ? 'time' : 'float';
+}
+
+function mayLabelDimType(dimType) {
+  // In most cases, ordinal and time do not suitable for label.
+  // Ordinal info can be displayed on axis. Time is too long.
+  return !(dimType === 'ordinal' || dimType === 'time');
+} // function findTheLastDimMayLabel(data) {
+//     // Get last value dim
+//     var dimensions = data.dimensions.slice();
+//     var valueType;
+//     var valueDim;
+//     while (dimensions.length && (
+//         valueDim = dimensions.pop(),
+//         valueType = data.getDimensionInfo(valueDim).type,
+//         valueType === 'ordinal' || valueType === 'time'
+//     )) {} // jshint ignore:line
+//     return valueDim;
+// }
+
+
+exports.OTHER_DIMENSIONS = OTHER_DIMENSIONS;
+exports.summarizeDimensions = summarizeDimensions;
+exports.getDimensionTypeByAxis = getDimensionTypeByAxis;
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var numberUtil = __webpack_require__(5);
+
+var formatUtil = __webpack_require__(9);
+
+var Scale = __webpack_require__(44);
+
+var helper = __webpack_require__(103);
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
+/**
+ * Interval scale
+ * @module echarts/scale/Interval
+ */
+var roundNumber = numberUtil.round;
+/**
+ * @alias module:echarts/coord/scale/Interval
+ * @constructor
+ */
+
+var IntervalScale = Scale.extend({
+  type: 'interval',
+  _interval: 0,
+  _intervalPrecision: 2,
+  setExtent: function (start, end) {
+    var thisExtent = this._extent; //start,end may be a Number like '25',so...
+
+    if (!isNaN(start)) {
+      thisExtent[0] = parseFloat(start);
+    }
+
+    if (!isNaN(end)) {
+      thisExtent[1] = parseFloat(end);
+    }
+  },
+  unionExtent: function (other) {
+    var extent = this._extent;
+    other[0] < extent[0] && (extent[0] = other[0]);
+    other[1] > extent[1] && (extent[1] = other[1]); // unionExtent may called by it's sub classes
+
+    IntervalScale.prototype.setExtent.call(this, extent[0], extent[1]);
+  },
+
+  /**
+   * Get interval
+   */
+  getInterval: function () {
+    return this._interval;
+  },
+
+  /**
+   * Set interval
+   */
+  setInterval: function (interval) {
+    this._interval = interval; // Dropped auto calculated niceExtent and use user setted extent
+    // We assume user wan't to set both interval, min, max to get a better result
+
+    this._niceExtent = this._extent.slice();
+    this._intervalPrecision = helper.getIntervalPrecision(interval);
+  },
+
+  /**
+   * @return {Array.<number>}
+   */
+  getTicks: function () {
+    return helper.intervalScaleGetTicks(this._interval, this._extent, this._niceExtent, this._intervalPrecision);
+  },
+
+  /**
+   * @param {number} data
+   * @param {Object} [opt]
+   * @param {number|string} [opt.precision] If 'auto', use nice presision.
+   * @param {boolean} [opt.pad] returns 1.50 but not 1.5 if precision is 2.
+   * @return {string}
+   */
+  getLabel: function (data, opt) {
+    if (data == null) {
+      return '';
+    }
+
+    var precision = opt && opt.precision;
+
+    if (precision == null) {
+      precision = numberUtil.getPrecisionSafe(data) || 0;
+    } else if (precision === 'auto') {
+      // Should be more precise then tick.
+      precision = this._intervalPrecision;
+    } // (1) If `precision` is set, 12.005 should be display as '12.00500'.
+    // (2) Use roundNumber (toFixed) to avoid scientific notation like '3.5e-7'.
+
+
+    data = roundNumber(data, precision, true);
+    return formatUtil.addCommas(data);
+  },
+
+  /**
+   * Update interval and extent of intervals for nice ticks
+   *
+   * @param {number} [splitNumber = 5] Desired number of ticks
+   * @param {number} [minInterval]
+   * @param {number} [maxInterval]
+   */
+  niceTicks: function (splitNumber, minInterval, maxInterval) {
+    splitNumber = splitNumber || 5;
+    var extent = this._extent;
+    var span = extent[1] - extent[0];
+
+    if (!isFinite(span)) {
+      return;
+    } // User may set axis min 0 and data are all negative
+    // FIXME If it needs to reverse ?
+
+
+    if (span < 0) {
+      span = -span;
+      extent.reverse();
+    }
+
+    var result = helper.intervalScaleNiceTicks(extent, splitNumber, minInterval, maxInterval);
+    this._intervalPrecision = result.intervalPrecision;
+    this._interval = result.interval;
+    this._niceExtent = result.niceTickExtent;
+  },
+
+  /**
+   * Nice extent.
+   * @param {Object} opt
+   * @param {number} [opt.splitNumber = 5] Given approx tick number
+   * @param {boolean} [opt.fixMin=false]
+   * @param {boolean} [opt.fixMax=false]
+   * @param {boolean} [opt.minInterval]
+   * @param {boolean} [opt.maxInterval]
+   */
+  niceExtent: function (opt) {
+    var extent = this._extent; // If extent start and end are same, expand them
+
+    if (extent[0] === extent[1]) {
+      if (extent[0] !== 0) {
+        // Expand extent
+        var expandSize = extent[0]; // In the fowllowing case
+        //      Axis has been fixed max 100
+        //      Plus data are all 100 and axis extent are [100, 100].
+        // Extend to the both side will cause expanded max is larger than fixed max.
+        // So only expand to the smaller side.
+
+        if (!opt.fixMax) {
+          extent[1] += expandSize / 2;
+          extent[0] -= expandSize / 2;
+        } else {
+          extent[0] -= expandSize / 2;
+        }
+      } else {
+        extent[1] = 1;
+      }
+    }
+
+    var span = extent[1] - extent[0]; // If there are no data and extent are [Infinity, -Infinity]
+
+    if (!isFinite(span)) {
+      extent[0] = 0;
+      extent[1] = 1;
+    }
+
+    this.niceTicks(opt.splitNumber, opt.minInterval, opt.maxInterval); // var extent = this._extent;
+
+    var interval = this._interval;
+
+    if (!opt.fixMin) {
+      extent[0] = roundNumber(Math.floor(extent[0] / interval) * interval);
+    }
+
+    if (!opt.fixMax) {
+      extent[1] = roundNumber(Math.ceil(extent[1] / interval) * interval);
+    }
+  }
+});
+/**
+ * @return {module:echarts/scale/Time}
+ */
+
+IntervalScale.create = function () {
+  return new IntervalScale();
+};
+
+var _default = IntervalScale;
+module.exports = _default;
+
+/***/ }),
+/* 59 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var zrUtil = __webpack_require__(0);
+
+var _symbol = __webpack_require__(16);
+
+var createSymbol = _symbol.createSymbol;
+
+var graphic = __webpack_require__(3);
+
+var _number = __webpack_require__(5);
+
+var parsePercent = _number.parsePercent;
+
+var _labelHelper = __webpack_require__(228);
+
+var getDefaultLabel = _labelHelper.getDefaultLabel;
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
+/**
+ * @module echarts/chart/helper/Symbol
+ */
+
+/**
+ * @constructor
+ * @alias {module:echarts/chart/helper/Symbol}
+ * @param {module:echarts/data/List} data
+ * @param {number} idx
+ * @extends {module:zrender/graphic/Group}
+ */
+function SymbolClz(data, idx, seriesScope) {
+  graphic.Group.call(this);
+  this.updateData(data, idx, seriesScope);
+}
+
+var symbolProto = SymbolClz.prototype;
+/**
+ * @public
+ * @static
+ * @param {module:echarts/data/List} data
+ * @param {number} dataIndex
+ * @return {Array.<number>} [width, height]
+ */
+
+var getSymbolSize = SymbolClz.getSymbolSize = function (data, idx) {
+  var symbolSize = data.getItemVisual(idx, 'symbolSize');
+  return symbolSize instanceof Array ? symbolSize.slice() : [+symbolSize, +symbolSize];
+};
+
+function getScale(symbolSize) {
+  return [symbolSize[0] / 2, symbolSize[1] / 2];
+}
+
+function driftSymbol(dx, dy) {
+  this.parent.drift(dx, dy);
+}
+
+symbolProto._createSymbol = function (symbolType, data, idx, symbolSize, keepAspect) {
+  // Remove paths created before
+  this.removeAll();
+  var color = data.getItemVisual(idx, 'color'); // var symbolPath = createSymbol(
+  //     symbolType, -0.5, -0.5, 1, 1, color
+  // );
+  // If width/height are set too small (e.g., set to 1) on ios10
+  // and macOS Sierra, a circle stroke become a rect, no matter what
+  // the scale is set. So we set width/height as 2. See #4150.
+
+  var symbolPath = createSymbol(symbolType, -1, -1, 2, 2, color, keepAspect);
+  symbolPath.attr({
+    z2: 100,
+    culling: true,
+    scale: getScale(symbolSize)
+  }); // Rewrite drift method
+
+  symbolPath.drift = driftSymbol;
+  this._symbolType = symbolType;
+  this.add(symbolPath);
+};
+/**
+ * Stop animation
+ * @param {boolean} toLastFrame
+ */
+
+
+symbolProto.stopSymbolAnimation = function (toLastFrame) {
+  this.childAt(0).stopAnimation(toLastFrame);
+};
+/**
+ * FIXME:
+ * Caution: This method breaks the encapsulation of this module,
+ * but it indeed brings convenience. So do not use the method
+ * unless you detailedly know all the implements of `Symbol`,
+ * especially animation.
+ *
+ * Get symbol path element.
+ */
+
+
+symbolProto.getSymbolPath = function () {
+  return this.childAt(0);
+};
+/**
+ * Get scale(aka, current symbol size).
+ * Including the change caused by animation
+ */
+
+
+symbolProto.getScale = function () {
+  return this.childAt(0).scale;
+};
+/**
+ * Highlight symbol
+ */
+
+
+symbolProto.highlight = function () {
+  this.childAt(0).trigger('emphasis');
+};
+/**
+ * Downplay symbol
+ */
+
+
+symbolProto.downplay = function () {
+  this.childAt(0).trigger('normal');
+};
+/**
+ * @param {number} zlevel
+ * @param {number} z
+ */
+
+
+symbolProto.setZ = function (zlevel, z) {
+  var symbolPath = this.childAt(0);
+  symbolPath.zlevel = zlevel;
+  symbolPath.z = z;
+};
+
+symbolProto.setDraggable = function (draggable) {
+  var symbolPath = this.childAt(0);
+  symbolPath.draggable = draggable;
+  symbolPath.cursor = draggable ? 'move' : 'pointer';
+};
+/**
+ * Update symbol properties
+ * @param {module:echarts/data/List} data
+ * @param {number} idx
+ * @param {Object} [seriesScope]
+ * @param {Object} [seriesScope.itemStyle]
+ * @param {Object} [seriesScope.hoverItemStyle]
+ * @param {Object} [seriesScope.symbolRotate]
+ * @param {Object} [seriesScope.symbolOffset]
+ * @param {module:echarts/model/Model} [seriesScope.labelModel]
+ * @param {module:echarts/model/Model} [seriesScope.hoverLabelModel]
+ * @param {boolean} [seriesScope.hoverAnimation]
+ * @param {Object} [seriesScope.cursorStyle]
+ * @param {module:echarts/model/Model} [seriesScope.itemModel]
+ * @param {string} [seriesScope.symbolInnerColor]
+ * @param {Object} [seriesScope.fadeIn=false]
+ */
+
+
+symbolProto.updateData = function (data, idx, seriesScope) {
+  this.silent = false;
+  var symbolType = data.getItemVisual(idx, 'symbol') || 'circle';
+  var seriesModel = data.hostModel;
+  var symbolSize = getSymbolSize(data, idx);
+  var isInit = symbolType !== this._symbolType;
+
+  if (isInit) {
+    var keepAspect = data.getItemVisual(idx, 'symbolKeepAspect');
+
+    this._createSymbol(symbolType, data, idx, symbolSize, keepAspect);
+  } else {
+    var symbolPath = this.childAt(0);
+    symbolPath.silent = false;
+    graphic.updateProps(symbolPath, {
+      scale: getScale(symbolSize)
+    }, seriesModel, idx);
+  }
+
+  this._updateCommon(data, idx, symbolSize, seriesScope);
+
+  if (isInit) {
+    var symbolPath = this.childAt(0);
+    var fadeIn = seriesScope && seriesScope.fadeIn;
+    var target = {
+      scale: symbolPath.scale.slice()
+    };
+    fadeIn && (target.style = {
+      opacity: symbolPath.style.opacity
+    });
+    symbolPath.scale = [0, 0];
+    fadeIn && (symbolPath.style.opacity = 0);
+    graphic.initProps(symbolPath, target, seriesModel, idx);
+  }
+
+  this._seriesModel = seriesModel;
+}; // Update common properties
+
+
+var normalStyleAccessPath = ['itemStyle'];
+var emphasisStyleAccessPath = ['emphasis', 'itemStyle'];
+var normalLabelAccessPath = ['label'];
+var emphasisLabelAccessPath = ['emphasis', 'label'];
+/**
+ * @param {module:echarts/data/List} data
+ * @param {number} idx
+ * @param {Array.<number>} symbolSize
+ * @param {Object} [seriesScope]
+ */
+
+symbolProto._updateCommon = function (data, idx, symbolSize, seriesScope) {
+  var symbolPath = this.childAt(0);
+  var seriesModel = data.hostModel;
+  var color = data.getItemVisual(idx, 'color'); // Reset style
+
+  if (symbolPath.type !== 'image') {
+    symbolPath.useStyle({
+      strokeNoScale: true
+    });
+  }
+
+  var itemStyle = seriesScope && seriesScope.itemStyle;
+  var hoverItemStyle = seriesScope && seriesScope.hoverItemStyle;
+  var symbolRotate = seriesScope && seriesScope.symbolRotate;
+  var symbolOffset = seriesScope && seriesScope.symbolOffset;
+  var labelModel = seriesScope && seriesScope.labelModel;
+  var hoverLabelModel = seriesScope && seriesScope.hoverLabelModel;
+  var hoverAnimation = seriesScope && seriesScope.hoverAnimation;
+  var cursorStyle = seriesScope && seriesScope.cursorStyle;
+
+  if (!seriesScope || data.hasItemOption) {
+    var itemModel = seriesScope && seriesScope.itemModel ? seriesScope.itemModel : data.getItemModel(idx); // Color must be excluded.
+    // Because symbol provide setColor individually to set fill and stroke
+
+    itemStyle = itemModel.getModel(normalStyleAccessPath).getItemStyle(['color']);
+    hoverItemStyle = itemModel.getModel(emphasisStyleAccessPath).getItemStyle();
+    symbolRotate = itemModel.getShallow('symbolRotate');
+    symbolOffset = itemModel.getShallow('symbolOffset');
+    labelModel = itemModel.getModel(normalLabelAccessPath);
+    hoverLabelModel = itemModel.getModel(emphasisLabelAccessPath);
+    hoverAnimation = itemModel.getShallow('hoverAnimation');
+    cursorStyle = itemModel.getShallow('cursor');
+  } else {
+    hoverItemStyle = zrUtil.extend({}, hoverItemStyle);
+  }
+
+  var elStyle = symbolPath.style;
+  symbolPath.attr('rotation', (symbolRotate || 0) * Math.PI / 180 || 0);
+
+  if (symbolOffset) {
+    symbolPath.attr('position', [parsePercent(symbolOffset[0], symbolSize[0]), parsePercent(symbolOffset[1], symbolSize[1])]);
+  }
+
+  cursorStyle && symbolPath.attr('cursor', cursorStyle); // PENDING setColor before setStyle!!!
+
+  symbolPath.setColor(color, seriesScope && seriesScope.symbolInnerColor);
+  symbolPath.setStyle(itemStyle);
+  var opacity = data.getItemVisual(idx, 'opacity');
+
+  if (opacity != null) {
+    elStyle.opacity = opacity;
+  }
+
+  var liftZ = data.getItemVisual(idx, 'liftZ');
+  var z2Origin = symbolPath.__z2Origin;
+
+  if (liftZ != null) {
+    if (z2Origin == null) {
+      symbolPath.__z2Origin = symbolPath.z2;
+      symbolPath.z2 += liftZ;
+    }
+  } else if (z2Origin != null) {
+    symbolPath.z2 = z2Origin;
+    symbolPath.__z2Origin = null;
+  }
+
+  var useNameLabel = seriesScope && seriesScope.useNameLabel;
+  graphic.setLabelStyle(elStyle, hoverItemStyle, labelModel, hoverLabelModel, {
+    labelFetcher: seriesModel,
+    labelDataIndex: idx,
+    defaultText: getLabelDefaultText,
+    isRectText: true,
+    autoColor: color
+  }); // Do not execute util needed.
+
+  function getLabelDefaultText(idx, opt) {
+    return useNameLabel ? data.getName(idx) : getDefaultLabel(data, idx);
+  }
+
+  symbolPath.off('mouseover').off('mouseout').off('emphasis').off('normal');
+  symbolPath.hoverStyle = hoverItemStyle; // FIXME
+  // Do not use symbol.trigger('emphasis'), but use symbol.highlight() instead.
+
+  graphic.setHoverStyle(symbolPath);
+  var scale = getScale(symbolSize);
+
+  if (hoverAnimation && seriesModel.isAnimationEnabled()) {
+    var onEmphasis = function () {
+      // Do not support this hover animation util some scenario required.
+      // Animation can only be supported in hover layer when using `el.incremetal`.
+      if (this.incremental) {
+        return;
+      }
+
+      var ratio = scale[1] / scale[0];
+      this.animateTo({
+        scale: [Math.max(scale[0] * 1.1, scale[0] + 3), Math.max(scale[1] * 1.1, scale[1] + 3 * ratio)]
+      }, 400, 'elasticOut');
+    };
+
+    var onNormal = function () {
+      if (this.incremental) {
+        return;
+      }
+
+      this.animateTo({
+        scale: scale
+      }, 400, 'elasticOut');
+    };
+
+    symbolPath.on('mouseover', onEmphasis).on('mouseout', onNormal).on('emphasis', onEmphasis).on('normal', onNormal);
+  }
+};
+/**
+ * @param {Function} cb
+ * @param {Object} [opt]
+ * @param {Object} [opt.keepLabel=true]
+ */
+
+
+symbolProto.fadeOut = function (cb, opt) {
+  var symbolPath = this.childAt(0); // Avoid mistaken hover when fading out
+
+  this.silent = symbolPath.silent = true; // Not show text when animating
+
+  !(opt && opt.keepLabel) && (symbolPath.style.text = null);
+  graphic.updateProps(symbolPath, {
+    style: {
+      opacity: 0
+    },
+    scale: [0, 0]
+  }, this._seriesModel, this.dataIndex, cb);
+};
+
+zrUtil.inherits(SymbolClz, graphic.Group);
+var _default = SymbolClz;
+module.exports = _default;
+
+/***/ }),
+/* 60 */
+/***/ (function(module, exports) {
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+function _default(seriesType, defaultSymbolType, legendSymbol) {
+  // Encoding visual for all series include which is filtered for legend drawing
+  return {
+    seriesType: seriesType,
+    // For legend.
+    performRawSeries: true,
+    reset: function (seriesModel, ecModel, api) {
+      var data = seriesModel.getData();
+      var symbolType = seriesModel.get('symbol') || defaultSymbolType;
+      var symbolSize = seriesModel.get('symbolSize');
+      var keepAspect = seriesModel.get('symbolKeepAspect');
+      data.setVisual({
+        legendSymbol: legendSymbol || symbolType,
+        symbol: symbolType,
+        symbolSize: symbolSize,
+        symbolKeepAspect: keepAspect
+      }); // Only visible series has each data be visual encoded
+
+      if (ecModel.isSeriesFiltered(seriesModel)) {
+        return;
+      }
+
+      var hasCallback = typeof symbolSize === 'function';
+
+      function dataEach(data, idx) {
+        if (typeof symbolSize === 'function') {
+          var rawValue = seriesModel.getRawValue(idx); // FIXME
+
+          var params = seriesModel.getDataParams(idx);
+          data.setItemVisual(idx, 'symbolSize', symbolSize(rawValue, params));
+        }
+
+        if (data.hasItemOption) {
+          var itemModel = data.getItemModel(idx);
+          var itemSymbolType = itemModel.getShallow('symbol', true);
+          var itemSymbolSize = itemModel.getShallow('symbolSize', true);
+          var itemSymbolKeepAspect = itemModel.getShallow('symbolKeepAspect', true); // If has item symbol
+
+          if (itemSymbolType != null) {
+            data.setItemVisual(idx, 'symbol', itemSymbolType);
+          }
+
+          if (itemSymbolSize != null) {
+            // PENDING Transform symbolSize ?
+            data.setItemVisual(idx, 'symbolSize', itemSymbolSize);
+          }
+
+          if (itemSymbolKeepAspect != null) {
+            data.setItemVisual(idx, 'symbolKeepAspect', itemSymbolKeepAspect);
+          }
+        }
+      }
+
+      return {
+        dataEach: data.hasItemOption || hasCallback ? dataEach : null
+      };
+    }
+  };
+}
+
+module.exports = _default;
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var echarts = __webpack_require__(1);
+
+var zrUtil = __webpack_require__(0);
+
+var graphic = __webpack_require__(3);
+
+__webpack_require__(232);
+
+__webpack_require__(239);
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+// Grid view
+echarts.extendComponentView({
+  type: 'grid',
+  render: function (gridModel, ecModel) {
+    this.group.removeAll();
+
+    if (gridModel.get('show')) {
+      this.group.add(new graphic.Rect({
+        shape: gridModel.coordinateSystem.getRect(),
+        style: zrUtil.defaults({
+          fill: gridModel.get('backgroundColor')
+        }, gridModel.getItemStyle()),
+        silent: true,
+        z2: -1
+      }));
+    }
+  }
+});
+echarts.registerPreprocessor(function (option) {
+  // Only create grid when need
+  if (option.xAxis && option.yAxis && !option.grid) {
+    option.grid = {};
+  }
+});
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var zrUtil = __webpack_require__(0);
+
+var vector = __webpack_require__(7);
+
+var symbolUtil = __webpack_require__(16);
+
+var LinePath = __webpack_require__(244);
+
+var graphic = __webpack_require__(3);
+
+var _number = __webpack_require__(5);
+
+var round = _number.round;
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
+/**
+ * @module echarts/chart/helper/Line
+ */
+var SYMBOL_CATEGORIES = ['fromSymbol', 'toSymbol'];
+
+function makeSymbolTypeKey(symbolCategory) {
+  return '_' + symbolCategory + 'Type';
+}
+/**
+ * @inner
+ */
+
+
+function createSymbol(name, lineData, idx) {
+  var color = lineData.getItemVisual(idx, 'color');
+  var symbolType = lineData.getItemVisual(idx, name);
+  var symbolSize = lineData.getItemVisual(idx, name + 'Size');
+
+  if (!symbolType || symbolType === 'none') {
+    return;
+  }
+
+  if (!zrUtil.isArray(symbolSize)) {
+    symbolSize = [symbolSize, symbolSize];
+  }
+
+  var symbolPath = symbolUtil.createSymbol(symbolType, -symbolSize[0] / 2, -symbolSize[1] / 2, symbolSize[0], symbolSize[1], color);
+  symbolPath.name = name;
+  return symbolPath;
+}
+
+function createLine(points) {
+  var line = new LinePath({
+    name: 'line'
+  });
+  setLinePoints(line.shape, points);
+  return line;
+}
+
+function setLinePoints(targetShape, points) {
+  var p1 = points[0];
+  var p2 = points[1];
+  var cp1 = points[2];
+  targetShape.x1 = p1[0];
+  targetShape.y1 = p1[1];
+  targetShape.x2 = p2[0];
+  targetShape.y2 = p2[1];
+  targetShape.percent = 1;
+
+  if (cp1) {
+    targetShape.cpx1 = cp1[0];
+    targetShape.cpy1 = cp1[1];
+  } else {
+    targetShape.cpx1 = NaN;
+    targetShape.cpy1 = NaN;
+  }
+}
+
+function updateSymbolAndLabelBeforeLineUpdate() {
+  var lineGroup = this;
+  var symbolFrom = lineGroup.childOfName('fromSymbol');
+  var symbolTo = lineGroup.childOfName('toSymbol');
+  var label = lineGroup.childOfName('label'); // Quick reject
+
+  if (!symbolFrom && !symbolTo && label.ignore) {
+    return;
+  }
+
+  var invScale = 1;
+  var parentNode = this.parent;
+
+  while (parentNode) {
+    if (parentNode.scale) {
+      invScale /= parentNode.scale[0];
+    }
+
+    parentNode = parentNode.parent;
+  }
+
+  var line = lineGroup.childOfName('line'); // If line not changed
+  // FIXME Parent scale changed
+
+  if (!this.__dirty && !line.__dirty) {
+    return;
+  }
+
+  var percent = line.shape.percent;
+  var fromPos = line.pointAt(0);
+  var toPos = line.pointAt(percent);
+  var d = vector.sub([], toPos, fromPos);
+  vector.normalize(d, d);
+
+  if (symbolFrom) {
+    symbolFrom.attr('position', fromPos);
+    var tangent = line.tangentAt(0);
+    symbolFrom.attr('rotation', Math.PI / 2 - Math.atan2(tangent[1], tangent[0]));
+    symbolFrom.attr('scale', [invScale * percent, invScale * percent]);
+  }
+
+  if (symbolTo) {
+    symbolTo.attr('position', toPos);
+    var tangent = line.tangentAt(1);
+    symbolTo.attr('rotation', -Math.PI / 2 - Math.atan2(tangent[1], tangent[0]));
+    symbolTo.attr('scale', [invScale * percent, invScale * percent]);
+  }
+
+  if (!label.ignore) {
+    label.attr('position', toPos);
+    var textPosition;
+    var textAlign;
+    var textVerticalAlign;
+    var distance = 5 * invScale; // End
+
+    if (label.__position === 'end') {
+      textPosition = [d[0] * distance + toPos[0], d[1] * distance + toPos[1]];
+      textAlign = d[0] > 0.8 ? 'left' : d[0] < -0.8 ? 'right' : 'center';
+      textVerticalAlign = d[1] > 0.8 ? 'top' : d[1] < -0.8 ? 'bottom' : 'middle';
+    } // Middle
+    else if (label.__position === 'middle') {
+        var halfPercent = percent / 2;
+        var tangent = line.tangentAt(halfPercent);
+        var n = [tangent[1], -tangent[0]];
+        var cp = line.pointAt(halfPercent);
+
+        if (n[1] > 0) {
+          n[0] = -n[0];
+          n[1] = -n[1];
+        }
+
+        textPosition = [cp[0] + n[0] * distance, cp[1] + n[1] * distance];
+        textAlign = 'center';
+        textVerticalAlign = 'bottom';
+        var rotation = -Math.atan2(tangent[1], tangent[0]);
+
+        if (toPos[0] < fromPos[0]) {
+          rotation = Math.PI + rotation;
+        }
+
+        label.attr('rotation', rotation);
+      } // Start
+      else {
+          textPosition = [-d[0] * distance + fromPos[0], -d[1] * distance + fromPos[1]];
+          textAlign = d[0] > 0.8 ? 'right' : d[0] < -0.8 ? 'left' : 'center';
+          textVerticalAlign = d[1] > 0.8 ? 'bottom' : d[1] < -0.8 ? 'top' : 'middle';
+        }
+
+    label.attr({
+      style: {
+        // Use the user specified text align and baseline first
+        textVerticalAlign: label.__verticalAlign || textVerticalAlign,
+        textAlign: label.__textAlign || textAlign
+      },
+      position: textPosition,
+      scale: [invScale, invScale]
+    });
+  }
+}
+/**
+ * @constructor
+ * @extends {module:zrender/graphic/Group}
+ * @alias {module:echarts/chart/helper/Line}
+ */
+
+
+function Line(lineData, idx, seriesScope) {
+  graphic.Group.call(this);
+
+  this._createLine(lineData, idx, seriesScope);
+}
+
+var lineProto = Line.prototype; // Update symbol position and rotation
+
+lineProto.beforeUpdate = updateSymbolAndLabelBeforeLineUpdate;
+
+lineProto._createLine = function (lineData, idx, seriesScope) {
+  var seriesModel = lineData.hostModel;
+  var linePoints = lineData.getItemLayout(idx);
+  var line = createLine(linePoints);
+  line.shape.percent = 0;
+  graphic.initProps(line, {
+    shape: {
+      percent: 1
+    }
+  }, seriesModel, idx);
+  this.add(line);
+  var label = new graphic.Text({
+    name: 'label'
+  });
+  this.add(label);
+  zrUtil.each(SYMBOL_CATEGORIES, function (symbolCategory) {
+    var symbol = createSymbol(symbolCategory, lineData, idx); // symbols must added after line to make sure
+    // it will be updated after line#update.
+    // Or symbol position and rotation update in line#beforeUpdate will be one frame slow
+
+    this.add(symbol);
+    this[makeSymbolTypeKey(symbolCategory)] = lineData.getItemVisual(idx, symbolCategory);
+  }, this);
+
+  this._updateCommonStl(lineData, idx, seriesScope);
+};
+
+lineProto.updateData = function (lineData, idx, seriesScope) {
+  var seriesModel = lineData.hostModel;
+  var line = this.childOfName('line');
+  var linePoints = lineData.getItemLayout(idx);
+  var target = {
+    shape: {}
+  };
+  setLinePoints(target.shape, linePoints);
+  graphic.updateProps(line, target, seriesModel, idx);
+  zrUtil.each(SYMBOL_CATEGORIES, function (symbolCategory) {
+    var symbolType = lineData.getItemVisual(idx, symbolCategory);
+    var key = makeSymbolTypeKey(symbolCategory); // Symbol changed
+
+    if (this[key] !== symbolType) {
+      this.remove(this.childOfName(symbolCategory));
+      var symbol = createSymbol(symbolCategory, lineData, idx);
+      this.add(symbol);
+    }
+
+    this[key] = symbolType;
+  }, this);
+
+  this._updateCommonStl(lineData, idx, seriesScope);
+};
+
+lineProto._updateCommonStl = function (lineData, idx, seriesScope) {
+  var seriesModel = lineData.hostModel;
+  var line = this.childOfName('line');
+  var lineStyle = seriesScope && seriesScope.lineStyle;
+  var hoverLineStyle = seriesScope && seriesScope.hoverLineStyle;
+  var labelModel = seriesScope && seriesScope.labelModel;
+  var hoverLabelModel = seriesScope && seriesScope.hoverLabelModel; // Optimization for large dataset
+
+  if (!seriesScope || lineData.hasItemOption) {
+    var itemModel = lineData.getItemModel(idx);
+    lineStyle = itemModel.getModel('lineStyle').getLineStyle();
+    hoverLineStyle = itemModel.getModel('emphasis.lineStyle').getLineStyle();
+    labelModel = itemModel.getModel('label');
+    hoverLabelModel = itemModel.getModel('emphasis.label');
+  }
+
+  var visualColor = lineData.getItemVisual(idx, 'color');
+  var visualOpacity = zrUtil.retrieve3(lineData.getItemVisual(idx, 'opacity'), lineStyle.opacity, 1);
+  line.useStyle(zrUtil.defaults({
+    strokeNoScale: true,
+    fill: 'none',
+    stroke: visualColor,
+    opacity: visualOpacity
+  }, lineStyle));
+  line.hoverStyle = hoverLineStyle; // Update symbol
+
+  zrUtil.each(SYMBOL_CATEGORIES, function (symbolCategory) {
+    var symbol = this.childOfName(symbolCategory);
+
+    if (symbol) {
+      symbol.setColor(visualColor);
+      symbol.setStyle({
+        opacity: visualOpacity
+      });
+    }
+  }, this);
+  var showLabel = labelModel.getShallow('show');
+  var hoverShowLabel = hoverLabelModel.getShallow('show');
+  var label = this.childOfName('label');
+  var defaultLabelColor;
+  var baseText; // FIXME: the logic below probably should be merged to `graphic.setLabelStyle`.
+
+  if (showLabel || hoverShowLabel) {
+    defaultLabelColor = visualColor || '#000';
+    baseText = seriesModel.getFormattedLabel(idx, 'normal', lineData.dataType);
+
+    if (baseText == null) {
+      var rawVal = seriesModel.getRawValue(idx);
+      baseText = rawVal == null ? lineData.getName(idx) : isFinite(rawVal) ? round(rawVal) : rawVal;
+    }
+  }
+
+  var normalText = showLabel ? baseText : null;
+  var emphasisText = hoverShowLabel ? zrUtil.retrieve2(seriesModel.getFormattedLabel(idx, 'emphasis', lineData.dataType), baseText) : null;
+  var labelStyle = label.style; // Always set `textStyle` even if `normalStyle.text` is null, because default
+  // values have to be set on `normalStyle`.
+
+  if (normalText != null || emphasisText != null) {
+    graphic.setTextStyle(label.style, labelModel, {
+      text: normalText
+    }, {
+      autoColor: defaultLabelColor
+    });
+    label.__textAlign = labelStyle.textAlign;
+    label.__verticalAlign = labelStyle.textVerticalAlign; // 'start', 'middle', 'end'
+
+    label.__position = labelModel.get('position') || 'middle';
+  }
+
+  if (emphasisText != null) {
+    // Only these properties supported in this emphasis style here.
+    label.hoverStyle = {
+      text: emphasisText,
+      textFill: hoverLabelModel.getTextColor(true),
+      // For merging hover style to normal style, do not use
+      // `hoverLabelModel.getFont()` here.
+      fontStyle: hoverLabelModel.getShallow('fontStyle'),
+      fontWeight: hoverLabelModel.getShallow('fontWeight'),
+      fontSize: hoverLabelModel.getShallow('fontSize'),
+      fontFamily: hoverLabelModel.getShallow('fontFamily')
+    };
+  } else {
+    label.hoverStyle = {
+      text: null
+    };
+  }
+
+  label.ignore = !showLabel && !hoverShowLabel;
+  graphic.setHoverStyle(this);
+};
+
+lineProto.highlight = function () {
+  this.trigger('emphasis');
+};
+
+lineProto.downplay = function () {
+  this.trigger('normal');
+};
+
+lineProto.updateLayout = function (lineData, idx) {
+  this.setLinePoints(lineData.getItemLayout(idx));
+};
+
+lineProto.setLinePoints = function (points) {
+  var linePath = this.childOfName('line');
+  setLinePoints(linePath.shape, points);
+  linePath.dirty();
+};
+
+zrUtil.inherits(Line, graphic.Group);
+var _default = Line;
+module.exports = _default;
 
 /***/ }),
 /* 63 */
@@ -27675,7 +27675,7 @@ var BoundingRect = __webpack_require__(12);
 
 var zrUtil = __webpack_require__(0);
 
-var imageHelper = __webpack_require__(50);
+var imageHelper = __webpack_require__(51);
 
 /**
  * @alias zrender/graphic/Image
@@ -27779,7 +27779,7 @@ var textContain = __webpack_require__(23);
 
 var roundRectHelper = __webpack_require__(84);
 
-var imageHelper = __webpack_require__(50);
+var imageHelper = __webpack_require__(51);
 
 var fixShadow = __webpack_require__(79);
 
@@ -29459,7 +29459,7 @@ exports.buildPath = buildPath;
 
 var zrUtil = __webpack_require__(0);
 
-var Gradient = __webpack_require__(52);
+var Gradient = __webpack_require__(53);
 
 /**
  * x, y, x2, y2 are all percent from 0 to 1
@@ -29966,7 +29966,7 @@ var clazzUtil = __webpack_require__(17);
 
 var modelUtil = __webpack_require__(4);
 
-var _task = __webpack_require__(54);
+var _task = __webpack_require__(55);
 
 var createTask = _task.createTask;
 
@@ -30284,7 +30284,7 @@ var guessOrdinal = _sourceHelper.guessOrdinal;
 
 var Source = __webpack_require__(28);
 
-var _dimensionHelper = __webpack_require__(56);
+var _dimensionHelper = __webpack_require__(57);
 
 var OTHER_DIMENSIONS = _dimensionHelper.OTHER_DIMENSIONS;
 
@@ -32318,7 +32318,7 @@ exports.layout = layout;
 
 var graphic = __webpack_require__(3);
 
-var LineGroup = __webpack_require__(61);
+var LineGroup = __webpack_require__(62);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -32493,7 +32493,7 @@ module.exports = _default;
 
 var graphic = __webpack_require__(3);
 
-var Line = __webpack_require__(61);
+var Line = __webpack_require__(62);
 
 var zrUtil = __webpack_require__(0);
 
@@ -35701,7 +35701,7 @@ module.exports = ReactPropTypesSecret;
 var utils = __webpack_require__(11);
 var bind = __webpack_require__(63);
 var Axios = __webpack_require__(140);
-var defaults = __webpack_require__(47);
+var defaults = __webpack_require__(48);
 
 /**
  * Create an instance of Axios
@@ -35784,7 +35784,7 @@ function isSlowBuffer (obj) {
 "use strict";
 
 
-var defaults = __webpack_require__(47);
+var defaults = __webpack_require__(48);
 var utils = __webpack_require__(11);
 var InterceptorManager = __webpack_require__(150);
 var dispatchRequest = __webpack_require__(151);
@@ -36513,7 +36513,7 @@ module.exports = InterceptorManager;
 var utils = __webpack_require__(11);
 var transformData = __webpack_require__(152);
 var isCancel = __webpack_require__(66);
-var defaults = __webpack_require__(47);
+var defaults = __webpack_require__(48);
 var isAbsoluteURL = __webpack_require__(153);
 var combineURLs = __webpack_require__(154);
 
@@ -37668,7 +37668,7 @@ var env = __webpack_require__(8);
 
 var Group = __webpack_require__(35);
 
-var timsort = __webpack_require__(49);
+var timsort = __webpack_require__(50);
 
 // Use timsort because in most case elements are partially sorted
 // https://jsfiddle.net/pissang/jr4x7mdm/8/
@@ -38657,7 +38657,7 @@ var log = __webpack_require__(77);
 
 var BoundingRect = __webpack_require__(12);
 
-var timsort = __webpack_require__(49);
+var timsort = __webpack_require__(50);
 
 var Layer = __webpack_require__(172);
 
@@ -40648,7 +40648,7 @@ module.exports = _default;
 /* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var makeStyleMapper = __webpack_require__(51);
+var makeStyleMapper = __webpack_require__(52);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -40693,7 +40693,7 @@ module.exports = _default;
 /* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var makeStyleMapper = __webpack_require__(51);
+var makeStyleMapper = __webpack_require__(52);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -42558,7 +42558,7 @@ module.exports = _default;
 
 var zrUtil = __webpack_require__(0);
 
-var Gradient = __webpack_require__(52);
+var Gradient = __webpack_require__(53);
 
 /**
  * x, y, r are all percent from 0 to 1
@@ -42593,7 +42593,7 @@ module.exports = _default;
 /* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var makeStyleMapper = __webpack_require__(51);
+var makeStyleMapper = __webpack_require__(52);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -43734,7 +43734,7 @@ module.exports = _default;
 /* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Gradient = __webpack_require__(52);
+var Gradient = __webpack_require__(53);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -44200,7 +44200,7 @@ var isFunction = _util.isFunction;
 var createHashMap = _util.createHashMap;
 var noop = _util.noop;
 
-var _task = __webpack_require__(54);
+var _task = __webpack_require__(55);
 
 var createTask = _task.createTask;
 
@@ -45020,7 +45020,7 @@ var formatUtil = __webpack_require__(9);
 
 exports.format = formatUtil;
 
-var _throttle = __webpack_require__(55);
+var _throttle = __webpack_require__(56);
 
 var throttle = _throttle.throttle;
 exports.throttle = _throttle.throttle;
@@ -45924,7 +45924,7 @@ var formatUtil = __webpack_require__(9);
 
 var scaleHelper = __webpack_require__(103);
 
-var IntervalScale = __webpack_require__(57);
+var IntervalScale = __webpack_require__(58);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -46134,7 +46134,7 @@ var Scale = __webpack_require__(44);
 
 var numberUtil = __webpack_require__(5);
 
-var IntervalScale = __webpack_require__(57);
+var IntervalScale = __webpack_require__(58);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -47043,13 +47043,13 @@ __webpack_require__(226);
 
 __webpack_require__(227);
 
-var visualSymbol = __webpack_require__(59);
+var visualSymbol = __webpack_require__(60);
 
 var layoutPoints = __webpack_require__(33);
 
 var dataSample = __webpack_require__(231);
 
-__webpack_require__(60);
+__webpack_require__(61);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -47179,7 +47179,7 @@ var zrUtil = __webpack_require__(0);
 
 var SymbolDraw = __webpack_require__(45);
 
-var SymbolClz = __webpack_require__(58);
+var SymbolClz = __webpack_require__(59);
 
 var lineAnimationDiff = __webpack_require__(229);
 
@@ -50546,7 +50546,7 @@ var LineDraw = __webpack_require__(111);
 
 var EffectLine = __webpack_require__(112);
 
-var Line = __webpack_require__(61);
+var Line = __webpack_require__(62);
 
 var Polyline = __webpack_require__(113);
 
@@ -50910,7 +50910,7 @@ module.exports = _default;
 
 var graphic = __webpack_require__(3);
 
-var IncrementalDisplayable = __webpack_require__(53);
+var IncrementalDisplayable = __webpack_require__(54);
 
 var lineContain = __webpack_require__(87);
 
@@ -51234,11 +51234,11 @@ __webpack_require__(249);
 
 __webpack_require__(250);
 
-var visualSymbol = __webpack_require__(59);
+var visualSymbol = __webpack_require__(60);
 
 var layoutPoints = __webpack_require__(33);
 
-__webpack_require__(60);
+__webpack_require__(61);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -51480,7 +51480,7 @@ var _symbol = __webpack_require__(16);
 
 var createSymbol = _symbol.createSymbol;
 
-var IncrementalDisplayable = __webpack_require__(53);
+var IncrementalDisplayable = __webpack_require__(54);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -51752,7 +51752,7 @@ __webpack_require__(253);
 
 __webpack_require__(254);
 
-var visualSymbol = __webpack_require__(59);
+var visualSymbol = __webpack_require__(60);
 
 var layoutPoints = __webpack_require__(33);
 
@@ -51940,7 +51940,7 @@ var _number = __webpack_require__(5);
 
 var parsePercent = _number.parsePercent;
 
-var SymbolClz = __webpack_require__(58);
+var SymbolClz = __webpack_require__(59);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -52174,7 +52174,7 @@ module.exports = _default;
 /* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(60);
+__webpack_require__(61);
 
 __webpack_require__(115);
 
@@ -52194,7 +52194,7 @@ var axisPointerModelHelper = __webpack_require__(46);
 
 var eventTool = __webpack_require__(24);
 
-var throttleUtil = __webpack_require__(55);
+var throttleUtil = __webpack_require__(56);
 
 var _model = __webpack_require__(4);
 
@@ -58403,7 +58403,7 @@ var getScatterplotOptions = function getScatterplotOptions() {
   });
 };
 // EXTERNAL MODULE: ./node_modules/lodash.isequal/index.js
-var lodash_isequal = __webpack_require__(62);
+var lodash_isequal = __webpack_require__(47);
 
 // CONCATENATED MODULE: ./node_modules/d3-scale/node_modules/d3-array/src/ascending.js
 /* harmony default export */ var ascending = (function(a, b) {
@@ -63976,6 +63976,13 @@ var Scatterplot_getDataScale = function getDataScale(data, _ref) {
   return pow().exponent(exponent).domain(Scatterplot_getDataRange(data)).range(range).clamp(true);
 };
 
+var getDataSeries = function getDataSeries(id) {
+  var series = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  return series && series.length ? series.find(function (s) {
+    return s.id === id;
+  }) : null;
+};
+
 var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
   _inherits(Scatterplot, _Component);
 
@@ -64001,9 +64008,7 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
   }
 
   Scatterplot.prototype.componentDidMount = function componentDidMount() {
-    this.setState({
-      options: getScatterplotOptions(this._getScatterplotOptions())
-    });
+    this.updateOptions();
   };
 
   /**
@@ -64020,13 +64025,17 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
         xVar = _props.xVar,
         yVar = _props.yVar,
         zVar = _props.zVar,
-        selected = _props.selected;
+        selected = _props.selected,
+        options = _props.options;
 
-    if (!lodash_isequal(Object.keys(prevProps.data || {}), Object.keys(data || {})) || prevProps.xVar !== xVar || prevProps.zVar !== zVar || prevProps.yVar !== yVar || !lodash_isequal(prevProps.selected, selected)) {
-      this.setState({
-        options: getScatterplotOptions(this._getScatterplotOptions())
-      });
+    if (!lodash_isequal(Object.keys(prevProps.data || {}), Object.keys(data || {})) || prevProps.xVar !== xVar || prevProps.zVar !== zVar || prevProps.yVar !== yVar || !lodash_isequal(prevProps.selected, selected) || !lodash_isequal(prevProps.options, options)) {
+      this.updateOptions();
     }
+  };
+
+  Scatterplot.prototype.updateOptions = function updateOptions() {
+    var options = getScatterplotOptions(this._getScatterplotOptions());
+    this.setState({ options: options });
   };
 
   /**
@@ -64084,8 +64093,9 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
 
     var sizeScale = Scatterplot_getDataScale(data[zVar], { range: [6, 48] });
     var scatterData = getScatterplotData(data[xVar], data[yVar], data[zVar]);
+    var overrides = options ? getDataSeries('base', options.series) : {};
     return lodash_merge({
-      id: 'scatter',
+      id: 'base',
       type: 'scatter',
       data: scatterData,
       symbolSize: function symbolSize(value) {
@@ -64094,7 +64104,7 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
       markPoint: {
         data: this._getSelectedPoints(scatterData, sizeScale)
       }
-    }, options && options.series && options.series[0] ? options.series[0] : {});
+    }, overrides ? overrides : {});
   };
 
   /**
@@ -64108,10 +64118,14 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
         data = _props4.data,
         xVar = _props4.xVar,
         yVar = _props4.yVar,
-        zVar = _props4.zVar;
+        zVar = _props4.zVar,
+        options = _props4.options;
 
+    var otherSeries = options && options.series ? options.series.filter(function (s) {
+      return s.id !== 'base';
+    }) : [];
     if (data && data[xVar] && data[yVar] && data[zVar]) {
-      return [this._getBaseSeries()];
+      return [this._getBaseSeries()].concat(otherSeries);
     }
     return [];
   };
@@ -64129,7 +64143,12 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
     this.props.onHover && e.on('mouseout', this.props.onHover);
     this.props.onMouseMove && e.on('mousemove', this.props.onMouseMove);
     this.props.onClick && e.on('click', this.props.onClick);
+    this.echart = e;
     this.props.onReady && this.props.onReady(e);
+  };
+
+  Scatterplot.prototype.getOptionOverrides = function getOptionOverrides() {
+    return this.state.options;
   };
 
   Scatterplot.prototype.render = function render() {
@@ -64137,7 +64156,8 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
       echarts: echarts_default.a,
       onChartReady: this._onChartReady.bind(this),
       style: Scatterplot_extends({ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }, this.props.style),
-      option: this.state.options
+      option: this.state.options,
+      notMerge: this.props.notMerge
     });
   };
 
@@ -64154,7 +64174,8 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
   onHover: prop_types_default.a.func,
   onClick: prop_types_default.a.func,
   onReady: prop_types_default.a.func,
-  onMouseMove: prop_types_default.a.func
+  onMouseMove: prop_types_default.a.func,
+  notMerge: prop_types_default.a.bool
 }, _temp);
 
 /* harmony default export */ var src_Scatterplot = (Scatterplot_Scatterplot);
@@ -64180,7 +64201,6 @@ function SedaScatterplot_inherits(subClass, superClass) { if (typeof superClass 
  * @param {*} data 
  */
 var getDataForId = function getDataForId(id, data) {
-  console.log('getting data', id, data);
   return Object.keys(data).reduce(function (acc, curr) {
     if (data[curr][id]) {
       acc[curr] = data[curr][id];
@@ -64339,7 +64359,7 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
 
 
   SedaScatterplot.prototype.getDataSeries = function getDataSeries() {
-    var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'scatter';
+    var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'base';
 
     var options = this.getOption();
     return options.series && options.series.length ? options.series.find(function (s) {
@@ -64359,6 +64379,10 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
 
   SedaScatterplot.prototype.setOption = function setOption() {
     return this.echart && this.echart.apply(this, arguments);
+  };
+
+  SedaScatterplot.prototype.getOptionOverrides = function getOptionOverrides() {
+    return this.scatterplot && this.scatterplot.getOptionOverrides();
   };
 
   /** Sets ready state of this component and fires callback */
@@ -64483,7 +64507,12 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
 
 
   SedaScatterplot.prototype.render = function render() {
+    var _this5 = this;
+
     return external_root_React_commonjs2_react_commonjs_react_amd_react_default.a.createElement(src_Scatterplot, {
+      ref: function ref(_ref2) {
+        return _this5.scatterplot = _ref2;
+      },
       onReady: this._onReady,
       onHover: this._onHover,
       onMouseMove: this._onMouseMove,
@@ -64494,7 +64523,8 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
       zVar: this.props.zVar,
       selected: this.props.selected,
       selectedColors: this.props.selectedColors,
-      options: this.props.options
+      options: this.props.options,
+      notMerge: this.props.notMerge
     });
   };
 

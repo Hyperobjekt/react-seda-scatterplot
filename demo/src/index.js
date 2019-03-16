@@ -32,6 +32,7 @@ const baseOptions = {
     trigger: 'item'
   },
   series: [{
+    id: 'base',
     itemStyle: {
       color: '#ccc',
       borderColor: 'rgba(0,0,0,0.5)',

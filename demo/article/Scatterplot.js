@@ -49,14 +49,7 @@ function Scatterplot(container, props) {
           fontSize: 12,
         }
       },
-      series: [{
-        type: 'scatter',
-        itemStyle: {
-          color: '#ccc',
-          borderColor: 'rgba(0,0,0,0.5)',
-          borderWidth: 1
-        },
-      }],
+      series: [],
       tooltip: {
         trigger: 'item'
       },
@@ -114,8 +107,15 @@ function Scatterplot(container, props) {
   /**
    * Load a state for the scatterplot
    */
-  this.loadState = function(stateName, options) {
-    this.component.echart.setOption(this.getState(stateName), options)
+  this.loadState = function(stateName, options = {}) {
+    console.log('loading state', stateName, this.getState(stateName), options);
+    // this.component.echart.setOption(this.getState(stateName), options)
+    const newProps = {};
+    newProps['options'] = this.getState(stateName);
+    if (options.hasOwnProperty('notMerge')) {
+      newProps['notMerge'] = options.notMerge
+    }
+    this.setProps(newProps)
   }
 
   /**
@@ -135,7 +135,7 @@ function Scatterplot(container, props) {
   this.getDataSeries = function() {
     var options = this.component.getOption();
     if (options.series && options.series.length) {
-      return options.series.find(s => s.id === 'scatter')
+      return options.series.find(s => s.id === 'base')
     }
     return null;
   }
@@ -144,20 +144,26 @@ function Scatterplot(container, props) {
    * Set an object of props for the react component
    */
   this.setProps = function(props) {
-    const oldProps = Object.assign({}, {...this.component.props });
-    Object.keys(props).forEach(
-      function(p) {
-        _self.component.props[p] = props[p];
-      }
+    this.props = {
+      ...this.props,
+      ...props
+    }
+    this.render();
+  }
+
+  /**
+   * Render the component with props
+   */
+  this.render = function() {
+    // render the component
+    ReactDOM.render(
+      React.createElement(sedaScatterplot, this.props, null),
+      container
     );
-    this.component.componentDidUpdate(oldProps);
   }
   
-  // render the component
-  ReactDOM.render(
-    React.createElement(sedaScatterplot, this.props, null),
-    container
-  );
+  this.render()
+
 }
 
 /**

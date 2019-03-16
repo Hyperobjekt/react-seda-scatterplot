@@ -108,7 +108,7 @@ export class SedaScatterplot extends Component {
    * 
    * @returns {object} echart options for series https://ecomfe.github.io/echarts-doc/public/en/option.html#series-scatter.type
    */
-  getDataSeries(id = 'scatter') {
+  getDataSeries(id = 'base') {
     const options = this.getOption();
     return options.series && options.series.length ?
       options.series.find(s => s.id === id) :
@@ -123,6 +123,11 @@ export class SedaScatterplot extends Component {
   /** Set echart options, alias for echart function */
   setOption(...args) {
     return this.echart && this.echart(...args);
+  }
+
+  getOptionOverrides() { 
+    return this.scatterplot && 
+      this.scatterplot.getOptionOverrides() 
   }
 
   /** Sets ready state of this component and fires callback */
@@ -274,6 +279,7 @@ export class SedaScatterplot extends Component {
   render() {
     return (
       <Scatterplot 
+        ref={(ref) => this.scatterplot = ref}
         onReady={this._onReady}
         onHover={this._onHover}
         onMouseMove={this._onMouseMove}
@@ -285,6 +291,7 @@ export class SedaScatterplot extends Component {
         selected={this.props.selected}
         selectedColors={this.props.selectedColors}
         options={this.props.options}
+        notMerge={this.props.notMerge}
       />  
     )
   }

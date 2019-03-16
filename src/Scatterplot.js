@@ -62,6 +62,11 @@ const getDataScale = (
     .clamp(true);
 }
 
+const getDataSeries = (id, series = []) =>
+  series && series.length ?
+    series.find(s => s.id === id) :
+    null;
+
 export class Scatterplot extends Component {
   static propTypes = {
     options: PropTypes.object,
@@ -76,6 +81,7 @@ export class Scatterplot extends Component {
     onClick: PropTypes.func,
     onReady: PropTypes.func,
     onMouseMove: PropTypes.func,
+    notMerge: PropTypes.bool
   }
 
   constructor(props) {
@@ -86,11 +92,7 @@ export class Scatterplot extends Component {
   }
 
   componentDidMount() {
-    this.setState({
-      options: getScatterplotOptions(
-        this._getScatterplotOptions()
-      )
-    });
+    this.updateOptions();
   }
 
   /**
@@ -100,7 +102,7 @@ export class Scatterplot extends Component {
    * - selected ids change
    */
   componentDidUpdate(prevProps) {
-    const { data, xVar, yVar, zVar, selected } = this.props;
+    const { data, xVar, yVar, zVar, selected, options } = this.props;
     if (
       !_isEqual(
         Object.keys(prevProps.data || {}), 
@@ -109,14 +111,18 @@ export class Scatterplot extends Component {
       prevProps.xVar !== xVar ||
       prevProps.zVar !== zVar ||
       prevProps.yVar !== yVar ||
-      !_isEqual(prevProps.selected, selected)
+      !_isEqual(prevProps.selected, selected) ||
+      !_isEqual(prevProps.options, options)
     ) {
-      this.setState({
-        options: getScatterplotOptions(
-          this._getScatterplotOptions()
-        )
-      });
+      this.updateOptions();
     }
+  }
+
+  updateOptions() {
+    const options = getScatterplotOptions(
+      this._getScatterplotOptions()
+    );
+    this.setState({ options });
   }
 
   /**
@@ -155,15 +161,16 @@ export class Scatterplot extends Component {
       getDataScale(data[zVar], { range: [ 6, 48 ] });
     const scatterData = 
       getScatterplotData(data[xVar], data[yVar], data[zVar]);
+    const overrides = options ? getDataSeries('base', options.series) : {};
     return merge({
-      id: 'scatter',
+      id: 'base',
       type: 'scatter',
       data: scatterData,
       symbolSize: (value) => sizeScale(value[2]),
       markPoint: {
         data: this._getSelectedPoints(scatterData, sizeScale)
       }
-    }, options && options.series && options.series[0] ? options.series[0] : {})
+    }, overrides ? overrides : {})
   }
 
   /**
@@ -171,9 +178,14 @@ export class Scatterplot extends Component {
    * data is not ready yet
    */
   _getScatterplotSeries() { 
-    const { data, xVar, yVar, zVar } = this.props;
+    const { data, xVar, yVar, zVar, options } = this.props;
+    const otherSeries = options && options.series ?
+      options.series.filter(s => s.id !== 'base') : []
     if (data && data[xVar] && data[yVar] && data[zVar]) {
-      return [ this._getBaseSeries() ];
+      return [ 
+        this._getBaseSeries(),
+        ...otherSeries
+      ];
     }
     return [];
   }
@@ -205,8 +217,11 @@ export class Scatterplot extends Component {
       e.on('mousemove', this.props.onMouseMove)
     this.props.onClick && 
       e.on('click', this.props.onClick)
+    this.echart = e;
     this.props.onReady && this.props.onReady(e)
   }
+
+  getOptionOverrides() { return this.state.options }
 
   render() {
     return (
@@ -216,6 +231,7 @@ export class Scatterplot extends Component {
           onChartReady={this._onChartReady.bind(this)}
           style={{ position: 'absolute', top:0, left:0, width: '100%', height: '100%', ...this.props.style }}
           option={this.state.options}
+          notMerge={this.props.notMerge}
         />
     )
   }
