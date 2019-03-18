@@ -46,6 +46,7 @@ export class SedaScatterplot extends Component {
     onMouseMove: PropTypes.func,
     onDataLoaded: PropTypes.func,
     onError: PropTypes.func,
+    onLoading: PropTypes.func,
   }
 
   state = {
@@ -162,6 +163,14 @@ export class SedaScatterplot extends Component {
 
   }
 
+  /** Sets the loading state for the scatterplot */
+  _setLoadingState(loading) {
+    this.setState({loading});
+    this.echart && loading && this.echart.showLoading(); 
+    this.echart && !loading && this.echart.hideLoading();
+    this.props.onLoading && this.props.onLoading(loading)
+  }
+
   /**
    * Loads variables for a region if they do not exist in the data
    */
@@ -176,22 +185,19 @@ export class SedaScatterplot extends Component {
     xVar && (!data || !data[xVar]) && vars.push(xVar);
     yVar && (!data || !data[yVar]) && vars.push(yVar);
     if (vars.length === 0) { return; }
-    this.setState({ loading: true })
-    this.echart && this.echart.showLoading()
+    this._setLoadingState(true);
     fetchScatterplotVars(vars, prefix, endpoint)
       .then(data => {
         this._setData(data, prefix);
-        this.setState({loading: false});
-        this.echart && this.echart.hideLoading();
+        this._setLoadingState(false);
         return data;        
       })
       .catch(err => {
-        this.echart && this.echart.hideLoading()
-        this.props.onError && this.props.onError(err);
         this.setState({
-          errorMessage: err.message ? err.message : err,
-          loading: false
+          errorMessage: err.message ? err.message : err
         })
+        this._setLoadingState(false);
+        this.props.onError && this.props.onError(err);
       })
   }
 
@@ -292,6 +298,7 @@ export class SedaScatterplot extends Component {
         yVar={this.props.yVar}
         zVar={this.props.zVar}
         selected={this.props.selected}
+        highlighted={this.props.highlighted}
         selectedColors={this.props.selectedColors}
         options={this.props.options}
         notMerge={this.props.notMerge}

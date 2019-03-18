@@ -11,7 +11,7 @@
 		exports["sedaScatterplot"] = factory(require("react"));
 	else
 		root["sedaScatterplot"] = factory(root["React"]);
-})(window, function(__WEBPACK_EXTERNAL_MODULE__21__) {
+})(window, function(__WEBPACK_EXTERNAL_MODULE__22__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -877,7 +877,7 @@ var GlobalModel = __webpack_require__(85);
 
 var ExtensionAPI = __webpack_require__(96);
 
-var CoordinateSystemManager = __webpack_require__(41);
+var CoordinateSystemManager = __webpack_require__(42);
 
 var OptionManager = __webpack_require__(202);
 
@@ -2926,7 +2926,7 @@ var pathTool = __webpack_require__(180);
 
 var colorTool = __webpack_require__(23);
 
-var matrix = __webpack_require__(18);
+var matrix = __webpack_require__(19);
 
 var vector = __webpack_require__(7);
 
@@ -2938,7 +2938,7 @@ var ZImage = __webpack_require__(82);
 
 exports.Image = ZImage;
 
-var Group = __webpack_require__(35);
+var Group = __webpack_require__(36);
 
 exports.Group = Group;
 
@@ -5779,11 +5779,11 @@ exports.getTextRect = getTextRect;
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Displayable = __webpack_require__(37);
+var Displayable = __webpack_require__(38);
 
 var zrUtil = __webpack_require__(0);
 
-var PathProxy = __webpack_require__(38);
+var PathProxy = __webpack_require__(39);
 
 var pathContain = __webpack_require__(181);
 
@@ -6446,7 +6446,7 @@ module.exports = {
 
 var vec2 = __webpack_require__(7);
 
-var matrix = __webpack_require__(18);
+var matrix = __webpack_require__(19);
 
 /**
  * @module echarts/core/BoundingRect
@@ -7144,7 +7144,7 @@ var zrUtil = __webpack_require__(0);
 
 var Model = __webpack_require__(15);
 
-var componentUtil = __webpack_require__(39);
+var componentUtil = __webpack_require__(40);
 
 var _clazz = __webpack_require__(17);
 
@@ -8180,904 +8180,6 @@ exports.setReadOnly = setReadOnly;
 
 /***/ }),
 /* 18 */
-/***/ (function(module, exports) {
-
-/**
- * 3x2矩阵操作类
- * @exports zrender/tool/matrix
- */
-var ArrayCtor = typeof Float32Array === 'undefined' ? Array : Float32Array;
-/**
- * Create a identity matrix.
- * @return {Float32Array|Array.<number>}
- */
-
-function create() {
-  var out = new ArrayCtor(6);
-  identity(out);
-  return out;
-}
-/**
- * 设置矩阵为单位矩阵
- * @param {Float32Array|Array.<number>} out
- */
-
-
-function identity(out) {
-  out[0] = 1;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 1;
-  out[4] = 0;
-  out[5] = 0;
-  return out;
-}
-/**
- * 复制矩阵
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} m
- */
-
-
-function copy(out, m) {
-  out[0] = m[0];
-  out[1] = m[1];
-  out[2] = m[2];
-  out[3] = m[3];
-  out[4] = m[4];
-  out[5] = m[5];
-  return out;
-}
-/**
- * 矩阵相乘
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} m1
- * @param {Float32Array|Array.<number>} m2
- */
-
-
-function mul(out, m1, m2) {
-  // Consider matrix.mul(m, m2, m);
-  // where out is the same as m2.
-  // So use temp variable to escape error.
-  var out0 = m1[0] * m2[0] + m1[2] * m2[1];
-  var out1 = m1[1] * m2[0] + m1[3] * m2[1];
-  var out2 = m1[0] * m2[2] + m1[2] * m2[3];
-  var out3 = m1[1] * m2[2] + m1[3] * m2[3];
-  var out4 = m1[0] * m2[4] + m1[2] * m2[5] + m1[4];
-  var out5 = m1[1] * m2[4] + m1[3] * m2[5] + m1[5];
-  out[0] = out0;
-  out[1] = out1;
-  out[2] = out2;
-  out[3] = out3;
-  out[4] = out4;
-  out[5] = out5;
-  return out;
-}
-/**
- * 平移变换
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} a
- * @param {Float32Array|Array.<number>} v
- */
-
-
-function translate(out, a, v) {
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  out[3] = a[3];
-  out[4] = a[4] + v[0];
-  out[5] = a[5] + v[1];
-  return out;
-}
-/**
- * 旋转变换
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} a
- * @param {number} rad
- */
-
-
-function rotate(out, a, rad) {
-  var aa = a[0];
-  var ac = a[2];
-  var atx = a[4];
-  var ab = a[1];
-  var ad = a[3];
-  var aty = a[5];
-  var st = Math.sin(rad);
-  var ct = Math.cos(rad);
-  out[0] = aa * ct + ab * st;
-  out[1] = -aa * st + ab * ct;
-  out[2] = ac * ct + ad * st;
-  out[3] = -ac * st + ct * ad;
-  out[4] = ct * atx + st * aty;
-  out[5] = ct * aty - st * atx;
-  return out;
-}
-/**
- * 缩放变换
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} a
- * @param {Float32Array|Array.<number>} v
- */
-
-
-function scale(out, a, v) {
-  var vx = v[0];
-  var vy = v[1];
-  out[0] = a[0] * vx;
-  out[1] = a[1] * vy;
-  out[2] = a[2] * vx;
-  out[3] = a[3] * vy;
-  out[4] = a[4] * vx;
-  out[5] = a[5] * vy;
-  return out;
-}
-/**
- * 求逆矩阵
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} a
- */
-
-
-function invert(out, a) {
-  var aa = a[0];
-  var ac = a[2];
-  var atx = a[4];
-  var ab = a[1];
-  var ad = a[3];
-  var aty = a[5];
-  var det = aa * ad - ab * ac;
-
-  if (!det) {
-    return null;
-  }
-
-  det = 1.0 / det;
-  out[0] = ad * det;
-  out[1] = -ab * det;
-  out[2] = -ac * det;
-  out[3] = aa * det;
-  out[4] = (ac * aty - ad * atx) * det;
-  out[5] = (ab * atx - aa * aty) * det;
-  return out;
-}
-/**
- * Clone a new matrix.
- * @param {Float32Array|Array.<number>} a
- */
-
-
-function clone(a) {
-  var b = create();
-  copy(b, a);
-  return b;
-}
-
-exports.create = create;
-exports.identity = identity;
-exports.copy = copy;
-exports.mul = mul;
-exports.translate = translate;
-exports.rotate = rotate;
-exports.scale = scale;
-exports.invert = invert;
-exports.clone = clone;
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var _vector = __webpack_require__(7);
-
-var v2Create = _vector.create;
-var v2DistSquare = _vector.distSquare;
-
-/**
- * 曲线辅助模块
- * @module zrender/core/curve
- * @author pissang(https://www.github.com/pissang)
- */
-var mathPow = Math.pow;
-var mathSqrt = Math.sqrt;
-var EPSILON = 1e-8;
-var EPSILON_NUMERIC = 1e-4;
-var THREE_SQRT = mathSqrt(3);
-var ONE_THIRD = 1 / 3; // 临时变量
-
-var _v0 = v2Create();
-
-var _v1 = v2Create();
-
-var _v2 = v2Create();
-
-function isAroundZero(val) {
-  return val > -EPSILON && val < EPSILON;
-}
-
-function isNotAroundZero(val) {
-  return val > EPSILON || val < -EPSILON;
-}
-/**
- * 计算三次贝塞尔值
- * @memberOf module:zrender/core/curve
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {number} t
- * @return {number}
- */
-
-
-function cubicAt(p0, p1, p2, p3, t) {
-  var onet = 1 - t;
-  return onet * onet * (onet * p0 + 3 * t * p1) + t * t * (t * p3 + 3 * onet * p2);
-}
-/**
- * 计算三次贝塞尔导数值
- * @memberOf module:zrender/core/curve
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {number} t
- * @return {number}
- */
-
-
-function cubicDerivativeAt(p0, p1, p2, p3, t) {
-  var onet = 1 - t;
-  return 3 * (((p1 - p0) * onet + 2 * (p2 - p1) * t) * onet + (p3 - p2) * t * t);
-}
-/**
- * 计算三次贝塞尔方程根，使用盛金公式
- * @memberOf module:zrender/core/curve
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {number} val
- * @param  {Array.<number>} roots
- * @return {number} 有效根数目
- */
-
-
-function cubicRootAt(p0, p1, p2, p3, val, roots) {
-  // Evaluate roots of cubic functions
-  var a = p3 + 3 * (p1 - p2) - p0;
-  var b = 3 * (p2 - p1 * 2 + p0);
-  var c = 3 * (p1 - p0);
-  var d = p0 - val;
-  var A = b * b - 3 * a * c;
-  var B = b * c - 9 * a * d;
-  var C = c * c - 3 * b * d;
-  var n = 0;
-
-  if (isAroundZero(A) && isAroundZero(B)) {
-    if (isAroundZero(b)) {
-      roots[0] = 0;
-    } else {
-      var t1 = -c / b; //t1, t2, t3, b is not zero
-
-      if (t1 >= 0 && t1 <= 1) {
-        roots[n++] = t1;
-      }
-    }
-  } else {
-    var disc = B * B - 4 * A * C;
-
-    if (isAroundZero(disc)) {
-      var K = B / A;
-      var t1 = -b / a + K; // t1, a is not zero
-
-      var t2 = -K / 2; // t2, t3
-
-      if (t1 >= 0 && t1 <= 1) {
-        roots[n++] = t1;
-      }
-
-      if (t2 >= 0 && t2 <= 1) {
-        roots[n++] = t2;
-      }
-    } else if (disc > 0) {
-      var discSqrt = mathSqrt(disc);
-      var Y1 = A * b + 1.5 * a * (-B + discSqrt);
-      var Y2 = A * b + 1.5 * a * (-B - discSqrt);
-
-      if (Y1 < 0) {
-        Y1 = -mathPow(-Y1, ONE_THIRD);
-      } else {
-        Y1 = mathPow(Y1, ONE_THIRD);
-      }
-
-      if (Y2 < 0) {
-        Y2 = -mathPow(-Y2, ONE_THIRD);
-      } else {
-        Y2 = mathPow(Y2, ONE_THIRD);
-      }
-
-      var t1 = (-b - (Y1 + Y2)) / (3 * a);
-
-      if (t1 >= 0 && t1 <= 1) {
-        roots[n++] = t1;
-      }
-    } else {
-      var T = (2 * A * b - 3 * a * B) / (2 * mathSqrt(A * A * A));
-      var theta = Math.acos(T) / 3;
-      var ASqrt = mathSqrt(A);
-      var tmp = Math.cos(theta);
-      var t1 = (-b - 2 * ASqrt * tmp) / (3 * a);
-      var t2 = (-b + ASqrt * (tmp + THREE_SQRT * Math.sin(theta))) / (3 * a);
-      var t3 = (-b + ASqrt * (tmp - THREE_SQRT * Math.sin(theta))) / (3 * a);
-
-      if (t1 >= 0 && t1 <= 1) {
-        roots[n++] = t1;
-      }
-
-      if (t2 >= 0 && t2 <= 1) {
-        roots[n++] = t2;
-      }
-
-      if (t3 >= 0 && t3 <= 1) {
-        roots[n++] = t3;
-      }
-    }
-  }
-
-  return n;
-}
-/**
- * 计算三次贝塞尔方程极限值的位置
- * @memberOf module:zrender/core/curve
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {Array.<number>} extrema
- * @return {number} 有效数目
- */
-
-
-function cubicExtrema(p0, p1, p2, p3, extrema) {
-  var b = 6 * p2 - 12 * p1 + 6 * p0;
-  var a = 9 * p1 + 3 * p3 - 3 * p0 - 9 * p2;
-  var c = 3 * p1 - 3 * p0;
-  var n = 0;
-
-  if (isAroundZero(a)) {
-    if (isNotAroundZero(b)) {
-      var t1 = -c / b;
-
-      if (t1 >= 0 && t1 <= 1) {
-        extrema[n++] = t1;
-      }
-    }
-  } else {
-    var disc = b * b - 4 * a * c;
-
-    if (isAroundZero(disc)) {
-      extrema[0] = -b / (2 * a);
-    } else if (disc > 0) {
-      var discSqrt = mathSqrt(disc);
-      var t1 = (-b + discSqrt) / (2 * a);
-      var t2 = (-b - discSqrt) / (2 * a);
-
-      if (t1 >= 0 && t1 <= 1) {
-        extrema[n++] = t1;
-      }
-
-      if (t2 >= 0 && t2 <= 1) {
-        extrema[n++] = t2;
-      }
-    }
-  }
-
-  return n;
-}
-/**
- * 细分三次贝塞尔曲线
- * @memberOf module:zrender/core/curve
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {number} t
- * @param  {Array.<number>} out
- */
-
-
-function cubicSubdivide(p0, p1, p2, p3, t, out) {
-  var p01 = (p1 - p0) * t + p0;
-  var p12 = (p2 - p1) * t + p1;
-  var p23 = (p3 - p2) * t + p2;
-  var p012 = (p12 - p01) * t + p01;
-  var p123 = (p23 - p12) * t + p12;
-  var p0123 = (p123 - p012) * t + p012; // Seg0
-
-  out[0] = p0;
-  out[1] = p01;
-  out[2] = p012;
-  out[3] = p0123; // Seg1
-
-  out[4] = p0123;
-  out[5] = p123;
-  out[6] = p23;
-  out[7] = p3;
-}
-/**
- * 投射点到三次贝塞尔曲线上，返回投射距离。
- * 投射点有可能会有一个或者多个，这里只返回其中距离最短的一个。
- * @param {number} x0
- * @param {number} y0
- * @param {number} x1
- * @param {number} y1
- * @param {number} x2
- * @param {number} y2
- * @param {number} x3
- * @param {number} y3
- * @param {number} x
- * @param {number} y
- * @param {Array.<number>} [out] 投射点
- * @return {number}
- */
-
-
-function cubicProjectPoint(x0, y0, x1, y1, x2, y2, x3, y3, x, y, out) {
-  // http://pomax.github.io/bezierinfo/#projections
-  var t;
-  var interval = 0.005;
-  var d = Infinity;
-  var prev;
-  var next;
-  var d1;
-  var d2;
-  _v0[0] = x;
-  _v0[1] = y; // 先粗略估计一下可能的最小距离的 t 值
-  // PENDING
-
-  for (var _t = 0; _t < 1; _t += 0.05) {
-    _v1[0] = cubicAt(x0, x1, x2, x3, _t);
-    _v1[1] = cubicAt(y0, y1, y2, y3, _t);
-    d1 = v2DistSquare(_v0, _v1);
-
-    if (d1 < d) {
-      t = _t;
-      d = d1;
-    }
-  }
-
-  d = Infinity; // At most 32 iteration
-
-  for (var i = 0; i < 32; i++) {
-    if (interval < EPSILON_NUMERIC) {
-      break;
-    }
-
-    prev = t - interval;
-    next = t + interval; // t - interval
-
-    _v1[0] = cubicAt(x0, x1, x2, x3, prev);
-    _v1[1] = cubicAt(y0, y1, y2, y3, prev);
-    d1 = v2DistSquare(_v1, _v0);
-
-    if (prev >= 0 && d1 < d) {
-      t = prev;
-      d = d1;
-    } else {
-      // t + interval
-      _v2[0] = cubicAt(x0, x1, x2, x3, next);
-      _v2[1] = cubicAt(y0, y1, y2, y3, next);
-      d2 = v2DistSquare(_v2, _v0);
-
-      if (next <= 1 && d2 < d) {
-        t = next;
-        d = d2;
-      } else {
-        interval *= 0.5;
-      }
-    }
-  } // t
-
-
-  if (out) {
-    out[0] = cubicAt(x0, x1, x2, x3, t);
-    out[1] = cubicAt(y0, y1, y2, y3, t);
-  } // console.log(interval, i);
-
-
-  return mathSqrt(d);
-}
-/**
- * 计算二次方贝塞尔值
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} t
- * @return {number}
- */
-
-
-function quadraticAt(p0, p1, p2, t) {
-  var onet = 1 - t;
-  return onet * (onet * p0 + 2 * t * p1) + t * t * p2;
-}
-/**
- * 计算二次方贝塞尔导数值
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} t
- * @return {number}
- */
-
-
-function quadraticDerivativeAt(p0, p1, p2, t) {
-  return 2 * ((1 - t) * (p1 - p0) + t * (p2 - p1));
-}
-/**
- * 计算二次方贝塞尔方程根
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} t
- * @param  {Array.<number>} roots
- * @return {number} 有效根数目
- */
-
-
-function quadraticRootAt(p0, p1, p2, val, roots) {
-  var a = p0 - 2 * p1 + p2;
-  var b = 2 * (p1 - p0);
-  var c = p0 - val;
-  var n = 0;
-
-  if (isAroundZero(a)) {
-    if (isNotAroundZero(b)) {
-      var t1 = -c / b;
-
-      if (t1 >= 0 && t1 <= 1) {
-        roots[n++] = t1;
-      }
-    }
-  } else {
-    var disc = b * b - 4 * a * c;
-
-    if (isAroundZero(disc)) {
-      var t1 = -b / (2 * a);
-
-      if (t1 >= 0 && t1 <= 1) {
-        roots[n++] = t1;
-      }
-    } else if (disc > 0) {
-      var discSqrt = mathSqrt(disc);
-      var t1 = (-b + discSqrt) / (2 * a);
-      var t2 = (-b - discSqrt) / (2 * a);
-
-      if (t1 >= 0 && t1 <= 1) {
-        roots[n++] = t1;
-      }
-
-      if (t2 >= 0 && t2 <= 1) {
-        roots[n++] = t2;
-      }
-    }
-  }
-
-  return n;
-}
-/**
- * 计算二次贝塞尔方程极限值
- * @memberOf module:zrender/core/curve
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @return {number}
- */
-
-
-function quadraticExtremum(p0, p1, p2) {
-  var divider = p0 + p2 - 2 * p1;
-
-  if (divider === 0) {
-    // p1 is center of p0 and p2
-    return 0.5;
-  } else {
-    return (p0 - p1) / divider;
-  }
-}
-/**
- * 细分二次贝塞尔曲线
- * @memberOf module:zrender/core/curve
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} t
- * @param  {Array.<number>} out
- */
-
-
-function quadraticSubdivide(p0, p1, p2, t, out) {
-  var p01 = (p1 - p0) * t + p0;
-  var p12 = (p2 - p1) * t + p1;
-  var p012 = (p12 - p01) * t + p01; // Seg0
-
-  out[0] = p0;
-  out[1] = p01;
-  out[2] = p012; // Seg1
-
-  out[3] = p012;
-  out[4] = p12;
-  out[5] = p2;
-}
-/**
- * 投射点到二次贝塞尔曲线上，返回投射距离。
- * 投射点有可能会有一个或者多个，这里只返回其中距离最短的一个。
- * @param {number} x0
- * @param {number} y0
- * @param {number} x1
- * @param {number} y1
- * @param {number} x2
- * @param {number} y2
- * @param {number} x
- * @param {number} y
- * @param {Array.<number>} out 投射点
- * @return {number}
- */
-
-
-function quadraticProjectPoint(x0, y0, x1, y1, x2, y2, x, y, out) {
-  // http://pomax.github.io/bezierinfo/#projections
-  var t;
-  var interval = 0.005;
-  var d = Infinity;
-  _v0[0] = x;
-  _v0[1] = y; // 先粗略估计一下可能的最小距离的 t 值
-  // PENDING
-
-  for (var _t = 0; _t < 1; _t += 0.05) {
-    _v1[0] = quadraticAt(x0, x1, x2, _t);
-    _v1[1] = quadraticAt(y0, y1, y2, _t);
-    var d1 = v2DistSquare(_v0, _v1);
-
-    if (d1 < d) {
-      t = _t;
-      d = d1;
-    }
-  }
-
-  d = Infinity; // At most 32 iteration
-
-  for (var i = 0; i < 32; i++) {
-    if (interval < EPSILON_NUMERIC) {
-      break;
-    }
-
-    var prev = t - interval;
-    var next = t + interval; // t - interval
-
-    _v1[0] = quadraticAt(x0, x1, x2, prev);
-    _v1[1] = quadraticAt(y0, y1, y2, prev);
-    var d1 = v2DistSquare(_v1, _v0);
-
-    if (prev >= 0 && d1 < d) {
-      t = prev;
-      d = d1;
-    } else {
-      // t + interval
-      _v2[0] = quadraticAt(x0, x1, x2, next);
-      _v2[1] = quadraticAt(y0, y1, y2, next);
-      var d2 = v2DistSquare(_v2, _v0);
-
-      if (next <= 1 && d2 < d) {
-        t = next;
-        d = d2;
-      } else {
-        interval *= 0.5;
-      }
-    }
-  } // t
-
-
-  if (out) {
-    out[0] = quadraticAt(x0, x1, x2, t);
-    out[1] = quadraticAt(y0, y1, y2, t);
-  } // console.log(interval, i);
-
-
-  return mathSqrt(d);
-}
-
-exports.cubicAt = cubicAt;
-exports.cubicDerivativeAt = cubicDerivativeAt;
-exports.cubicRootAt = cubicRootAt;
-exports.cubicExtrema = cubicExtrema;
-exports.cubicSubdivide = cubicSubdivide;
-exports.cubicProjectPoint = cubicProjectPoint;
-exports.quadraticAt = quadraticAt;
-exports.quadraticDerivativeAt = quadraticDerivativeAt;
-exports.quadraticRootAt = quadraticRootAt;
-exports.quadraticExtremum = quadraticExtremum;
-exports.quadraticSubdivide = quadraticSubdivide;
-exports.quadraticProjectPoint = quadraticProjectPoint;
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var _util = __webpack_require__(0);
-
-var each = _util.each;
-var isString = _util.isString;
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-
-/**
- * Note that it is too complicated to support 3d stack by value
- * (have to create two-dimension inverted index), so in 3d case
- * we just support that stacked by index.
- *
- * @param {module:echarts/model/Series} seriesModel
- * @param {Array.<string|Object>} dimensionInfoList The same as the input of <module:echarts/data/List>.
- *        The input dimensionInfoList will be modified.
- * @param {Object} [opt]
- * @param {boolean} [opt.stackedCoordDimension=''] Specify a coord dimension if needed.
- * @param {boolean} [opt.byIndex=false]
- * @return {Object} calculationInfo
- * {
- *     stackedDimension: string
- *     stackedByDimension: string
- *     isStackedByIndex: boolean
- *     stackedOverDimension: string
- *     stackResultDimension: string
- * }
- */
-function enableDataStack(seriesModel, dimensionInfoList, opt) {
-  opt = opt || {};
-  var byIndex = opt.byIndex;
-  var stackedCoordDimension = opt.stackedCoordDimension; // Compatibal: when `stack` is set as '', do not stack.
-
-  var mayStack = !!(seriesModel && seriesModel.get('stack'));
-  var stackedByDimInfo;
-  var stackedDimInfo;
-  var stackResultDimension;
-  var stackedOverDimension;
-  each(dimensionInfoList, function (dimensionInfo, index) {
-    if (isString(dimensionInfo)) {
-      dimensionInfoList[index] = dimensionInfo = {
-        name: dimensionInfo
-      };
-    }
-
-    if (mayStack && !dimensionInfo.isExtraCoord) {
-      // Find the first ordinal dimension as the stackedByDimInfo.
-      if (!byIndex && !stackedByDimInfo && dimensionInfo.ordinalMeta) {
-        stackedByDimInfo = dimensionInfo;
-      } // Find the first stackable dimension as the stackedDimInfo.
-
-
-      if (!stackedDimInfo && dimensionInfo.type !== 'ordinal' && dimensionInfo.type !== 'time' && (!stackedCoordDimension || stackedCoordDimension === dimensionInfo.coordDim)) {
-        stackedDimInfo = dimensionInfo;
-      }
-    }
-  });
-
-  if (stackedDimInfo && !byIndex && !stackedByDimInfo) {
-    // Compatible with previous design, value axis (time axis) only stack by index.
-    // It may make sense if the user provides elaborately constructed data.
-    byIndex = true;
-  } // Add stack dimension, they can be both calculated by coordinate system in `unionExtent`.
-  // That put stack logic in List is for using conveniently in echarts extensions, but it
-  // might not be a good way.
-
-
-  if (stackedDimInfo) {
-    // Use a weird name that not duplicated with other names.
-    stackResultDimension = '__\0ecstackresult';
-    stackedOverDimension = '__\0ecstackedover'; // Create inverted index to fast query index by value.
-
-    if (stackedByDimInfo) {
-      stackedByDimInfo.createInvertedIndices = true;
-    }
-
-    var stackedDimCoordDim = stackedDimInfo.coordDim;
-    var stackedDimType = stackedDimInfo.type;
-    var stackedDimCoordIndex = 0;
-    each(dimensionInfoList, function (dimensionInfo) {
-      if (dimensionInfo.coordDim === stackedDimCoordDim) {
-        stackedDimCoordIndex++;
-      }
-    });
-    dimensionInfoList.push({
-      name: stackResultDimension,
-      coordDim: stackedDimCoordDim,
-      coordDimIndex: stackedDimCoordIndex,
-      type: stackedDimType,
-      isExtraCoord: true,
-      isCalculationCoord: true
-    });
-    stackedDimCoordIndex++;
-    dimensionInfoList.push({
-      name: stackedOverDimension,
-      // This dimension contains stack base (generally, 0), so do not set it as
-      // `stackedDimCoordDim` to avoid extent calculation, consider log scale.
-      coordDim: stackedOverDimension,
-      coordDimIndex: stackedDimCoordIndex,
-      type: stackedDimType,
-      isExtraCoord: true,
-      isCalculationCoord: true
-    });
-  }
-
-  return {
-    stackedDimension: stackedDimInfo && stackedDimInfo.name,
-    stackedByDimension: stackedByDimInfo && stackedByDimInfo.name,
-    isStackedByIndex: byIndex,
-    stackedOverDimension: stackedOverDimension,
-    stackResultDimension: stackResultDimension
-  };
-}
-/**
- * @param {module:echarts/data/List} data
- * @param {string} stackedDim
- */
-
-
-function isDimensionStacked(data, stackedDim
-/*, stackedByDim*/
-) {
-  // Each single series only maps to one pair of axis. So we do not need to
-  // check stackByDim, whatever stacked by a dimension or stacked by index.
-  return !!stackedDim && stackedDim === data.getCalculationInfo('stackedDimension'); // && (
-  //     stackedByDim != null
-  //         ? stackedByDim === data.getCalculationInfo('stackedByDimension')
-  //         : data.getCalculationInfo('isStackedByIndex')
-  // );
-}
-/**
- * @param {module:echarts/data/List} data
- * @param {string} targetDim
- * @param {string} [stackedByDim] If not input this parameter, check whether
- *                                stacked by index.
- * @return {string} dimension
- */
-
-
-function getStackedDimension(data, targetDim) {
-  return isDimensionStacked(data, targetDim) ? data.getCalculationInfo('stackResultDimension') : targetDim;
-}
-
-exports.enableDataStack = enableDataStack;
-exports.isDimensionStacked = isDimensionStacked;
-exports.getStackedDimension = getStackedDimension;
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE__21__;
-
-/***/ }),
-/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {/**
@@ -11047,6 +10149,904 @@ module.exports = merge;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(49), __webpack_require__(68)(module)))
 
 /***/ }),
+/* 19 */
+/***/ (function(module, exports) {
+
+/**
+ * 3x2矩阵操作类
+ * @exports zrender/tool/matrix
+ */
+var ArrayCtor = typeof Float32Array === 'undefined' ? Array : Float32Array;
+/**
+ * Create a identity matrix.
+ * @return {Float32Array|Array.<number>}
+ */
+
+function create() {
+  var out = new ArrayCtor(6);
+  identity(out);
+  return out;
+}
+/**
+ * 设置矩阵为单位矩阵
+ * @param {Float32Array|Array.<number>} out
+ */
+
+
+function identity(out) {
+  out[0] = 1;
+  out[1] = 0;
+  out[2] = 0;
+  out[3] = 1;
+  out[4] = 0;
+  out[5] = 0;
+  return out;
+}
+/**
+ * 复制矩阵
+ * @param {Float32Array|Array.<number>} out
+ * @param {Float32Array|Array.<number>} m
+ */
+
+
+function copy(out, m) {
+  out[0] = m[0];
+  out[1] = m[1];
+  out[2] = m[2];
+  out[3] = m[3];
+  out[4] = m[4];
+  out[5] = m[5];
+  return out;
+}
+/**
+ * 矩阵相乘
+ * @param {Float32Array|Array.<number>} out
+ * @param {Float32Array|Array.<number>} m1
+ * @param {Float32Array|Array.<number>} m2
+ */
+
+
+function mul(out, m1, m2) {
+  // Consider matrix.mul(m, m2, m);
+  // where out is the same as m2.
+  // So use temp variable to escape error.
+  var out0 = m1[0] * m2[0] + m1[2] * m2[1];
+  var out1 = m1[1] * m2[0] + m1[3] * m2[1];
+  var out2 = m1[0] * m2[2] + m1[2] * m2[3];
+  var out3 = m1[1] * m2[2] + m1[3] * m2[3];
+  var out4 = m1[0] * m2[4] + m1[2] * m2[5] + m1[4];
+  var out5 = m1[1] * m2[4] + m1[3] * m2[5] + m1[5];
+  out[0] = out0;
+  out[1] = out1;
+  out[2] = out2;
+  out[3] = out3;
+  out[4] = out4;
+  out[5] = out5;
+  return out;
+}
+/**
+ * 平移变换
+ * @param {Float32Array|Array.<number>} out
+ * @param {Float32Array|Array.<number>} a
+ * @param {Float32Array|Array.<number>} v
+ */
+
+
+function translate(out, a, v) {
+  out[0] = a[0];
+  out[1] = a[1];
+  out[2] = a[2];
+  out[3] = a[3];
+  out[4] = a[4] + v[0];
+  out[5] = a[5] + v[1];
+  return out;
+}
+/**
+ * 旋转变换
+ * @param {Float32Array|Array.<number>} out
+ * @param {Float32Array|Array.<number>} a
+ * @param {number} rad
+ */
+
+
+function rotate(out, a, rad) {
+  var aa = a[0];
+  var ac = a[2];
+  var atx = a[4];
+  var ab = a[1];
+  var ad = a[3];
+  var aty = a[5];
+  var st = Math.sin(rad);
+  var ct = Math.cos(rad);
+  out[0] = aa * ct + ab * st;
+  out[1] = -aa * st + ab * ct;
+  out[2] = ac * ct + ad * st;
+  out[3] = -ac * st + ct * ad;
+  out[4] = ct * atx + st * aty;
+  out[5] = ct * aty - st * atx;
+  return out;
+}
+/**
+ * 缩放变换
+ * @param {Float32Array|Array.<number>} out
+ * @param {Float32Array|Array.<number>} a
+ * @param {Float32Array|Array.<number>} v
+ */
+
+
+function scale(out, a, v) {
+  var vx = v[0];
+  var vy = v[1];
+  out[0] = a[0] * vx;
+  out[1] = a[1] * vy;
+  out[2] = a[2] * vx;
+  out[3] = a[3] * vy;
+  out[4] = a[4] * vx;
+  out[5] = a[5] * vy;
+  return out;
+}
+/**
+ * 求逆矩阵
+ * @param {Float32Array|Array.<number>} out
+ * @param {Float32Array|Array.<number>} a
+ */
+
+
+function invert(out, a) {
+  var aa = a[0];
+  var ac = a[2];
+  var atx = a[4];
+  var ab = a[1];
+  var ad = a[3];
+  var aty = a[5];
+  var det = aa * ad - ab * ac;
+
+  if (!det) {
+    return null;
+  }
+
+  det = 1.0 / det;
+  out[0] = ad * det;
+  out[1] = -ab * det;
+  out[2] = -ac * det;
+  out[3] = aa * det;
+  out[4] = (ac * aty - ad * atx) * det;
+  out[5] = (ab * atx - aa * aty) * det;
+  return out;
+}
+/**
+ * Clone a new matrix.
+ * @param {Float32Array|Array.<number>} a
+ */
+
+
+function clone(a) {
+  var b = create();
+  copy(b, a);
+  return b;
+}
+
+exports.create = create;
+exports.identity = identity;
+exports.copy = copy;
+exports.mul = mul;
+exports.translate = translate;
+exports.rotate = rotate;
+exports.scale = scale;
+exports.invert = invert;
+exports.clone = clone;
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _vector = __webpack_require__(7);
+
+var v2Create = _vector.create;
+var v2DistSquare = _vector.distSquare;
+
+/**
+ * 曲线辅助模块
+ * @module zrender/core/curve
+ * @author pissang(https://www.github.com/pissang)
+ */
+var mathPow = Math.pow;
+var mathSqrt = Math.sqrt;
+var EPSILON = 1e-8;
+var EPSILON_NUMERIC = 1e-4;
+var THREE_SQRT = mathSqrt(3);
+var ONE_THIRD = 1 / 3; // 临时变量
+
+var _v0 = v2Create();
+
+var _v1 = v2Create();
+
+var _v2 = v2Create();
+
+function isAroundZero(val) {
+  return val > -EPSILON && val < EPSILON;
+}
+
+function isNotAroundZero(val) {
+  return val > EPSILON || val < -EPSILON;
+}
+/**
+ * 计算三次贝塞尔值
+ * @memberOf module:zrender/core/curve
+ * @param  {number} p0
+ * @param  {number} p1
+ * @param  {number} p2
+ * @param  {number} p3
+ * @param  {number} t
+ * @return {number}
+ */
+
+
+function cubicAt(p0, p1, p2, p3, t) {
+  var onet = 1 - t;
+  return onet * onet * (onet * p0 + 3 * t * p1) + t * t * (t * p3 + 3 * onet * p2);
+}
+/**
+ * 计算三次贝塞尔导数值
+ * @memberOf module:zrender/core/curve
+ * @param  {number} p0
+ * @param  {number} p1
+ * @param  {number} p2
+ * @param  {number} p3
+ * @param  {number} t
+ * @return {number}
+ */
+
+
+function cubicDerivativeAt(p0, p1, p2, p3, t) {
+  var onet = 1 - t;
+  return 3 * (((p1 - p0) * onet + 2 * (p2 - p1) * t) * onet + (p3 - p2) * t * t);
+}
+/**
+ * 计算三次贝塞尔方程根，使用盛金公式
+ * @memberOf module:zrender/core/curve
+ * @param  {number} p0
+ * @param  {number} p1
+ * @param  {number} p2
+ * @param  {number} p3
+ * @param  {number} val
+ * @param  {Array.<number>} roots
+ * @return {number} 有效根数目
+ */
+
+
+function cubicRootAt(p0, p1, p2, p3, val, roots) {
+  // Evaluate roots of cubic functions
+  var a = p3 + 3 * (p1 - p2) - p0;
+  var b = 3 * (p2 - p1 * 2 + p0);
+  var c = 3 * (p1 - p0);
+  var d = p0 - val;
+  var A = b * b - 3 * a * c;
+  var B = b * c - 9 * a * d;
+  var C = c * c - 3 * b * d;
+  var n = 0;
+
+  if (isAroundZero(A) && isAroundZero(B)) {
+    if (isAroundZero(b)) {
+      roots[0] = 0;
+    } else {
+      var t1 = -c / b; //t1, t2, t3, b is not zero
+
+      if (t1 >= 0 && t1 <= 1) {
+        roots[n++] = t1;
+      }
+    }
+  } else {
+    var disc = B * B - 4 * A * C;
+
+    if (isAroundZero(disc)) {
+      var K = B / A;
+      var t1 = -b / a + K; // t1, a is not zero
+
+      var t2 = -K / 2; // t2, t3
+
+      if (t1 >= 0 && t1 <= 1) {
+        roots[n++] = t1;
+      }
+
+      if (t2 >= 0 && t2 <= 1) {
+        roots[n++] = t2;
+      }
+    } else if (disc > 0) {
+      var discSqrt = mathSqrt(disc);
+      var Y1 = A * b + 1.5 * a * (-B + discSqrt);
+      var Y2 = A * b + 1.5 * a * (-B - discSqrt);
+
+      if (Y1 < 0) {
+        Y1 = -mathPow(-Y1, ONE_THIRD);
+      } else {
+        Y1 = mathPow(Y1, ONE_THIRD);
+      }
+
+      if (Y2 < 0) {
+        Y2 = -mathPow(-Y2, ONE_THIRD);
+      } else {
+        Y2 = mathPow(Y2, ONE_THIRD);
+      }
+
+      var t1 = (-b - (Y1 + Y2)) / (3 * a);
+
+      if (t1 >= 0 && t1 <= 1) {
+        roots[n++] = t1;
+      }
+    } else {
+      var T = (2 * A * b - 3 * a * B) / (2 * mathSqrt(A * A * A));
+      var theta = Math.acos(T) / 3;
+      var ASqrt = mathSqrt(A);
+      var tmp = Math.cos(theta);
+      var t1 = (-b - 2 * ASqrt * tmp) / (3 * a);
+      var t2 = (-b + ASqrt * (tmp + THREE_SQRT * Math.sin(theta))) / (3 * a);
+      var t3 = (-b + ASqrt * (tmp - THREE_SQRT * Math.sin(theta))) / (3 * a);
+
+      if (t1 >= 0 && t1 <= 1) {
+        roots[n++] = t1;
+      }
+
+      if (t2 >= 0 && t2 <= 1) {
+        roots[n++] = t2;
+      }
+
+      if (t3 >= 0 && t3 <= 1) {
+        roots[n++] = t3;
+      }
+    }
+  }
+
+  return n;
+}
+/**
+ * 计算三次贝塞尔方程极限值的位置
+ * @memberOf module:zrender/core/curve
+ * @param  {number} p0
+ * @param  {number} p1
+ * @param  {number} p2
+ * @param  {number} p3
+ * @param  {Array.<number>} extrema
+ * @return {number} 有效数目
+ */
+
+
+function cubicExtrema(p0, p1, p2, p3, extrema) {
+  var b = 6 * p2 - 12 * p1 + 6 * p0;
+  var a = 9 * p1 + 3 * p3 - 3 * p0 - 9 * p2;
+  var c = 3 * p1 - 3 * p0;
+  var n = 0;
+
+  if (isAroundZero(a)) {
+    if (isNotAroundZero(b)) {
+      var t1 = -c / b;
+
+      if (t1 >= 0 && t1 <= 1) {
+        extrema[n++] = t1;
+      }
+    }
+  } else {
+    var disc = b * b - 4 * a * c;
+
+    if (isAroundZero(disc)) {
+      extrema[0] = -b / (2 * a);
+    } else if (disc > 0) {
+      var discSqrt = mathSqrt(disc);
+      var t1 = (-b + discSqrt) / (2 * a);
+      var t2 = (-b - discSqrt) / (2 * a);
+
+      if (t1 >= 0 && t1 <= 1) {
+        extrema[n++] = t1;
+      }
+
+      if (t2 >= 0 && t2 <= 1) {
+        extrema[n++] = t2;
+      }
+    }
+  }
+
+  return n;
+}
+/**
+ * 细分三次贝塞尔曲线
+ * @memberOf module:zrender/core/curve
+ * @param  {number} p0
+ * @param  {number} p1
+ * @param  {number} p2
+ * @param  {number} p3
+ * @param  {number} t
+ * @param  {Array.<number>} out
+ */
+
+
+function cubicSubdivide(p0, p1, p2, p3, t, out) {
+  var p01 = (p1 - p0) * t + p0;
+  var p12 = (p2 - p1) * t + p1;
+  var p23 = (p3 - p2) * t + p2;
+  var p012 = (p12 - p01) * t + p01;
+  var p123 = (p23 - p12) * t + p12;
+  var p0123 = (p123 - p012) * t + p012; // Seg0
+
+  out[0] = p0;
+  out[1] = p01;
+  out[2] = p012;
+  out[3] = p0123; // Seg1
+
+  out[4] = p0123;
+  out[5] = p123;
+  out[6] = p23;
+  out[7] = p3;
+}
+/**
+ * 投射点到三次贝塞尔曲线上，返回投射距离。
+ * 投射点有可能会有一个或者多个，这里只返回其中距离最短的一个。
+ * @param {number} x0
+ * @param {number} y0
+ * @param {number} x1
+ * @param {number} y1
+ * @param {number} x2
+ * @param {number} y2
+ * @param {number} x3
+ * @param {number} y3
+ * @param {number} x
+ * @param {number} y
+ * @param {Array.<number>} [out] 投射点
+ * @return {number}
+ */
+
+
+function cubicProjectPoint(x0, y0, x1, y1, x2, y2, x3, y3, x, y, out) {
+  // http://pomax.github.io/bezierinfo/#projections
+  var t;
+  var interval = 0.005;
+  var d = Infinity;
+  var prev;
+  var next;
+  var d1;
+  var d2;
+  _v0[0] = x;
+  _v0[1] = y; // 先粗略估计一下可能的最小距离的 t 值
+  // PENDING
+
+  for (var _t = 0; _t < 1; _t += 0.05) {
+    _v1[0] = cubicAt(x0, x1, x2, x3, _t);
+    _v1[1] = cubicAt(y0, y1, y2, y3, _t);
+    d1 = v2DistSquare(_v0, _v1);
+
+    if (d1 < d) {
+      t = _t;
+      d = d1;
+    }
+  }
+
+  d = Infinity; // At most 32 iteration
+
+  for (var i = 0; i < 32; i++) {
+    if (interval < EPSILON_NUMERIC) {
+      break;
+    }
+
+    prev = t - interval;
+    next = t + interval; // t - interval
+
+    _v1[0] = cubicAt(x0, x1, x2, x3, prev);
+    _v1[1] = cubicAt(y0, y1, y2, y3, prev);
+    d1 = v2DistSquare(_v1, _v0);
+
+    if (prev >= 0 && d1 < d) {
+      t = prev;
+      d = d1;
+    } else {
+      // t + interval
+      _v2[0] = cubicAt(x0, x1, x2, x3, next);
+      _v2[1] = cubicAt(y0, y1, y2, y3, next);
+      d2 = v2DistSquare(_v2, _v0);
+
+      if (next <= 1 && d2 < d) {
+        t = next;
+        d = d2;
+      } else {
+        interval *= 0.5;
+      }
+    }
+  } // t
+
+
+  if (out) {
+    out[0] = cubicAt(x0, x1, x2, x3, t);
+    out[1] = cubicAt(y0, y1, y2, y3, t);
+  } // console.log(interval, i);
+
+
+  return mathSqrt(d);
+}
+/**
+ * 计算二次方贝塞尔值
+ * @param  {number} p0
+ * @param  {number} p1
+ * @param  {number} p2
+ * @param  {number} t
+ * @return {number}
+ */
+
+
+function quadraticAt(p0, p1, p2, t) {
+  var onet = 1 - t;
+  return onet * (onet * p0 + 2 * t * p1) + t * t * p2;
+}
+/**
+ * 计算二次方贝塞尔导数值
+ * @param  {number} p0
+ * @param  {number} p1
+ * @param  {number} p2
+ * @param  {number} t
+ * @return {number}
+ */
+
+
+function quadraticDerivativeAt(p0, p1, p2, t) {
+  return 2 * ((1 - t) * (p1 - p0) + t * (p2 - p1));
+}
+/**
+ * 计算二次方贝塞尔方程根
+ * @param  {number} p0
+ * @param  {number} p1
+ * @param  {number} p2
+ * @param  {number} t
+ * @param  {Array.<number>} roots
+ * @return {number} 有效根数目
+ */
+
+
+function quadraticRootAt(p0, p1, p2, val, roots) {
+  var a = p0 - 2 * p1 + p2;
+  var b = 2 * (p1 - p0);
+  var c = p0 - val;
+  var n = 0;
+
+  if (isAroundZero(a)) {
+    if (isNotAroundZero(b)) {
+      var t1 = -c / b;
+
+      if (t1 >= 0 && t1 <= 1) {
+        roots[n++] = t1;
+      }
+    }
+  } else {
+    var disc = b * b - 4 * a * c;
+
+    if (isAroundZero(disc)) {
+      var t1 = -b / (2 * a);
+
+      if (t1 >= 0 && t1 <= 1) {
+        roots[n++] = t1;
+      }
+    } else if (disc > 0) {
+      var discSqrt = mathSqrt(disc);
+      var t1 = (-b + discSqrt) / (2 * a);
+      var t2 = (-b - discSqrt) / (2 * a);
+
+      if (t1 >= 0 && t1 <= 1) {
+        roots[n++] = t1;
+      }
+
+      if (t2 >= 0 && t2 <= 1) {
+        roots[n++] = t2;
+      }
+    }
+  }
+
+  return n;
+}
+/**
+ * 计算二次贝塞尔方程极限值
+ * @memberOf module:zrender/core/curve
+ * @param  {number} p0
+ * @param  {number} p1
+ * @param  {number} p2
+ * @return {number}
+ */
+
+
+function quadraticExtremum(p0, p1, p2) {
+  var divider = p0 + p2 - 2 * p1;
+
+  if (divider === 0) {
+    // p1 is center of p0 and p2
+    return 0.5;
+  } else {
+    return (p0 - p1) / divider;
+  }
+}
+/**
+ * 细分二次贝塞尔曲线
+ * @memberOf module:zrender/core/curve
+ * @param  {number} p0
+ * @param  {number} p1
+ * @param  {number} p2
+ * @param  {number} t
+ * @param  {Array.<number>} out
+ */
+
+
+function quadraticSubdivide(p0, p1, p2, t, out) {
+  var p01 = (p1 - p0) * t + p0;
+  var p12 = (p2 - p1) * t + p1;
+  var p012 = (p12 - p01) * t + p01; // Seg0
+
+  out[0] = p0;
+  out[1] = p01;
+  out[2] = p012; // Seg1
+
+  out[3] = p012;
+  out[4] = p12;
+  out[5] = p2;
+}
+/**
+ * 投射点到二次贝塞尔曲线上，返回投射距离。
+ * 投射点有可能会有一个或者多个，这里只返回其中距离最短的一个。
+ * @param {number} x0
+ * @param {number} y0
+ * @param {number} x1
+ * @param {number} y1
+ * @param {number} x2
+ * @param {number} y2
+ * @param {number} x
+ * @param {number} y
+ * @param {Array.<number>} out 投射点
+ * @return {number}
+ */
+
+
+function quadraticProjectPoint(x0, y0, x1, y1, x2, y2, x, y, out) {
+  // http://pomax.github.io/bezierinfo/#projections
+  var t;
+  var interval = 0.005;
+  var d = Infinity;
+  _v0[0] = x;
+  _v0[1] = y; // 先粗略估计一下可能的最小距离的 t 值
+  // PENDING
+
+  for (var _t = 0; _t < 1; _t += 0.05) {
+    _v1[0] = quadraticAt(x0, x1, x2, _t);
+    _v1[1] = quadraticAt(y0, y1, y2, _t);
+    var d1 = v2DistSquare(_v0, _v1);
+
+    if (d1 < d) {
+      t = _t;
+      d = d1;
+    }
+  }
+
+  d = Infinity; // At most 32 iteration
+
+  for (var i = 0; i < 32; i++) {
+    if (interval < EPSILON_NUMERIC) {
+      break;
+    }
+
+    var prev = t - interval;
+    var next = t + interval; // t - interval
+
+    _v1[0] = quadraticAt(x0, x1, x2, prev);
+    _v1[1] = quadraticAt(y0, y1, y2, prev);
+    var d1 = v2DistSquare(_v1, _v0);
+
+    if (prev >= 0 && d1 < d) {
+      t = prev;
+      d = d1;
+    } else {
+      // t + interval
+      _v2[0] = quadraticAt(x0, x1, x2, next);
+      _v2[1] = quadraticAt(y0, y1, y2, next);
+      var d2 = v2DistSquare(_v2, _v0);
+
+      if (next <= 1 && d2 < d) {
+        t = next;
+        d = d2;
+      } else {
+        interval *= 0.5;
+      }
+    }
+  } // t
+
+
+  if (out) {
+    out[0] = quadraticAt(x0, x1, x2, t);
+    out[1] = quadraticAt(y0, y1, y2, t);
+  } // console.log(interval, i);
+
+
+  return mathSqrt(d);
+}
+
+exports.cubicAt = cubicAt;
+exports.cubicDerivativeAt = cubicDerivativeAt;
+exports.cubicRootAt = cubicRootAt;
+exports.cubicExtrema = cubicExtrema;
+exports.cubicSubdivide = cubicSubdivide;
+exports.cubicProjectPoint = cubicProjectPoint;
+exports.quadraticAt = quadraticAt;
+exports.quadraticDerivativeAt = quadraticDerivativeAt;
+exports.quadraticRootAt = quadraticRootAt;
+exports.quadraticExtremum = quadraticExtremum;
+exports.quadraticSubdivide = quadraticSubdivide;
+exports.quadraticProjectPoint = quadraticProjectPoint;
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _util = __webpack_require__(0);
+
+var each = _util.each;
+var isString = _util.isString;
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
+/**
+ * Note that it is too complicated to support 3d stack by value
+ * (have to create two-dimension inverted index), so in 3d case
+ * we just support that stacked by index.
+ *
+ * @param {module:echarts/model/Series} seriesModel
+ * @param {Array.<string|Object>} dimensionInfoList The same as the input of <module:echarts/data/List>.
+ *        The input dimensionInfoList will be modified.
+ * @param {Object} [opt]
+ * @param {boolean} [opt.stackedCoordDimension=''] Specify a coord dimension if needed.
+ * @param {boolean} [opt.byIndex=false]
+ * @return {Object} calculationInfo
+ * {
+ *     stackedDimension: string
+ *     stackedByDimension: string
+ *     isStackedByIndex: boolean
+ *     stackedOverDimension: string
+ *     stackResultDimension: string
+ * }
+ */
+function enableDataStack(seriesModel, dimensionInfoList, opt) {
+  opt = opt || {};
+  var byIndex = opt.byIndex;
+  var stackedCoordDimension = opt.stackedCoordDimension; // Compatibal: when `stack` is set as '', do not stack.
+
+  var mayStack = !!(seriesModel && seriesModel.get('stack'));
+  var stackedByDimInfo;
+  var stackedDimInfo;
+  var stackResultDimension;
+  var stackedOverDimension;
+  each(dimensionInfoList, function (dimensionInfo, index) {
+    if (isString(dimensionInfo)) {
+      dimensionInfoList[index] = dimensionInfo = {
+        name: dimensionInfo
+      };
+    }
+
+    if (mayStack && !dimensionInfo.isExtraCoord) {
+      // Find the first ordinal dimension as the stackedByDimInfo.
+      if (!byIndex && !stackedByDimInfo && dimensionInfo.ordinalMeta) {
+        stackedByDimInfo = dimensionInfo;
+      } // Find the first stackable dimension as the stackedDimInfo.
+
+
+      if (!stackedDimInfo && dimensionInfo.type !== 'ordinal' && dimensionInfo.type !== 'time' && (!stackedCoordDimension || stackedCoordDimension === dimensionInfo.coordDim)) {
+        stackedDimInfo = dimensionInfo;
+      }
+    }
+  });
+
+  if (stackedDimInfo && !byIndex && !stackedByDimInfo) {
+    // Compatible with previous design, value axis (time axis) only stack by index.
+    // It may make sense if the user provides elaborately constructed data.
+    byIndex = true;
+  } // Add stack dimension, they can be both calculated by coordinate system in `unionExtent`.
+  // That put stack logic in List is for using conveniently in echarts extensions, but it
+  // might not be a good way.
+
+
+  if (stackedDimInfo) {
+    // Use a weird name that not duplicated with other names.
+    stackResultDimension = '__\0ecstackresult';
+    stackedOverDimension = '__\0ecstackedover'; // Create inverted index to fast query index by value.
+
+    if (stackedByDimInfo) {
+      stackedByDimInfo.createInvertedIndices = true;
+    }
+
+    var stackedDimCoordDim = stackedDimInfo.coordDim;
+    var stackedDimType = stackedDimInfo.type;
+    var stackedDimCoordIndex = 0;
+    each(dimensionInfoList, function (dimensionInfo) {
+      if (dimensionInfo.coordDim === stackedDimCoordDim) {
+        stackedDimCoordIndex++;
+      }
+    });
+    dimensionInfoList.push({
+      name: stackResultDimension,
+      coordDim: stackedDimCoordDim,
+      coordDimIndex: stackedDimCoordIndex,
+      type: stackedDimType,
+      isExtraCoord: true,
+      isCalculationCoord: true
+    });
+    stackedDimCoordIndex++;
+    dimensionInfoList.push({
+      name: stackedOverDimension,
+      // This dimension contains stack base (generally, 0), so do not set it as
+      // `stackedDimCoordDim` to avoid extent calculation, consider log scale.
+      coordDim: stackedOverDimension,
+      coordDimIndex: stackedDimCoordIndex,
+      type: stackedDimType,
+      isExtraCoord: true,
+      isCalculationCoord: true
+    });
+  }
+
+  return {
+    stackedDimension: stackedDimInfo && stackedDimInfo.name,
+    stackedByDimension: stackedByDimInfo && stackedByDimInfo.name,
+    isStackedByIndex: byIndex,
+    stackedOverDimension: stackedOverDimension,
+    stackResultDimension: stackResultDimension
+  };
+}
+/**
+ * @param {module:echarts/data/List} data
+ * @param {string} stackedDim
+ */
+
+
+function isDimensionStacked(data, stackedDim
+/*, stackedByDim*/
+) {
+  // Each single series only maps to one pair of axis. So we do not need to
+  // check stackByDim, whatever stacked by a dimension or stacked by index.
+  return !!stackedDim && stackedDim === data.getCalculationInfo('stackedDimension'); // && (
+  //     stackedByDim != null
+  //         ? stackedByDim === data.getCalculationInfo('stackedByDimension')
+  //         : data.getCalculationInfo('isStackedByIndex')
+  // );
+}
+/**
+ * @param {module:echarts/data/List} data
+ * @param {string} targetDim
+ * @param {string} [stackedByDim] If not input this parameter, check whether
+ *                                stacked by index.
+ * @return {string} dimension
+ */
+
+
+function getStackedDimension(data, targetDim) {
+  return isDimensionStacked(data, targetDim) ? data.getCalculationInfo('stackResultDimension') : targetDim;
+}
+
+exports.enableDataStack = enableDataStack;
+exports.isDimensionStacked = isDimensionStacked;
+exports.getStackedDimension = getStackedDimension;
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE__22__;
+
+/***/ }),
 /* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12566,7 +12566,7 @@ var OrdinalScale = __webpack_require__(217);
 
 var IntervalScale = __webpack_require__(58);
 
-var Scale = __webpack_require__(44);
+var Scale = __webpack_require__(45);
 
 var numberUtil = __webpack_require__(5);
 
@@ -13507,7 +13507,7 @@ var _task = __webpack_require__(55);
 
 var createTask = _task.createTask;
 
-var _sourceHelper = __webpack_require__(40);
+var _sourceHelper = __webpack_require__(41);
 
 var prepareSource = _sourceHelper.prepareSource;
 var getSource = _sourceHelper.getSource;
@@ -16348,9 +16348,9 @@ var _util = __webpack_require__(0);
 
 var map = _util.map;
 
-var createRenderPlanner = __webpack_require__(42);
+var createRenderPlanner = __webpack_require__(43);
 
-var _dataStackHelper = __webpack_require__(20);
+var _dataStackHelper = __webpack_require__(21);
 
 var isDimensionStacked = _dataStackHelper.isDimensionStacked;
 
@@ -17040,3116 +17040,6 @@ module.exports = _default;
 
 /***/ }),
 /* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var zrUtil = __webpack_require__(0);
-
-var Element = __webpack_require__(73);
-
-var BoundingRect = __webpack_require__(12);
-
-/**
- * Group是一个容器，可以插入子节点，Group的变换也会被应用到子节点上
- * @module zrender/graphic/Group
- * @example
- *     var Group = require('zrender/container/Group');
- *     var Circle = require('zrender/graphic/shape/Circle');
- *     var g = new Group();
- *     g.position[0] = 100;
- *     g.position[1] = 100;
- *     g.add(new Circle({
- *         style: {
- *             x: 100,
- *             y: 100,
- *             r: 20,
- *         }
- *     }));
- *     zr.add(g);
- */
-
-/**
- * @alias module:zrender/graphic/Group
- * @constructor
- * @extends module:zrender/mixin/Transformable
- * @extends module:zrender/mixin/Eventful
- */
-var Group = function (opts) {
-  opts = opts || {};
-  Element.call(this, opts);
-
-  for (var key in opts) {
-    if (opts.hasOwnProperty(key)) {
-      this[key] = opts[key];
-    }
-  }
-
-  this._children = [];
-  this.__storage = null;
-  this.__dirty = true;
-};
-
-Group.prototype = {
-  constructor: Group,
-  isGroup: true,
-
-  /**
-   * @type {string}
-   */
-  type: 'group',
-
-  /**
-   * 所有子孙元素是否响应鼠标事件
-   * @name module:/zrender/container/Group#silent
-   * @type {boolean}
-   * @default false
-   */
-  silent: false,
-
-  /**
-   * @return {Array.<module:zrender/Element>}
-   */
-  children: function () {
-    return this._children.slice();
-  },
-
-  /**
-   * 获取指定 index 的儿子节点
-   * @param  {number} idx
-   * @return {module:zrender/Element}
-   */
-  childAt: function (idx) {
-    return this._children[idx];
-  },
-
-  /**
-   * 获取指定名字的儿子节点
-   * @param  {string} name
-   * @return {module:zrender/Element}
-   */
-  childOfName: function (name) {
-    var children = this._children;
-
-    for (var i = 0; i < children.length; i++) {
-      if (children[i].name === name) {
-        return children[i];
-      }
-    }
-  },
-
-  /**
-   * @return {number}
-   */
-  childCount: function () {
-    return this._children.length;
-  },
-
-  /**
-   * 添加子节点到最后
-   * @param {module:zrender/Element} child
-   */
-  add: function (child) {
-    if (child && child !== this && child.parent !== this) {
-      this._children.push(child);
-
-      this._doAdd(child);
-    }
-
-    return this;
-  },
-
-  /**
-   * 添加子节点在 nextSibling 之前
-   * @param {module:zrender/Element} child
-   * @param {module:zrender/Element} nextSibling
-   */
-  addBefore: function (child, nextSibling) {
-    if (child && child !== this && child.parent !== this && nextSibling && nextSibling.parent === this) {
-      var children = this._children;
-      var idx = children.indexOf(nextSibling);
-
-      if (idx >= 0) {
-        children.splice(idx, 0, child);
-
-        this._doAdd(child);
-      }
-    }
-
-    return this;
-  },
-  _doAdd: function (child) {
-    if (child.parent) {
-      child.parent.remove(child);
-    }
-
-    child.parent = this;
-    var storage = this.__storage;
-    var zr = this.__zr;
-
-    if (storage && storage !== child.__storage) {
-      storage.addToStorage(child);
-
-      if (child instanceof Group) {
-        child.addChildrenToStorage(storage);
-      }
-    }
-
-    zr && zr.refresh();
-  },
-
-  /**
-   * 移除子节点
-   * @param {module:zrender/Element} child
-   */
-  remove: function (child) {
-    var zr = this.__zr;
-    var storage = this.__storage;
-    var children = this._children;
-    var idx = zrUtil.indexOf(children, child);
-
-    if (idx < 0) {
-      return this;
-    }
-
-    children.splice(idx, 1);
-    child.parent = null;
-
-    if (storage) {
-      storage.delFromStorage(child);
-
-      if (child instanceof Group) {
-        child.delChildrenFromStorage(storage);
-      }
-    }
-
-    zr && zr.refresh();
-    return this;
-  },
-
-  /**
-   * 移除所有子节点
-   */
-  removeAll: function () {
-    var children = this._children;
-    var storage = this.__storage;
-    var child;
-    var i;
-
-    for (i = 0; i < children.length; i++) {
-      child = children[i];
-
-      if (storage) {
-        storage.delFromStorage(child);
-
-        if (child instanceof Group) {
-          child.delChildrenFromStorage(storage);
-        }
-      }
-
-      child.parent = null;
-    }
-
-    children.length = 0;
-    return this;
-  },
-
-  /**
-   * 遍历所有子节点
-   * @param  {Function} cb
-   * @param  {}   context
-   */
-  eachChild: function (cb, context) {
-    var children = this._children;
-
-    for (var i = 0; i < children.length; i++) {
-      var child = children[i];
-      cb.call(context, child, i);
-    }
-
-    return this;
-  },
-
-  /**
-   * 深度优先遍历所有子孙节点
-   * @param  {Function} cb
-   * @param  {}   context
-   */
-  traverse: function (cb, context) {
-    for (var i = 0; i < this._children.length; i++) {
-      var child = this._children[i];
-      cb.call(context, child);
-
-      if (child.type === 'group') {
-        child.traverse(cb, context);
-      }
-    }
-
-    return this;
-  },
-  addChildrenToStorage: function (storage) {
-    for (var i = 0; i < this._children.length; i++) {
-      var child = this._children[i];
-      storage.addToStorage(child);
-
-      if (child instanceof Group) {
-        child.addChildrenToStorage(storage);
-      }
-    }
-  },
-  delChildrenFromStorage: function (storage) {
-    for (var i = 0; i < this._children.length; i++) {
-      var child = this._children[i];
-      storage.delFromStorage(child);
-
-      if (child instanceof Group) {
-        child.delChildrenFromStorage(storage);
-      }
-    }
-  },
-  dirty: function () {
-    this.__dirty = true;
-    this.__zr && this.__zr.refresh();
-    return this;
-  },
-
-  /**
-   * @return {module:zrender/core/BoundingRect}
-   */
-  getBoundingRect: function (includeChildren) {
-    // TODO Caching
-    var rect = null;
-    var tmpRect = new BoundingRect(0, 0, 0, 0);
-    var children = includeChildren || this._children;
-    var tmpMat = [];
-
-    for (var i = 0; i < children.length; i++) {
-      var child = children[i];
-
-      if (child.ignore || child.invisible) {
-        continue;
-      }
-
-      var childRect = child.getBoundingRect();
-      var transform = child.getLocalTransform(tmpMat); // TODO
-      // The boundingRect cacluated by transforming original
-      // rect may be bigger than the actual bundingRect when rotation
-      // is used. (Consider a circle rotated aginst its center, where
-      // the actual boundingRect should be the same as that not be
-      // rotated.) But we can not find better approach to calculate
-      // actual boundingRect yet, considering performance.
-
-      if (transform) {
-        tmpRect.copy(childRect);
-        tmpRect.applyTransform(transform);
-        rect = rect || tmpRect.clone();
-        rect.union(tmpRect);
-      } else {
-        rect = rect || childRect.clone();
-        rect.union(childRect);
-      }
-    }
-
-    return rect || tmpRect;
-  }
-};
-zrUtil.inherits(Group, Element);
-var _default = Group;
-module.exports = _default;
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports) {
-
-var dpr = 1; // If in browser environment
-
-if (typeof window !== 'undefined') {
-  dpr = Math.max(window.devicePixelRatio || 1, 1);
-}
-/**
- * config默认配置项
- * @exports zrender/config
- * @author Kener (@Kener-林峰, kener.linfeng@gmail.com)
- */
-
-/**
- * debug日志选项：catchBrushException为true下有效
- * 0 : 不生成debug数据，发布用
- * 1 : 异常抛出，调试用
- * 2 : 控制台输出，调试用
- */
-
-
-var debugMode = 0; // retina 屏幕优化
-
-var devicePixelRatio = dpr;
-exports.debugMode = debugMode;
-exports.devicePixelRatio = devicePixelRatio;
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var zrUtil = __webpack_require__(0);
-
-var Style = __webpack_require__(78);
-
-var Element = __webpack_require__(73);
-
-var RectText = __webpack_require__(173);
-
-/**
- * 可绘制的图形基类
- * Base class of all displayable graphic objects
- * @module zrender/graphic/Displayable
- */
-
-/**
- * @alias module:zrender/graphic/Displayable
- * @extends module:zrender/Element
- * @extends module:zrender/graphic/mixin/RectText
- */
-function Displayable(opts) {
-  opts = opts || {};
-  Element.call(this, opts); // Extend properties
-
-  for (var name in opts) {
-    if (opts.hasOwnProperty(name) && name !== 'style') {
-      this[name] = opts[name];
-    }
-  }
-  /**
-   * @type {module:zrender/graphic/Style}
-   */
-
-
-  this.style = new Style(opts.style, this);
-  this._rect = null; // Shapes for cascade clipping.
-
-  this.__clipPaths = []; // FIXME Stateful must be mixined after style is setted
-  // Stateful.call(this, opts);
-}
-
-Displayable.prototype = {
-  constructor: Displayable,
-  type: 'displayable',
-
-  /**
-   * Displayable 是否为脏，Painter 中会根据该标记判断是否需要是否需要重新绘制
-   * Dirty flag. From which painter will determine if this displayable object needs brush
-   * @name module:zrender/graphic/Displayable#__dirty
-   * @type {boolean}
-   */
-  __dirty: true,
-
-  /**
-   * 图形是否可见，为true时不绘制图形，但是仍能触发鼠标事件
-   * If ignore drawing of the displayable object. Mouse event will still be triggered
-   * @name module:/zrender/graphic/Displayable#invisible
-   * @type {boolean}
-   * @default false
-   */
-  invisible: false,
-
-  /**
-   * @name module:/zrender/graphic/Displayable#z
-   * @type {number}
-   * @default 0
-   */
-  z: 0,
-
-  /**
-   * @name module:/zrender/graphic/Displayable#z
-   * @type {number}
-   * @default 0
-   */
-  z2: 0,
-
-  /**
-   * z层level，决定绘画在哪层canvas中
-   * @name module:/zrender/graphic/Displayable#zlevel
-   * @type {number}
-   * @default 0
-   */
-  zlevel: 0,
-
-  /**
-   * 是否可拖拽
-   * @name module:/zrender/graphic/Displayable#draggable
-   * @type {boolean}
-   * @default false
-   */
-  draggable: false,
-
-  /**
-   * 是否正在拖拽
-   * @name module:/zrender/graphic/Displayable#draggable
-   * @type {boolean}
-   * @default false
-   */
-  dragging: false,
-
-  /**
-   * 是否相应鼠标事件
-   * @name module:/zrender/graphic/Displayable#silent
-   * @type {boolean}
-   * @default false
-   */
-  silent: false,
-
-  /**
-   * If enable culling
-   * @type {boolean}
-   * @default false
-   */
-  culling: false,
-
-  /**
-   * Mouse cursor when hovered
-   * @name module:/zrender/graphic/Displayable#cursor
-   * @type {string}
-   */
-  cursor: 'pointer',
-
-  /**
-   * If hover area is bounding rect
-   * @name module:/zrender/graphic/Displayable#rectHover
-   * @type {string}
-   */
-  rectHover: false,
-
-  /**
-   * Render the element progressively when the value >= 0,
-   * usefull for large data.
-   * @type {boolean}
-   */
-  progressive: false,
-
-  /**
-   * @type {boolean}
-   */
-  incremental: false,
-  // inplace is used with incremental
-  inplace: false,
-  beforeBrush: function (ctx) {},
-  afterBrush: function (ctx) {},
-
-  /**
-   * 图形绘制方法
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  // Interface
-  brush: function (ctx, prevEl) {},
-
-  /**
-   * 获取最小包围盒
-   * @return {module:zrender/core/BoundingRect}
-   */
-  // Interface
-  getBoundingRect: function () {},
-
-  /**
-   * 判断坐标 x, y 是否在图形上
-   * If displayable element contain coord x, y
-   * @param  {number} x
-   * @param  {number} y
-   * @return {boolean}
-   */
-  contain: function (x, y) {
-    return this.rectContain(x, y);
-  },
-
-  /**
-   * @param  {Function} cb
-   * @param  {}   context
-   */
-  traverse: function (cb, context) {
-    cb.call(context, this);
-  },
-
-  /**
-   * 判断坐标 x, y 是否在图形的包围盒上
-   * If bounding rect of element contain coord x, y
-   * @param  {number} x
-   * @param  {number} y
-   * @return {boolean}
-   */
-  rectContain: function (x, y) {
-    var coord = this.transformCoordToLocal(x, y);
-    var rect = this.getBoundingRect();
-    return rect.contain(coord[0], coord[1]);
-  },
-
-  /**
-   * 标记图形元素为脏，并且在下一帧重绘
-   * Mark displayable element dirty and refresh next frame
-   */
-  dirty: function () {
-    this.__dirty = true;
-    this._rect = null;
-    this.__zr && this.__zr.refresh();
-  },
-
-  /**
-   * 图形是否会触发事件
-   * If displayable object binded any event
-   * @return {boolean}
-   */
-  // TODO, 通过 bind 绑定的事件
-  // isSilent: function () {
-  //     return !(
-  //         this.hoverable || this.draggable
-  //         || this.onmousemove || this.onmouseover || this.onmouseout
-  //         || this.onmousedown || this.onmouseup || this.onclick
-  //         || this.ondragenter || this.ondragover || this.ondragleave
-  //         || this.ondrop
-  //     );
-  // },
-
-  /**
-   * Alias for animate('style')
-   * @param {boolean} loop
-   */
-  animateStyle: function (loop) {
-    return this.animate('style', loop);
-  },
-  attrKV: function (key, value) {
-    if (key !== 'style') {
-      Element.prototype.attrKV.call(this, key, value);
-    } else {
-      this.style.set(value);
-    }
-  },
-
-  /**
-   * @param {Object|string} key
-   * @param {*} value
-   */
-  setStyle: function (key, value) {
-    this.style.set(key, value);
-    this.dirty(false);
-    return this;
-  },
-
-  /**
-   * Use given style object
-   * @param  {Object} obj
-   */
-  useStyle: function (obj) {
-    this.style = new Style(obj, this);
-    this.dirty(false);
-    return this;
-  }
-};
-zrUtil.inherits(Displayable, Element);
-zrUtil.mixin(Displayable, RectText); // zrUtil.mixin(Displayable, Stateful);
-
-var _default = Displayable;
-module.exports = _default;
-
-/***/ }),
-/* 38 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var curve = __webpack_require__(19);
-
-var vec2 = __webpack_require__(7);
-
-var bbox = __webpack_require__(86);
-
-var BoundingRect = __webpack_require__(12);
-
-var _config = __webpack_require__(36);
-
-var dpr = _config.devicePixelRatio;
-
-/**
- * Path 代理，可以在`buildPath`中用于替代`ctx`, 会保存每个path操作的命令到pathCommands属性中
- * 可以用于 isInsidePath 判断以及获取boundingRect
- *
- * @module zrender/core/PathProxy
- * @author Yi Shen (http://www.github.com/pissang)
- */
-// TODO getTotalLength, getPointAtLength
-var CMD = {
-  M: 1,
-  L: 2,
-  C: 3,
-  Q: 4,
-  A: 5,
-  Z: 6,
-  // Rect
-  R: 7
-}; // var CMD_MEM_SIZE = {
-//     M: 3,
-//     L: 3,
-//     C: 7,
-//     Q: 5,
-//     A: 9,
-//     R: 5,
-//     Z: 1
-// };
-
-var min = [];
-var max = [];
-var min2 = [];
-var max2 = [];
-var mathMin = Math.min;
-var mathMax = Math.max;
-var mathCos = Math.cos;
-var mathSin = Math.sin;
-var mathSqrt = Math.sqrt;
-var mathAbs = Math.abs;
-var hasTypedArray = typeof Float32Array != 'undefined';
-/**
- * @alias module:zrender/core/PathProxy
- * @constructor
- */
-
-var PathProxy = function (notSaveData) {
-  this._saveData = !(notSaveData || false);
-
-  if (this._saveData) {
-    /**
-     * Path data. Stored as flat array
-     * @type {Array.<Object>}
-     */
-    this.data = [];
-  }
-
-  this._ctx = null;
-};
-/**
- * 快速计算Path包围盒（并不是最小包围盒）
- * @return {Object}
- */
-
-
-PathProxy.prototype = {
-  constructor: PathProxy,
-  _xi: 0,
-  _yi: 0,
-  _x0: 0,
-  _y0: 0,
-  // Unit x, Unit y. Provide for avoiding drawing that too short line segment
-  _ux: 0,
-  _uy: 0,
-  _len: 0,
-  _lineDash: null,
-  _dashOffset: 0,
-  _dashIdx: 0,
-  _dashSum: 0,
-
-  /**
-   * @readOnly
-   */
-  setScale: function (sx, sy) {
-    this._ux = mathAbs(1 / dpr / sx) || 0;
-    this._uy = mathAbs(1 / dpr / sy) || 0;
-  },
-  getContext: function () {
-    return this._ctx;
-  },
-
-  /**
-   * @param  {CanvasRenderingContext2D} ctx
-   * @return {module:zrender/core/PathProxy}
-   */
-  beginPath: function (ctx) {
-    this._ctx = ctx;
-    ctx && ctx.beginPath();
-    ctx && (this.dpr = ctx.dpr); // Reset
-
-    if (this._saveData) {
-      this._len = 0;
-    }
-
-    if (this._lineDash) {
-      this._lineDash = null;
-      this._dashOffset = 0;
-    }
-
-    return this;
-  },
-
-  /**
-   * @param  {number} x
-   * @param  {number} y
-   * @return {module:zrender/core/PathProxy}
-   */
-  moveTo: function (x, y) {
-    this.addData(CMD.M, x, y);
-    this._ctx && this._ctx.moveTo(x, y); // x0, y0, xi, yi 是记录在 _dashedXXXXTo 方法中使用
-    // xi, yi 记录当前点, x0, y0 在 closePath 的时候回到起始点。
-    // 有可能在 beginPath 之后直接调用 lineTo，这时候 x0, y0 需要
-    // 在 lineTo 方法中记录，这里先不考虑这种情况，dashed line 也只在 IE10- 中不支持
-
-    this._x0 = x;
-    this._y0 = y;
-    this._xi = x;
-    this._yi = y;
-    return this;
-  },
-
-  /**
-   * @param  {number} x
-   * @param  {number} y
-   * @return {module:zrender/core/PathProxy}
-   */
-  lineTo: function (x, y) {
-    var exceedUnit = mathAbs(x - this._xi) > this._ux || mathAbs(y - this._yi) > this._uy // Force draw the first segment
-    || this._len < 5;
-    this.addData(CMD.L, x, y);
-
-    if (this._ctx && exceedUnit) {
-      this._needsDash() ? this._dashedLineTo(x, y) : this._ctx.lineTo(x, y);
-    }
-
-    if (exceedUnit) {
-      this._xi = x;
-      this._yi = y;
-    }
-
-    return this;
-  },
-
-  /**
-   * @param  {number} x1
-   * @param  {number} y1
-   * @param  {number} x2
-   * @param  {number} y2
-   * @param  {number} x3
-   * @param  {number} y3
-   * @return {module:zrender/core/PathProxy}
-   */
-  bezierCurveTo: function (x1, y1, x2, y2, x3, y3) {
-    this.addData(CMD.C, x1, y1, x2, y2, x3, y3);
-
-    if (this._ctx) {
-      this._needsDash() ? this._dashedBezierTo(x1, y1, x2, y2, x3, y3) : this._ctx.bezierCurveTo(x1, y1, x2, y2, x3, y3);
-    }
-
-    this._xi = x3;
-    this._yi = y3;
-    return this;
-  },
-
-  /**
-   * @param  {number} x1
-   * @param  {number} y1
-   * @param  {number} x2
-   * @param  {number} y2
-   * @return {module:zrender/core/PathProxy}
-   */
-  quadraticCurveTo: function (x1, y1, x2, y2) {
-    this.addData(CMD.Q, x1, y1, x2, y2);
-
-    if (this._ctx) {
-      this._needsDash() ? this._dashedQuadraticTo(x1, y1, x2, y2) : this._ctx.quadraticCurveTo(x1, y1, x2, y2);
-    }
-
-    this._xi = x2;
-    this._yi = y2;
-    return this;
-  },
-
-  /**
-   * @param  {number} cx
-   * @param  {number} cy
-   * @param  {number} r
-   * @param  {number} startAngle
-   * @param  {number} endAngle
-   * @param  {boolean} anticlockwise
-   * @return {module:zrender/core/PathProxy}
-   */
-  arc: function (cx, cy, r, startAngle, endAngle, anticlockwise) {
-    this.addData(CMD.A, cx, cy, r, r, startAngle, endAngle - startAngle, 0, anticlockwise ? 0 : 1);
-    this._ctx && this._ctx.arc(cx, cy, r, startAngle, endAngle, anticlockwise);
-    this._xi = mathCos(endAngle) * r + cx;
-    this._yi = mathSin(endAngle) * r + cx;
-    return this;
-  },
-  // TODO
-  arcTo: function (x1, y1, x2, y2, radius) {
-    if (this._ctx) {
-      this._ctx.arcTo(x1, y1, x2, y2, radius);
-    }
-
-    return this;
-  },
-  // TODO
-  rect: function (x, y, w, h) {
-    this._ctx && this._ctx.rect(x, y, w, h);
-    this.addData(CMD.R, x, y, w, h);
-    return this;
-  },
-
-  /**
-   * @return {module:zrender/core/PathProxy}
-   */
-  closePath: function () {
-    this.addData(CMD.Z);
-    var ctx = this._ctx;
-    var x0 = this._x0;
-    var y0 = this._y0;
-
-    if (ctx) {
-      this._needsDash() && this._dashedLineTo(x0, y0);
-      ctx.closePath();
-    }
-
-    this._xi = x0;
-    this._yi = y0;
-    return this;
-  },
-
-  /**
-   * Context 从外部传入，因为有可能是 rebuildPath 完之后再 fill。
-   * stroke 同样
-   * @param {CanvasRenderingContext2D} ctx
-   * @return {module:zrender/core/PathProxy}
-   */
-  fill: function (ctx) {
-    ctx && ctx.fill();
-    this.toStatic();
-  },
-
-  /**
-   * @param {CanvasRenderingContext2D} ctx
-   * @return {module:zrender/core/PathProxy}
-   */
-  stroke: function (ctx) {
-    ctx && ctx.stroke();
-    this.toStatic();
-  },
-
-  /**
-   * 必须在其它绘制命令前调用
-   * Must be invoked before all other path drawing methods
-   * @return {module:zrender/core/PathProxy}
-   */
-  setLineDash: function (lineDash) {
-    if (lineDash instanceof Array) {
-      this._lineDash = lineDash;
-      this._dashIdx = 0;
-      var lineDashSum = 0;
-
-      for (var i = 0; i < lineDash.length; i++) {
-        lineDashSum += lineDash[i];
-      }
-
-      this._dashSum = lineDashSum;
-    }
-
-    return this;
-  },
-
-  /**
-   * 必须在其它绘制命令前调用
-   * Must be invoked before all other path drawing methods
-   * @return {module:zrender/core/PathProxy}
-   */
-  setLineDashOffset: function (offset) {
-    this._dashOffset = offset;
-    return this;
-  },
-
-  /**
-   *
-   * @return {boolean}
-   */
-  len: function () {
-    return this._len;
-  },
-
-  /**
-   * 直接设置 Path 数据
-   */
-  setData: function (data) {
-    var len = data.length;
-
-    if (!(this.data && this.data.length == len) && hasTypedArray) {
-      this.data = new Float32Array(len);
-    }
-
-    for (var i = 0; i < len; i++) {
-      this.data[i] = data[i];
-    }
-
-    this._len = len;
-  },
-
-  /**
-   * 添加子路径
-   * @param {module:zrender/core/PathProxy|Array.<module:zrender/core/PathProxy>} path
-   */
-  appendPath: function (path) {
-    if (!(path instanceof Array)) {
-      path = [path];
-    }
-
-    var len = path.length;
-    var appendSize = 0;
-    var offset = this._len;
-
-    for (var i = 0; i < len; i++) {
-      appendSize += path[i].len();
-    }
-
-    if (hasTypedArray && this.data instanceof Float32Array) {
-      this.data = new Float32Array(offset + appendSize);
-    }
-
-    for (var i = 0; i < len; i++) {
-      var appendPathData = path[i].data;
-
-      for (var k = 0; k < appendPathData.length; k++) {
-        this.data[offset++] = appendPathData[k];
-      }
-    }
-
-    this._len = offset;
-  },
-
-  /**
-   * 填充 Path 数据。
-   * 尽量复用而不申明新的数组。大部分图形重绘的指令数据长度都是不变的。
-   */
-  addData: function (cmd) {
-    if (!this._saveData) {
-      return;
-    }
-
-    var data = this.data;
-
-    if (this._len + arguments.length > data.length) {
-      // 因为之前的数组已经转换成静态的 Float32Array
-      // 所以不够用时需要扩展一个新的动态数组
-      this._expandData();
-
-      data = this.data;
-    }
-
-    for (var i = 0; i < arguments.length; i++) {
-      data[this._len++] = arguments[i];
-    }
-
-    this._prevCmd = cmd;
-  },
-  _expandData: function () {
-    // Only if data is Float32Array
-    if (!(this.data instanceof Array)) {
-      var newData = [];
-
-      for (var i = 0; i < this._len; i++) {
-        newData[i] = this.data[i];
-      }
-
-      this.data = newData;
-    }
-  },
-
-  /**
-   * If needs js implemented dashed line
-   * @return {boolean}
-   * @private
-   */
-  _needsDash: function () {
-    return this._lineDash;
-  },
-  _dashedLineTo: function (x1, y1) {
-    var dashSum = this._dashSum;
-    var offset = this._dashOffset;
-    var lineDash = this._lineDash;
-    var ctx = this._ctx;
-    var x0 = this._xi;
-    var y0 = this._yi;
-    var dx = x1 - x0;
-    var dy = y1 - y0;
-    var dist = mathSqrt(dx * dx + dy * dy);
-    var x = x0;
-    var y = y0;
-    var dash;
-    var nDash = lineDash.length;
-    var idx;
-    dx /= dist;
-    dy /= dist;
-
-    if (offset < 0) {
-      // Convert to positive offset
-      offset = dashSum + offset;
-    }
-
-    offset %= dashSum;
-    x -= offset * dx;
-    y -= offset * dy;
-
-    while (dx > 0 && x <= x1 || dx < 0 && x >= x1 || dx == 0 && (dy > 0 && y <= y1 || dy < 0 && y >= y1)) {
-      idx = this._dashIdx;
-      dash = lineDash[idx];
-      x += dx * dash;
-      y += dy * dash;
-      this._dashIdx = (idx + 1) % nDash; // Skip positive offset
-
-      if (dx > 0 && x < x0 || dx < 0 && x > x0 || dy > 0 && y < y0 || dy < 0 && y > y0) {
-        continue;
-      }
-
-      ctx[idx % 2 ? 'moveTo' : 'lineTo'](dx >= 0 ? mathMin(x, x1) : mathMax(x, x1), dy >= 0 ? mathMin(y, y1) : mathMax(y, y1));
-    } // Offset for next lineTo
-
-
-    dx = x - x1;
-    dy = y - y1;
-    this._dashOffset = -mathSqrt(dx * dx + dy * dy);
-  },
-  // Not accurate dashed line to
-  _dashedBezierTo: function (x1, y1, x2, y2, x3, y3) {
-    var dashSum = this._dashSum;
-    var offset = this._dashOffset;
-    var lineDash = this._lineDash;
-    var ctx = this._ctx;
-    var x0 = this._xi;
-    var y0 = this._yi;
-    var t;
-    var dx;
-    var dy;
-    var cubicAt = curve.cubicAt;
-    var bezierLen = 0;
-    var idx = this._dashIdx;
-    var nDash = lineDash.length;
-    var x;
-    var y;
-    var tmpLen = 0;
-
-    if (offset < 0) {
-      // Convert to positive offset
-      offset = dashSum + offset;
-    }
-
-    offset %= dashSum; // Bezier approx length
-
-    for (t = 0; t < 1; t += 0.1) {
-      dx = cubicAt(x0, x1, x2, x3, t + 0.1) - cubicAt(x0, x1, x2, x3, t);
-      dy = cubicAt(y0, y1, y2, y3, t + 0.1) - cubicAt(y0, y1, y2, y3, t);
-      bezierLen += mathSqrt(dx * dx + dy * dy);
-    } // Find idx after add offset
-
-
-    for (; idx < nDash; idx++) {
-      tmpLen += lineDash[idx];
-
-      if (tmpLen > offset) {
-        break;
-      }
-    }
-
-    t = (tmpLen - offset) / bezierLen;
-
-    while (t <= 1) {
-      x = cubicAt(x0, x1, x2, x3, t);
-      y = cubicAt(y0, y1, y2, y3, t); // Use line to approximate dashed bezier
-      // Bad result if dash is long
-
-      idx % 2 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      t += lineDash[idx] / bezierLen;
-      idx = (idx + 1) % nDash;
-    } // Finish the last segment and calculate the new offset
-
-
-    idx % 2 !== 0 && ctx.lineTo(x3, y3);
-    dx = x3 - x;
-    dy = y3 - y;
-    this._dashOffset = -mathSqrt(dx * dx + dy * dy);
-  },
-  _dashedQuadraticTo: function (x1, y1, x2, y2) {
-    // Convert quadratic to cubic using degree elevation
-    var x3 = x2;
-    var y3 = y2;
-    x2 = (x2 + 2 * x1) / 3;
-    y2 = (y2 + 2 * y1) / 3;
-    x1 = (this._xi + 2 * x1) / 3;
-    y1 = (this._yi + 2 * y1) / 3;
-
-    this._dashedBezierTo(x1, y1, x2, y2, x3, y3);
-  },
-
-  /**
-   * 转成静态的 Float32Array 减少堆内存占用
-   * Convert dynamic array to static Float32Array
-   */
-  toStatic: function () {
-    var data = this.data;
-
-    if (data instanceof Array) {
-      data.length = this._len;
-
-      if (hasTypedArray) {
-        this.data = new Float32Array(data);
-      }
-    }
-  },
-
-  /**
-   * @return {module:zrender/core/BoundingRect}
-   */
-  getBoundingRect: function () {
-    min[0] = min[1] = min2[0] = min2[1] = Number.MAX_VALUE;
-    max[0] = max[1] = max2[0] = max2[1] = -Number.MAX_VALUE;
-    var data = this.data;
-    var xi = 0;
-    var yi = 0;
-    var x0 = 0;
-    var y0 = 0;
-
-    for (var i = 0; i < data.length;) {
-      var cmd = data[i++];
-
-      if (i == 1) {
-        // 如果第一个命令是 L, C, Q
-        // 则 previous point 同绘制命令的第一个 point
-        //
-        // 第一个命令为 Arc 的情况下会在后面特殊处理
-        xi = data[i];
-        yi = data[i + 1];
-        x0 = xi;
-        y0 = yi;
-      }
-
-      switch (cmd) {
-        case CMD.M:
-          // moveTo 命令重新创建一个新的 subpath, 并且更新新的起点
-          // 在 closePath 的时候使用
-          x0 = data[i++];
-          y0 = data[i++];
-          xi = x0;
-          yi = y0;
-          min2[0] = x0;
-          min2[1] = y0;
-          max2[0] = x0;
-          max2[1] = y0;
-          break;
-
-        case CMD.L:
-          bbox.fromLine(xi, yi, data[i], data[i + 1], min2, max2);
-          xi = data[i++];
-          yi = data[i++];
-          break;
-
-        case CMD.C:
-          bbox.fromCubic(xi, yi, data[i++], data[i++], data[i++], data[i++], data[i], data[i + 1], min2, max2);
-          xi = data[i++];
-          yi = data[i++];
-          break;
-
-        case CMD.Q:
-          bbox.fromQuadratic(xi, yi, data[i++], data[i++], data[i], data[i + 1], min2, max2);
-          xi = data[i++];
-          yi = data[i++];
-          break;
-
-        case CMD.A:
-          // TODO Arc 判断的开销比较大
-          var cx = data[i++];
-          var cy = data[i++];
-          var rx = data[i++];
-          var ry = data[i++];
-          var startAngle = data[i++];
-          var endAngle = data[i++] + startAngle; // TODO Arc 旋转
-
-          var psi = data[i++];
-          var anticlockwise = 1 - data[i++];
-
-          if (i == 1) {
-            // 直接使用 arc 命令
-            // 第一个命令起点还未定义
-            x0 = mathCos(startAngle) * rx + cx;
-            y0 = mathSin(startAngle) * ry + cy;
-          }
-
-          bbox.fromArc(cx, cy, rx, ry, startAngle, endAngle, anticlockwise, min2, max2);
-          xi = mathCos(endAngle) * rx + cx;
-          yi = mathSin(endAngle) * ry + cy;
-          break;
-
-        case CMD.R:
-          x0 = xi = data[i++];
-          y0 = yi = data[i++];
-          var width = data[i++];
-          var height = data[i++]; // Use fromLine
-
-          bbox.fromLine(x0, y0, x0 + width, y0 + height, min2, max2);
-          break;
-
-        case CMD.Z:
-          xi = x0;
-          yi = y0;
-          break;
-      } // Union
-
-
-      vec2.min(min, min, min2);
-      vec2.max(max, max, max2);
-    } // No data
-
-
-    if (i === 0) {
-      min[0] = min[1] = max[0] = max[1] = 0;
-    }
-
-    return new BoundingRect(min[0], min[1], max[0] - min[0], max[1] - min[1]);
-  },
-
-  /**
-   * Rebuild path from current data
-   * Rebuild path will not consider javascript implemented line dash.
-   * @param {CanvasRenderingContext2D} ctx
-   */
-  rebuildPath: function (ctx) {
-    var d = this.data;
-    var x0, y0;
-    var xi, yi;
-    var x, y;
-    var ux = this._ux;
-    var uy = this._uy;
-    var len = this._len;
-
-    for (var i = 0; i < len;) {
-      var cmd = d[i++];
-
-      if (i == 1) {
-        // 如果第一个命令是 L, C, Q
-        // 则 previous point 同绘制命令的第一个 point
-        //
-        // 第一个命令为 Arc 的情况下会在后面特殊处理
-        xi = d[i];
-        yi = d[i + 1];
-        x0 = xi;
-        y0 = yi;
-      }
-
-      switch (cmd) {
-        case CMD.M:
-          x0 = xi = d[i++];
-          y0 = yi = d[i++];
-          ctx.moveTo(xi, yi);
-          break;
-
-        case CMD.L:
-          x = d[i++];
-          y = d[i++]; // Not draw too small seg between
-
-          if (mathAbs(x - xi) > ux || mathAbs(y - yi) > uy || i === len - 1) {
-            ctx.lineTo(x, y);
-            xi = x;
-            yi = y;
-          }
-
-          break;
-
-        case CMD.C:
-          ctx.bezierCurveTo(d[i++], d[i++], d[i++], d[i++], d[i++], d[i++]);
-          xi = d[i - 2];
-          yi = d[i - 1];
-          break;
-
-        case CMD.Q:
-          ctx.quadraticCurveTo(d[i++], d[i++], d[i++], d[i++]);
-          xi = d[i - 2];
-          yi = d[i - 1];
-          break;
-
-        case CMD.A:
-          var cx = d[i++];
-          var cy = d[i++];
-          var rx = d[i++];
-          var ry = d[i++];
-          var theta = d[i++];
-          var dTheta = d[i++];
-          var psi = d[i++];
-          var fs = d[i++];
-          var r = rx > ry ? rx : ry;
-          var scaleX = rx > ry ? 1 : rx / ry;
-          var scaleY = rx > ry ? ry / rx : 1;
-          var isEllipse = Math.abs(rx - ry) > 1e-3;
-          var endAngle = theta + dTheta;
-
-          if (isEllipse) {
-            ctx.translate(cx, cy);
-            ctx.rotate(psi);
-            ctx.scale(scaleX, scaleY);
-            ctx.arc(0, 0, r, theta, endAngle, 1 - fs);
-            ctx.scale(1 / scaleX, 1 / scaleY);
-            ctx.rotate(-psi);
-            ctx.translate(-cx, -cy);
-          } else {
-            ctx.arc(cx, cy, r, theta, endAngle, 1 - fs);
-          }
-
-          if (i == 1) {
-            // 直接使用 arc 命令
-            // 第一个命令起点还未定义
-            x0 = mathCos(theta) * rx + cx;
-            y0 = mathSin(theta) * ry + cy;
-          }
-
-          xi = mathCos(endAngle) * rx + cx;
-          yi = mathSin(endAngle) * ry + cy;
-          break;
-
-        case CMD.R:
-          x0 = xi = d[i];
-          y0 = yi = d[i + 1];
-          ctx.rect(d[i++], d[i++], d[i++], d[i++]);
-          break;
-
-        case CMD.Z:
-          ctx.closePath();
-          xi = x0;
-          yi = y0;
-      }
-    }
-  }
-};
-PathProxy.CMD = CMD;
-var _default = PathProxy;
-module.exports = _default;
-
-/***/ }),
-/* 39 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var zrUtil = __webpack_require__(0);
-
-var _clazz = __webpack_require__(17);
-
-var parseClassType = _clazz.parseClassType;
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-var base = 0;
-/**
- * @public
- * @param {string} type
- * @return {string}
- */
-
-function getUID(type) {
-  // Considering the case of crossing js context,
-  // use Math.random to make id as unique as possible.
-  return [type || '', base++, Math.random().toFixed(5)].join('_');
-}
-/**
- * @inner
- */
-
-
-function enableSubTypeDefaulter(entity) {
-  var subTypeDefaulters = {};
-
-  entity.registerSubTypeDefaulter = function (componentType, defaulter) {
-    componentType = parseClassType(componentType);
-    subTypeDefaulters[componentType.main] = defaulter;
-  };
-
-  entity.determineSubType = function (componentType, option) {
-    var type = option.type;
-
-    if (!type) {
-      var componentTypeMain = parseClassType(componentType).main;
-
-      if (entity.hasSubTypes(componentType) && subTypeDefaulters[componentTypeMain]) {
-        type = subTypeDefaulters[componentTypeMain](option);
-      }
-    }
-
-    return type;
-  };
-
-  return entity;
-}
-/**
- * Topological travel on Activity Network (Activity On Vertices).
- * Dependencies is defined in Model.prototype.dependencies, like ['xAxis', 'yAxis'].
- *
- * If 'xAxis' or 'yAxis' is absent in componentTypeList, just ignore it in topology.
- *
- * If there is circle dependencey, Error will be thrown.
- *
- */
-
-
-function enableTopologicalTravel(entity, dependencyGetter) {
-  /**
-   * @public
-   * @param {Array.<string>} targetNameList Target Component type list.
-   *                                           Can be ['aa', 'bb', 'aa.xx']
-   * @param {Array.<string>} fullNameList By which we can build dependency graph.
-   * @param {Function} callback Params: componentType, dependencies.
-   * @param {Object} context Scope of callback.
-   */
-  entity.topologicalTravel = function (targetNameList, fullNameList, callback, context) {
-    if (!targetNameList.length) {
-      return;
-    }
-
-    var result = makeDepndencyGraph(fullNameList);
-    var graph = result.graph;
-    var stack = result.noEntryList;
-    var targetNameSet = {};
-    zrUtil.each(targetNameList, function (name) {
-      targetNameSet[name] = true;
-    });
-
-    while (stack.length) {
-      var currComponentType = stack.pop();
-      var currVertex = graph[currComponentType];
-      var isInTargetNameSet = !!targetNameSet[currComponentType];
-
-      if (isInTargetNameSet) {
-        callback.call(context, currComponentType, currVertex.originalDeps.slice());
-        delete targetNameSet[currComponentType];
-      }
-
-      zrUtil.each(currVertex.successor, isInTargetNameSet ? removeEdgeAndAdd : removeEdge);
-    }
-
-    zrUtil.each(targetNameSet, function () {
-      throw new Error('Circle dependency may exists');
-    });
-
-    function removeEdge(succComponentType) {
-      graph[succComponentType].entryCount--;
-
-      if (graph[succComponentType].entryCount === 0) {
-        stack.push(succComponentType);
-      }
-    } // Consider this case: legend depends on series, and we call
-    // chart.setOption({series: [...]}), where only series is in option.
-    // If we do not have 'removeEdgeAndAdd', legendModel.mergeOption will
-    // not be called, but only sereis.mergeOption is called. Thus legend
-    // have no chance to update its local record about series (like which
-    // name of series is available in legend).
-
-
-    function removeEdgeAndAdd(succComponentType) {
-      targetNameSet[succComponentType] = true;
-      removeEdge(succComponentType);
-    }
-  };
-  /**
-   * DepndencyGraph: {Object}
-   * key: conponentType,
-   * value: {
-   *     successor: [conponentTypes...],
-   *     originalDeps: [conponentTypes...],
-   *     entryCount: {number}
-   * }
-   */
-
-
-  function makeDepndencyGraph(fullNameList) {
-    var graph = {};
-    var noEntryList = [];
-    zrUtil.each(fullNameList, function (name) {
-      var thisItem = createDependencyGraphItem(graph, name);
-      var originalDeps = thisItem.originalDeps = dependencyGetter(name);
-      var availableDeps = getAvailableDependencies(originalDeps, fullNameList);
-      thisItem.entryCount = availableDeps.length;
-
-      if (thisItem.entryCount === 0) {
-        noEntryList.push(name);
-      }
-
-      zrUtil.each(availableDeps, function (dependentName) {
-        if (zrUtil.indexOf(thisItem.predecessor, dependentName) < 0) {
-          thisItem.predecessor.push(dependentName);
-        }
-
-        var thatItem = createDependencyGraphItem(graph, dependentName);
-
-        if (zrUtil.indexOf(thatItem.successor, dependentName) < 0) {
-          thatItem.successor.push(name);
-        }
-      });
-    });
-    return {
-      graph: graph,
-      noEntryList: noEntryList
-    };
-  }
-
-  function createDependencyGraphItem(graph, name) {
-    if (!graph[name]) {
-      graph[name] = {
-        predecessor: [],
-        successor: []
-      };
-    }
-
-    return graph[name];
-  }
-
-  function getAvailableDependencies(originalDeps, fullNameList) {
-    var availableDeps = [];
-    zrUtil.each(originalDeps, function (dep) {
-      zrUtil.indexOf(fullNameList, dep) >= 0 && availableDeps.push(dep);
-    });
-    return availableDeps;
-  }
-}
-
-exports.getUID = getUID;
-exports.enableSubTypeDefaulter = enableSubTypeDefaulter;
-exports.enableTopologicalTravel = enableTopologicalTravel;
-
-/***/ }),
-/* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var _config = __webpack_require__(6);
-
-var __DEV__ = _config.__DEV__;
-
-var _model = __webpack_require__(4);
-
-var makeInner = _model.makeInner;
-var getDataItemValue = _model.getDataItemValue;
-
-var _referHelper = __webpack_require__(95);
-
-var getCoordSysDefineBySeries = _referHelper.getCoordSysDefineBySeries;
-
-var _util = __webpack_require__(0);
-
-var createHashMap = _util.createHashMap;
-var each = _util.each;
-var map = _util.map;
-var isArray = _util.isArray;
-var isString = _util.isString;
-var isObject = _util.isObject;
-var isTypedArray = _util.isTypedArray;
-var isArrayLike = _util.isArrayLike;
-var extend = _util.extend;
-var assert = _util.assert;
-
-var Source = __webpack_require__(28);
-
-var _sourceType = __webpack_require__(29);
-
-var SOURCE_FORMAT_ORIGINAL = _sourceType.SOURCE_FORMAT_ORIGINAL;
-var SOURCE_FORMAT_ARRAY_ROWS = _sourceType.SOURCE_FORMAT_ARRAY_ROWS;
-var SOURCE_FORMAT_OBJECT_ROWS = _sourceType.SOURCE_FORMAT_OBJECT_ROWS;
-var SOURCE_FORMAT_KEYED_COLUMNS = _sourceType.SOURCE_FORMAT_KEYED_COLUMNS;
-var SOURCE_FORMAT_UNKNOWN = _sourceType.SOURCE_FORMAT_UNKNOWN;
-var SOURCE_FORMAT_TYPED_ARRAY = _sourceType.SOURCE_FORMAT_TYPED_ARRAY;
-var SERIES_LAYOUT_BY_ROW = _sourceType.SERIES_LAYOUT_BY_ROW;
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-var inner = makeInner();
-/**
- * @see {module:echarts/data/Source}
- * @param {module:echarts/component/dataset/DatasetModel} datasetModel
- * @return {string} sourceFormat
- */
-
-function detectSourceFormat(datasetModel) {
-  var data = datasetModel.option.source;
-  var sourceFormat = SOURCE_FORMAT_UNKNOWN;
-
-  if (isTypedArray(data)) {
-    sourceFormat = SOURCE_FORMAT_TYPED_ARRAY;
-  } else if (isArray(data)) {
-    // FIXME Whether tolerate null in top level array?
-    for (var i = 0, len = data.length; i < len; i++) {
-      var item = data[i];
-
-      if (item == null) {
-        continue;
-      } else if (isArray(item)) {
-        sourceFormat = SOURCE_FORMAT_ARRAY_ROWS;
-        break;
-      } else if (isObject(item)) {
-        sourceFormat = SOURCE_FORMAT_OBJECT_ROWS;
-        break;
-      }
-    }
-  } else if (isObject(data)) {
-    for (var key in data) {
-      if (data.hasOwnProperty(key) && isArrayLike(data[key])) {
-        sourceFormat = SOURCE_FORMAT_KEYED_COLUMNS;
-        break;
-      }
-    }
-  } else if (data != null) {
-    throw new Error('Invalid data');
-  }
-
-  inner(datasetModel).sourceFormat = sourceFormat;
-}
-/**
- * [Scenarios]:
- * (1) Provide source data directly:
- *     series: {
- *         encode: {...},
- *         dimensions: [...]
- *         seriesLayoutBy: 'row',
- *         data: [[...]]
- *     }
- * (2) Refer to datasetModel.
- *     series: [{
- *         encode: {...}
- *         // Ignore datasetIndex means `datasetIndex: 0`
- *         // and the dimensions defination in dataset is used
- *     }, {
- *         encode: {...},
- *         seriesLayoutBy: 'column',
- *         datasetIndex: 1
- *     }]
- *
- * Get data from series itself or datset.
- * @return {module:echarts/data/Source} source
- */
-
-
-function getSource(seriesModel) {
-  return inner(seriesModel).source;
-}
-/**
- * MUST be called before mergeOption of all series.
- * @param {module:echarts/model/Global} ecModel
- */
-
-
-function resetSourceDefaulter(ecModel) {
-  // `datasetMap` is used to make default encode.
-  inner(ecModel).datasetMap = createHashMap();
-}
-/**
- * [Caution]:
- * MUST be called after series option merged and
- * before "series.getInitailData()" called.
- *
- * [The rule of making default encode]:
- * Category axis (if exists) alway map to the first dimension.
- * Each other axis occupies a subsequent dimension.
- *
- * [Why make default encode]:
- * Simplify the typing of encode in option, avoiding the case like that:
- * series: [{encode: {x: 0, y: 1}}, {encode: {x: 0, y: 2}}, {encode: {x: 0, y: 3}}],
- * where the "y" have to be manually typed as "1, 2, 3, ...".
- *
- * @param {module:echarts/model/Series} seriesModel
- */
-
-
-function prepareSource(seriesModel) {
-  var seriesOption = seriesModel.option;
-  var data = seriesOption.data;
-  var sourceFormat = isTypedArray(data) ? SOURCE_FORMAT_TYPED_ARRAY : SOURCE_FORMAT_ORIGINAL;
-  var fromDataset = false;
-  var seriesLayoutBy = seriesOption.seriesLayoutBy;
-  var sourceHeader = seriesOption.sourceHeader;
-  var dimensionsDefine = seriesOption.dimensions;
-  var datasetModel = getDatasetModel(seriesModel);
-
-  if (datasetModel) {
-    var datasetOption = datasetModel.option;
-    data = datasetOption.source;
-    sourceFormat = inner(datasetModel).sourceFormat;
-    fromDataset = true; // These settings from series has higher priority.
-
-    seriesLayoutBy = seriesLayoutBy || datasetOption.seriesLayoutBy;
-    sourceHeader == null && (sourceHeader = datasetOption.sourceHeader);
-    dimensionsDefine = dimensionsDefine || datasetOption.dimensions;
-  }
-
-  var completeResult = completeBySourceData(data, sourceFormat, seriesLayoutBy, sourceHeader, dimensionsDefine); // Note: dataset option does not have `encode`.
-
-  var encodeDefine = seriesOption.encode;
-
-  if (!encodeDefine && datasetModel) {
-    encodeDefine = makeDefaultEncode(seriesModel, datasetModel, data, sourceFormat, seriesLayoutBy, completeResult);
-  }
-
-  inner(seriesModel).source = new Source({
-    data: data,
-    fromDataset: fromDataset,
-    seriesLayoutBy: seriesLayoutBy,
-    sourceFormat: sourceFormat,
-    dimensionsDefine: completeResult.dimensionsDefine,
-    startIndex: completeResult.startIndex,
-    dimensionsDetectCount: completeResult.dimensionsDetectCount,
-    encodeDefine: encodeDefine
-  });
-} // return {startIndex, dimensionsDefine, dimensionsCount}
-
-
-function completeBySourceData(data, sourceFormat, seriesLayoutBy, sourceHeader, dimensionsDefine) {
-  if (!data) {
-    return {
-      dimensionsDefine: normalizeDimensionsDefine(dimensionsDefine)
-    };
-  }
-
-  var dimensionsDetectCount;
-  var startIndex;
-  var findPotentialName;
-
-  if (sourceFormat === SOURCE_FORMAT_ARRAY_ROWS) {
-    // Rule: Most of the first line are string: it is header.
-    // Caution: consider a line with 5 string and 1 number,
-    // it still can not be sure it is a head, because the
-    // 5 string may be 5 values of category columns.
-    if (sourceHeader === 'auto' || sourceHeader == null) {
-      arrayRowsTravelFirst(function (val) {
-        // '-' is regarded as null/undefined.
-        if (val != null && val !== '-') {
-          if (isString(val)) {
-            startIndex == null && (startIndex = 1);
-          } else {
-            startIndex = 0;
-          }
-        } // 10 is an experience number, avoid long loop.
-
-      }, seriesLayoutBy, data, 10);
-    } else {
-      startIndex = sourceHeader ? 1 : 0;
-    }
-
-    if (!dimensionsDefine && startIndex === 1) {
-      dimensionsDefine = [];
-      arrayRowsTravelFirst(function (val, index) {
-        dimensionsDefine[index] = val != null ? val : '';
-      }, seriesLayoutBy, data);
-    }
-
-    dimensionsDetectCount = dimensionsDefine ? dimensionsDefine.length : seriesLayoutBy === SERIES_LAYOUT_BY_ROW ? data.length : data[0] ? data[0].length : null;
-  } else if (sourceFormat === SOURCE_FORMAT_OBJECT_ROWS) {
-    if (!dimensionsDefine) {
-      dimensionsDefine = objectRowsCollectDimensions(data);
-      findPotentialName = true;
-    }
-  } else if (sourceFormat === SOURCE_FORMAT_KEYED_COLUMNS) {
-    if (!dimensionsDefine) {
-      dimensionsDefine = [];
-      findPotentialName = true;
-      each(data, function (colArr, key) {
-        dimensionsDefine.push(key);
-      });
-    }
-  } else if (sourceFormat === SOURCE_FORMAT_ORIGINAL) {
-    var value0 = getDataItemValue(data[0]);
-    dimensionsDetectCount = isArray(value0) && value0.length || 1;
-  } else if (sourceFormat === SOURCE_FORMAT_TYPED_ARRAY) {}
-
-  var potentialNameDimIndex;
-
-  if (findPotentialName) {
-    each(dimensionsDefine, function (dim, idx) {
-      if ((isObject(dim) ? dim.name : dim) === 'name') {
-        potentialNameDimIndex = idx;
-      }
-    });
-  }
-
-  return {
-    startIndex: startIndex,
-    dimensionsDefine: normalizeDimensionsDefine(dimensionsDefine),
-    dimensionsDetectCount: dimensionsDetectCount,
-    potentialNameDimIndex: potentialNameDimIndex // TODO: potentialIdDimIdx
-
-  };
-} // Consider dimensions defined like ['A', 'price', 'B', 'price', 'C', 'price'],
-// which is reasonable. But dimension name is duplicated.
-// Returns undefined or an array contains only object without null/undefiend or string.
-
-
-function normalizeDimensionsDefine(dimensionsDefine) {
-  if (!dimensionsDefine) {
-    // The meaning of null/undefined is different from empty array.
-    return;
-  }
-
-  var nameMap = createHashMap();
-  return map(dimensionsDefine, function (item, index) {
-    item = extend({}, isObject(item) ? item : {
-      name: item
-    }); // User can set null in dimensions.
-    // We dont auto specify name, othewise a given name may
-    // cause it be refered unexpectedly.
-
-    if (item.name == null) {
-      return item;
-    } // Also consider number form like 2012.
-
-
-    item.name += ''; // User may also specify displayName.
-    // displayName will always exists except user not
-    // specified or dim name is not specified or detected.
-    // (A auto generated dim name will not be used as
-    // displayName).
-
-    if (item.displayName == null) {
-      item.displayName = item.name;
-    }
-
-    var exist = nameMap.get(item.name);
-
-    if (!exist) {
-      nameMap.set(item.name, {
-        count: 1
-      });
-    } else {
-      item.name += '-' + exist.count++;
-    }
-
-    return item;
-  });
-}
-
-function arrayRowsTravelFirst(cb, seriesLayoutBy, data, maxLoop) {
-  maxLoop == null && (maxLoop = Infinity);
-
-  if (seriesLayoutBy === SERIES_LAYOUT_BY_ROW) {
-    for (var i = 0; i < data.length && i < maxLoop; i++) {
-      cb(data[i] ? data[i][0] : null, i);
-    }
-  } else {
-    var value0 = data[0] || [];
-
-    for (var i = 0; i < value0.length && i < maxLoop; i++) {
-      cb(value0[i], i);
-    }
-  }
-}
-
-function objectRowsCollectDimensions(data) {
-  var firstIndex = 0;
-  var obj;
-
-  while (firstIndex < data.length && !(obj = data[firstIndex++])) {} // jshint ignore: line
-
-
-  if (obj) {
-    var dimensions = [];
-    each(obj, function (value, key) {
-      dimensions.push(key);
-    });
-    return dimensions;
-  }
-} // ??? TODO merge to completedimensions, where also has
-// default encode making logic. And the default rule
-// should depends on series? consider 'map'.
-
-
-function makeDefaultEncode(seriesModel, datasetModel, data, sourceFormat, seriesLayoutBy, completeResult) {
-  var coordSysDefine = getCoordSysDefineBySeries(seriesModel);
-  var encode = {}; // var encodeTooltip = [];
-  // var encodeLabel = [];
-
-  var encodeItemName = [];
-  var encodeSeriesName = [];
-  var seriesType = seriesModel.subType; // ??? TODO refactor: provide by series itself.
-  // Consider the case: 'map' series is based on geo coordSys,
-  // 'graph', 'heatmap' can be based on cartesian. But can not
-  // give default rule simply here.
-
-  var nSeriesMap = createHashMap(['pie', 'map', 'funnel']);
-  var cSeriesMap = createHashMap(['line', 'bar', 'pictorialBar', 'scatter', 'effectScatter', 'candlestick', 'boxplot']); // Usually in this case series will use the first data
-  // dimension as the "value" dimension, or other default
-  // processes respectively.
-
-  if (coordSysDefine && cSeriesMap.get(seriesType) != null) {
-    var ecModel = seriesModel.ecModel;
-    var datasetMap = inner(ecModel).datasetMap;
-    var key = datasetModel.uid + '_' + seriesLayoutBy;
-    var datasetRecord = datasetMap.get(key) || datasetMap.set(key, {
-      categoryWayDim: 1,
-      valueWayDim: 0
-    }); // TODO
-    // Auto detect first time axis and do arrangement.
-
-    each(coordSysDefine.coordSysDims, function (coordDim) {
-      // In value way.
-      if (coordSysDefine.firstCategoryDimIndex == null) {
-        var dataDim = datasetRecord.valueWayDim++;
-        encode[coordDim] = dataDim; // ??? TODO give a better default series name rule?
-        // especially when encode x y specified.
-        // consider: when mutiple series share one dimension
-        // category axis, series name should better use
-        // the other dimsion name. On the other hand, use
-        // both dimensions name.
-
-        encodeSeriesName.push(dataDim); // encodeTooltip.push(dataDim);
-        // encodeLabel.push(dataDim);
-      } // In category way, category axis.
-      else if (coordSysDefine.categoryAxisMap.get(coordDim)) {
-          encode[coordDim] = 0;
-          encodeItemName.push(0);
-        } // In category way, non-category axis.
-        else {
-            var dataDim = datasetRecord.categoryWayDim++;
-            encode[coordDim] = dataDim; // encodeTooltip.push(dataDim);
-            // encodeLabel.push(dataDim);
-
-            encodeSeriesName.push(dataDim);
-          }
-    });
-  } // Do not make a complex rule! Hard to code maintain and not necessary.
-  // ??? TODO refactor: provide by series itself.
-  // [{name: ..., value: ...}, ...] like:
-  else if (nSeriesMap.get(seriesType) != null) {
-      // Find the first not ordinal. (5 is an experience value)
-      var firstNotOrdinal;
-
-      for (var i = 0; i < 5 && firstNotOrdinal == null; i++) {
-        if (!doGuessOrdinal(data, sourceFormat, seriesLayoutBy, completeResult.dimensionsDefine, completeResult.startIndex, i)) {
-          firstNotOrdinal = i;
-        }
-      }
-
-      if (firstNotOrdinal != null) {
-        encode.value = firstNotOrdinal;
-        var nameDimIndex = completeResult.potentialNameDimIndex || Math.max(firstNotOrdinal - 1, 0); // By default, label use itemName in charts.
-        // So we dont set encodeLabel here.
-
-        encodeSeriesName.push(nameDimIndex);
-        encodeItemName.push(nameDimIndex); // encodeTooltip.push(firstNotOrdinal);
-      }
-    } // encodeTooltip.length && (encode.tooltip = encodeTooltip);
-  // encodeLabel.length && (encode.label = encodeLabel);
-
-
-  encodeItemName.length && (encode.itemName = encodeItemName);
-  encodeSeriesName.length && (encode.seriesName = encodeSeriesName);
-  return encode;
-}
-/**
- * If return null/undefined, indicate that should not use datasetModel.
- */
-
-
-function getDatasetModel(seriesModel) {
-  var option = seriesModel.option; // Caution: consider the scenario:
-  // A dataset is declared and a series is not expected to use the dataset,
-  // and at the beginning `setOption({series: { noData })` (just prepare other
-  // option but no data), then `setOption({series: {data: [...]}); In this case,
-  // the user should set an empty array to avoid that dataset is used by default.
-
-  var thisData = option.data;
-
-  if (!thisData) {
-    return seriesModel.ecModel.getComponent('dataset', option.datasetIndex || 0);
-  }
-}
-/**
- * The rule should not be complex, otherwise user might not
- * be able to known where the data is wrong.
- * The code is ugly, but how to make it neat?
- *
- * @param {module:echars/data/Source} source
- * @param {number} dimIndex
- * @return {boolean} Whether ordinal.
- */
-
-
-function guessOrdinal(source, dimIndex) {
-  return doGuessOrdinal(source.data, source.sourceFormat, source.seriesLayoutBy, source.dimensionsDefine, source.startIndex, dimIndex);
-} // dimIndex may be overflow source data.
-
-
-function doGuessOrdinal(data, sourceFormat, seriesLayoutBy, dimensionsDefine, startIndex, dimIndex) {
-  var result; // Experience value.
-
-  var maxLoop = 5;
-
-  if (isTypedArray(data)) {
-    return false;
-  } // When sourceType is 'objectRows' or 'keyedColumns', dimensionsDefine
-  // always exists in source.
-
-
-  var dimName;
-
-  if (dimensionsDefine) {
-    dimName = dimensionsDefine[dimIndex];
-    dimName = isObject(dimName) ? dimName.name : dimName;
-  }
-
-  if (sourceFormat === SOURCE_FORMAT_ARRAY_ROWS) {
-    if (seriesLayoutBy === SERIES_LAYOUT_BY_ROW) {
-      var sample = data[dimIndex];
-
-      for (var i = 0; i < (sample || []).length && i < maxLoop; i++) {
-        if ((result = detectValue(sample[startIndex + i])) != null) {
-          return result;
-        }
-      }
-    } else {
-      for (var i = 0; i < data.length && i < maxLoop; i++) {
-        var row = data[startIndex + i];
-
-        if (row && (result = detectValue(row[dimIndex])) != null) {
-          return result;
-        }
-      }
-    }
-  } else if (sourceFormat === SOURCE_FORMAT_OBJECT_ROWS) {
-    if (!dimName) {
-      return;
-    }
-
-    for (var i = 0; i < data.length && i < maxLoop; i++) {
-      var item = data[i];
-
-      if (item && (result = detectValue(item[dimName])) != null) {
-        return result;
-      }
-    }
-  } else if (sourceFormat === SOURCE_FORMAT_KEYED_COLUMNS) {
-    if (!dimName) {
-      return;
-    }
-
-    var sample = data[dimName];
-
-    if (!sample || isTypedArray(sample)) {
-      return false;
-    }
-
-    for (var i = 0; i < sample.length && i < maxLoop; i++) {
-      if ((result = detectValue(sample[i])) != null) {
-        return result;
-      }
-    }
-  } else if (sourceFormat === SOURCE_FORMAT_ORIGINAL) {
-    for (var i = 0; i < data.length && i < maxLoop; i++) {
-      var item = data[i];
-      var val = getDataItemValue(item);
-
-      if (!isArray(val)) {
-        return false;
-      }
-
-      if ((result = detectValue(val[dimIndex])) != null) {
-        return result;
-      }
-    }
-  }
-
-  function detectValue(val) {
-    // Consider usage convenience, '1', '2' will be treated as "number".
-    // `isFinit('')` get `true`.
-    if (val != null && isFinite(val) && val !== '') {
-      return false;
-    } else if (isString(val) && val !== '-') {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-exports.detectSourceFormat = detectSourceFormat;
-exports.getSource = getSource;
-exports.resetSourceDefaulter = resetSourceDefaulter;
-exports.prepareSource = prepareSource;
-exports.guessOrdinal = guessOrdinal;
-
-/***/ }),
-/* 41 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var zrUtil = __webpack_require__(0);
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-var coordinateSystemCreators = {};
-
-function CoordinateSystemManager() {
-  this._coordinateSystems = [];
-}
-
-CoordinateSystemManager.prototype = {
-  constructor: CoordinateSystemManager,
-  create: function (ecModel, api) {
-    var coordinateSystems = [];
-    zrUtil.each(coordinateSystemCreators, function (creater, type) {
-      var list = creater.create(ecModel, api);
-      coordinateSystems = coordinateSystems.concat(list || []);
-    });
-    this._coordinateSystems = coordinateSystems;
-  },
-  update: function (ecModel, api) {
-    zrUtil.each(this._coordinateSystems, function (coordSys) {
-      coordSys.update && coordSys.update(ecModel, api);
-    });
-  },
-  getCoordinateSystems: function () {
-    return this._coordinateSystems.slice();
-  }
-};
-
-CoordinateSystemManager.register = function (type, coordinateSystemCreator) {
-  coordinateSystemCreators[type] = coordinateSystemCreator;
-};
-
-CoordinateSystemManager.get = function (type) {
-  return coordinateSystemCreators[type];
-};
-
-var _default = CoordinateSystemManager;
-module.exports = _default;
-
-/***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var _model = __webpack_require__(4);
-
-var makeInner = _model.makeInner;
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-
-/**
- * @return {string} If large mode changed, return string 'reset';
- */
-function _default() {
-  var inner = makeInner();
-  return function (seriesModel) {
-    var fields = inner(seriesModel);
-    var pipelineContext = seriesModel.pipelineContext;
-    var originalLarge = fields.large;
-    var originalProgressive = fields.progressiveRender;
-    var large = fields.large = pipelineContext.large;
-    var progressive = fields.progressiveRender = pipelineContext.progressiveRender;
-    return !!(originalLarge ^ large || originalProgressive ^ progressive) && 'reset';
-  };
-}
-
-module.exports = _default;
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var zrUtil = __webpack_require__(0);
-
-var List = __webpack_require__(32);
-
-var createDimensions = __webpack_require__(100);
-
-var _sourceType = __webpack_require__(29);
-
-var SOURCE_FORMAT_ORIGINAL = _sourceType.SOURCE_FORMAT_ORIGINAL;
-
-var _dimensionHelper = __webpack_require__(57);
-
-var getDimensionTypeByAxis = _dimensionHelper.getDimensionTypeByAxis;
-
-var _model = __webpack_require__(4);
-
-var getDataItemValue = _model.getDataItemValue;
-
-var CoordinateSystem = __webpack_require__(41);
-
-var _referHelper = __webpack_require__(95);
-
-var getCoordSysDefineBySeries = _referHelper.getCoordSysDefineBySeries;
-
-var Source = __webpack_require__(28);
-
-var _dataStackHelper = __webpack_require__(20);
-
-var enableDataStack = _dataStackHelper.enableDataStack;
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-
-/**
- * @param {module:echarts/data/Source|Array} source Or raw data.
- * @param {module:echarts/model/Series} seriesModel
- * @param {Object} [opt]
- * @param {string} [opt.generateCoord]
- */
-function createListFromArray(source, seriesModel, opt) {
-  opt = opt || {};
-
-  if (!Source.isInstance(source)) {
-    source = Source.seriesDataToSource(source);
-  }
-
-  var coordSysName = seriesModel.get('coordinateSystem');
-  var registeredCoordSys = CoordinateSystem.get(coordSysName);
-  var coordSysDefine = getCoordSysDefineBySeries(seriesModel);
-  var coordSysDimDefs;
-
-  if (coordSysDefine) {
-    coordSysDimDefs = zrUtil.map(coordSysDefine.coordSysDims, function (dim) {
-      var dimInfo = {
-        name: dim
-      };
-      var axisModel = coordSysDefine.axisMap.get(dim);
-
-      if (axisModel) {
-        var axisType = axisModel.get('type');
-        dimInfo.type = getDimensionTypeByAxis(axisType); // dimInfo.stackable = isStackable(axisType);
-      }
-
-      return dimInfo;
-    });
-  }
-
-  if (!coordSysDimDefs) {
-    // Get dimensions from registered coordinate system
-    coordSysDimDefs = registeredCoordSys && (registeredCoordSys.getDimensionsInfo ? registeredCoordSys.getDimensionsInfo() : registeredCoordSys.dimensions.slice()) || ['x', 'y'];
-  }
-
-  var dimInfoList = createDimensions(source, {
-    coordDimensions: coordSysDimDefs,
-    generateCoord: opt.generateCoord
-  });
-  var firstCategoryDimIndex;
-  var hasNameEncode;
-  coordSysDefine && zrUtil.each(dimInfoList, function (dimInfo, dimIndex) {
-    var coordDim = dimInfo.coordDim;
-    var categoryAxisModel = coordSysDefine.categoryAxisMap.get(coordDim);
-
-    if (categoryAxisModel) {
-      if (firstCategoryDimIndex == null) {
-        firstCategoryDimIndex = dimIndex;
-      }
-
-      dimInfo.ordinalMeta = categoryAxisModel.getOrdinalMeta();
-    }
-
-    if (dimInfo.otherDims.itemName != null) {
-      hasNameEncode = true;
-    }
-  });
-
-  if (!hasNameEncode && firstCategoryDimIndex != null) {
-    dimInfoList[firstCategoryDimIndex].otherDims.itemName = 0;
-  }
-
-  var stackCalculationInfo = enableDataStack(seriesModel, dimInfoList);
-  var list = new List(dimInfoList, seriesModel);
-  list.setCalculationInfo(stackCalculationInfo);
-  var dimValueGetter = firstCategoryDimIndex != null && isNeedCompleteOrdinalData(source) ? function (itemOpt, dimName, dataIndex, dimIndex) {
-    // Use dataIndex as ordinal value in categoryAxis
-    return dimIndex === firstCategoryDimIndex ? dataIndex : this.defaultDimValueGetter(itemOpt, dimName, dataIndex, dimIndex);
-  } : null;
-  list.hasItemOption = false;
-  list.initData(source, null, dimValueGetter);
-  return list;
-}
-
-function isNeedCompleteOrdinalData(source) {
-  if (source.sourceFormat === SOURCE_FORMAT_ORIGINAL) {
-    var sampleItem = firstDataNotNull(source.data || []);
-    return sampleItem != null && !zrUtil.isArray(getDataItemValue(sampleItem));
-  }
-}
-
-function firstDataNotNull(data) {
-  var i = 0;
-
-  while (i < data.length && data[i] == null) {
-    i++;
-  }
-
-  return data[i];
-}
-
-var _default = createListFromArray;
-module.exports = _default;
-
-/***/ }),
-/* 44 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var clazzUtil = __webpack_require__(17);
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-
-/**
- * // Scale class management
- * @module echarts/scale/Scale
- */
-
-/**
- * @param {Object} [setting]
- */
-function Scale(setting) {
-  this._setting = setting || {};
-  /**
-   * Extent
-   * @type {Array.<number>}
-   * @protected
-   */
-
-  this._extent = [Infinity, -Infinity];
-  /**
-   * Step is calculated in adjustExtent
-   * @type {Array.<number>}
-   * @protected
-   */
-
-  this._interval = 0;
-  this.init && this.init.apply(this, arguments);
-}
-/**
- * Parse input val to valid inner number.
- * @param {*} val
- * @return {number}
- */
-
-
-Scale.prototype.parse = function (val) {
-  // Notice: This would be a trap here, If the implementation
-  // of this method depends on extent, and this method is used
-  // before extent set (like in dataZoom), it would be wrong.
-  // Nevertheless, parse does not depend on extent generally.
-  return val;
-};
-
-Scale.prototype.getSetting = function (name) {
-  return this._setting[name];
-};
-
-Scale.prototype.contain = function (val) {
-  var extent = this._extent;
-  return val >= extent[0] && val <= extent[1];
-};
-/**
- * Normalize value to linear [0, 1], return 0.5 if extent span is 0
- * @param {number} val
- * @return {number}
- */
-
-
-Scale.prototype.normalize = function (val) {
-  var extent = this._extent;
-
-  if (extent[1] === extent[0]) {
-    return 0.5;
-  }
-
-  return (val - extent[0]) / (extent[1] - extent[0]);
-};
-/**
- * Scale normalized value
- * @param {number} val
- * @return {number}
- */
-
-
-Scale.prototype.scale = function (val) {
-  var extent = this._extent;
-  return val * (extent[1] - extent[0]) + extent[0];
-};
-/**
- * Set extent from data
- * @param {Array.<number>} other
- */
-
-
-Scale.prototype.unionExtent = function (other) {
-  var extent = this._extent;
-  other[0] < extent[0] && (extent[0] = other[0]);
-  other[1] > extent[1] && (extent[1] = other[1]); // not setExtent because in log axis it may transformed to power
-  // this.setExtent(extent[0], extent[1]);
-};
-/**
- * Set extent from data
- * @param {module:echarts/data/List} data
- * @param {string} dim
- */
-
-
-Scale.prototype.unionExtentFromData = function (data, dim) {
-  this.unionExtent(data.getApproximateExtent(dim));
-};
-/**
- * Get extent
- * @return {Array.<number>}
- */
-
-
-Scale.prototype.getExtent = function () {
-  return this._extent.slice();
-};
-/**
- * Set extent
- * @param {number} start
- * @param {number} end
- */
-
-
-Scale.prototype.setExtent = function (start, end) {
-  var thisExtent = this._extent;
-
-  if (!isNaN(start)) {
-    thisExtent[0] = start;
-  }
-
-  if (!isNaN(end)) {
-    thisExtent[1] = end;
-  }
-};
-/**
- * When axis extent depends on data and no data exists,
- * axis ticks should not be drawn, which is named 'blank'.
- */
-
-
-Scale.prototype.isBlank = function () {
-  return this._isBlank;
-},
-/**
- * When axis extent depends on data and no data exists,
- * axis ticks should not be drawn, which is named 'blank'.
- */
-Scale.prototype.setBlank = function (isBlank) {
-  this._isBlank = isBlank;
-};
-/**
- * @abstract
- * @param {*} tick
- * @return {string} label of the tick.
- */
-
-Scale.prototype.getLabel = null;
-clazzUtil.enableClassExtend(Scale);
-clazzUtil.enableClassManagement(Scale, {
-  registerWhenExtend: true
-});
-var _default = Scale;
-module.exports = _default;
-
-/***/ }),
-/* 45 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var graphic = __webpack_require__(3);
-
-var SymbolClz = __webpack_require__(59);
-
-var _util = __webpack_require__(0);
-
-var isObject = _util.isObject;
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-
-/**
- * @module echarts/chart/helper/SymbolDraw
- */
-
-/**
- * @constructor
- * @alias module:echarts/chart/helper/SymbolDraw
- * @param {module:zrender/graphic/Group} [symbolCtor]
- */
-function SymbolDraw(symbolCtor) {
-  this.group = new graphic.Group();
-  this._symbolCtor = symbolCtor || SymbolClz;
-}
-
-var symbolDrawProto = SymbolDraw.prototype;
-
-function symbolNeedsDraw(data, point, idx, opt) {
-  return point && !isNaN(point[0]) && !isNaN(point[1]) && !(opt.isIgnore && opt.isIgnore(idx)) // We do not set clipShape on group, because it will cut part of
-  // the symbol element shape. We use the same clip shape here as
-  // the line clip.
-  && !(opt.clipShape && !opt.clipShape.contain(point[0], point[1])) && data.getItemVisual(idx, 'symbol') !== 'none';
-}
-/**
- * Update symbols draw by new data
- * @param {module:echarts/data/List} data
- * @param {Object} [opt] Or isIgnore
- * @param {Function} [opt.isIgnore]
- * @param {Object} [opt.clipShape]
- */
-
-
-symbolDrawProto.updateData = function (data, opt) {
-  opt = normalizeUpdateOpt(opt);
-  var group = this.group;
-  var seriesModel = data.hostModel;
-  var oldData = this._data;
-  var SymbolCtor = this._symbolCtor;
-  var seriesScope = makeSeriesScope(data); // There is no oldLineData only when first rendering or switching from
-  // stream mode to normal mode, where previous elements should be removed.
-
-  if (!oldData) {
-    group.removeAll();
-  }
-
-  data.diff(oldData).add(function (newIdx) {
-    var point = data.getItemLayout(newIdx);
-
-    if (symbolNeedsDraw(data, point, newIdx, opt)) {
-      var symbolEl = new SymbolCtor(data, newIdx, seriesScope);
-      symbolEl.attr('position', point);
-      data.setItemGraphicEl(newIdx, symbolEl);
-      group.add(symbolEl);
-    }
-  }).update(function (newIdx, oldIdx) {
-    var symbolEl = oldData.getItemGraphicEl(oldIdx);
-    var point = data.getItemLayout(newIdx);
-
-    if (!symbolNeedsDraw(data, point, newIdx, opt)) {
-      group.remove(symbolEl);
-      return;
-    }
-
-    if (!symbolEl) {
-      symbolEl = new SymbolCtor(data, newIdx);
-      symbolEl.attr('position', point);
-    } else {
-      symbolEl.updateData(data, newIdx, seriesScope);
-      graphic.updateProps(symbolEl, {
-        position: point
-      }, seriesModel);
-    } // Add back
-
-
-    group.add(symbolEl);
-    data.setItemGraphicEl(newIdx, symbolEl);
-  }).remove(function (oldIdx) {
-    var el = oldData.getItemGraphicEl(oldIdx);
-    el && el.fadeOut(function () {
-      group.remove(el);
-    });
-  }).execute();
-  this._data = data;
-};
-
-symbolDrawProto.isPersistent = function () {
-  return true;
-};
-
-symbolDrawProto.updateLayout = function () {
-  var data = this._data;
-
-  if (data) {
-    // Not use animation
-    data.eachItemGraphicEl(function (el, idx) {
-      var point = data.getItemLayout(idx);
-      el.attr('position', point);
-    });
-  }
-};
-
-symbolDrawProto.incrementalPrepareUpdate = function (data) {
-  this._seriesScope = makeSeriesScope(data);
-  this._data = null;
-  this.group.removeAll();
-};
-/**
- * Update symbols draw by new data
- * @param {module:echarts/data/List} data
- * @param {Object} [opt] Or isIgnore
- * @param {Function} [opt.isIgnore]
- * @param {Object} [opt.clipShape]
- */
-
-
-symbolDrawProto.incrementalUpdate = function (taskParams, data, opt) {
-  opt = normalizeUpdateOpt(opt);
-
-  function updateIncrementalAndHover(el) {
-    if (!el.isGroup) {
-      el.incremental = el.useHoverLayer = true;
-    }
-  }
-
-  for (var idx = taskParams.start; idx < taskParams.end; idx++) {
-    var point = data.getItemLayout(idx);
-
-    if (symbolNeedsDraw(data, point, idx, opt)) {
-      var el = new this._symbolCtor(data, idx, this._seriesScope);
-      el.traverse(updateIncrementalAndHover);
-      el.attr('position', point);
-      this.group.add(el);
-      data.setItemGraphicEl(idx, el);
-    }
-  }
-};
-
-function normalizeUpdateOpt(opt) {
-  if (opt != null && !isObject(opt)) {
-    opt = {
-      isIgnore: opt
-    };
-  }
-
-  return opt || {};
-}
-
-symbolDrawProto.remove = function (enableAnimation) {
-  var group = this.group;
-  var data = this._data; // Incremental model do not have this._data.
-
-  if (data && enableAnimation) {
-    data.eachItemGraphicEl(function (el) {
-      el.fadeOut(function () {
-        group.remove(el);
-      });
-    });
-  } else {
-    group.removeAll();
-  }
-};
-
-function makeSeriesScope(data) {
-  var seriesModel = data.hostModel;
-  return {
-    itemStyle: seriesModel.getModel('itemStyle').getItemStyle(['color']),
-    hoverItemStyle: seriesModel.getModel('emphasis.itemStyle').getItemStyle(),
-    symbolRotate: seriesModel.get('symbolRotate'),
-    symbolOffset: seriesModel.get('symbolOffset'),
-    hoverAnimation: seriesModel.get('hoverAnimation'),
-    labelModel: seriesModel.getModel('label'),
-    hoverLabelModel: seriesModel.getModel('emphasis.label'),
-    cursorStyle: seriesModel.get('cursor')
-  };
-}
-
-var _default = SymbolDraw;
-module.exports = _default;
-
-/***/ }),
-/* 46 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var zrUtil = __webpack_require__(0);
-
-var Model = __webpack_require__(15);
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-var each = zrUtil.each;
-var curry = zrUtil.curry; // Build axisPointerModel, mergin tooltip.axisPointer model for each axis.
-// allAxesInfo should be updated when setOption performed.
-
-function collect(ecModel, api) {
-  var result = {
-    /**
-     * key: makeKey(axis.model)
-     * value: {
-     *      axis,
-     *      coordSys,
-     *      axisPointerModel,
-     *      triggerTooltip,
-     *      involveSeries,
-     *      snap,
-     *      seriesModels,
-     *      seriesDataCount
-     * }
-     */
-    axesInfo: {},
-    seriesInvolved: false,
-
-    /**
-     * key: makeKey(coordSys.model)
-     * value: Object: key makeKey(axis.model), value: axisInfo
-     */
-    coordSysAxesInfo: {},
-    coordSysMap: {}
-  };
-  collectAxesInfo(result, ecModel, api); // Check seriesInvolved for performance, in case too many series in some chart.
-
-  result.seriesInvolved && collectSeriesInfo(result, ecModel);
-  return result;
-}
-
-function collectAxesInfo(result, ecModel, api) {
-  var globalTooltipModel = ecModel.getComponent('tooltip');
-  var globalAxisPointerModel = ecModel.getComponent('axisPointer'); // links can only be set on global.
-
-  var linksOption = globalAxisPointerModel.get('link', true) || [];
-  var linkGroups = []; // Collect axes info.
-
-  each(api.getCoordinateSystems(), function (coordSys) {
-    // Some coordinate system do not support axes, like geo.
-    if (!coordSys.axisPointerEnabled) {
-      return;
-    }
-
-    var coordSysKey = makeKey(coordSys.model);
-    var axesInfoInCoordSys = result.coordSysAxesInfo[coordSysKey] = {};
-    result.coordSysMap[coordSysKey] = coordSys; // Set tooltip (like 'cross') is a convienent way to show axisPointer
-    // for user. So we enable seting tooltip on coordSys model.
-
-    var coordSysModel = coordSys.model;
-    var baseTooltipModel = coordSysModel.getModel('tooltip', globalTooltipModel);
-    each(coordSys.getAxes(), curry(saveTooltipAxisInfo, false, null)); // If axis tooltip used, choose tooltip axis for each coordSys.
-    // Notice this case: coordSys is `grid` but not `cartesian2D` here.
-
-    if (coordSys.getTooltipAxes && globalTooltipModel // If tooltip.showContent is set as false, tooltip will not
-    // show but axisPointer will show as normal.
-    && baseTooltipModel.get('show')) {
-      // Compatible with previous logic. But series.tooltip.trigger: 'axis'
-      // or series.data[n].tooltip.trigger: 'axis' are not support any more.
-      var triggerAxis = baseTooltipModel.get('trigger') === 'axis';
-      var cross = baseTooltipModel.get('axisPointer.type') === 'cross';
-      var tooltipAxes = coordSys.getTooltipAxes(baseTooltipModel.get('axisPointer.axis'));
-
-      if (triggerAxis || cross) {
-        each(tooltipAxes.baseAxes, curry(saveTooltipAxisInfo, cross ? 'cross' : true, triggerAxis));
-      }
-
-      if (cross) {
-        each(tooltipAxes.otherAxes, curry(saveTooltipAxisInfo, 'cross', false));
-      }
-    } // fromTooltip: true | false | 'cross'
-    // triggerTooltip: true | false | null
-
-
-    function saveTooltipAxisInfo(fromTooltip, triggerTooltip, axis) {
-      var axisPointerModel = axis.model.getModel('axisPointer', globalAxisPointerModel);
-      var axisPointerShow = axisPointerModel.get('show');
-
-      if (!axisPointerShow || axisPointerShow === 'auto' && !fromTooltip && !isHandleTrigger(axisPointerModel)) {
-        return;
-      }
-
-      if (triggerTooltip == null) {
-        triggerTooltip = axisPointerModel.get('triggerTooltip');
-      }
-
-      axisPointerModel = fromTooltip ? makeAxisPointerModel(axis, baseTooltipModel, globalAxisPointerModel, ecModel, fromTooltip, triggerTooltip) : axisPointerModel;
-      var snap = axisPointerModel.get('snap');
-      var key = makeKey(axis.model);
-      var involveSeries = triggerTooltip || snap || axis.type === 'category'; // If result.axesInfo[key] exist, override it (tooltip has higher priority).
-
-      var axisInfo = result.axesInfo[key] = {
-        key: key,
-        axis: axis,
-        coordSys: coordSys,
-        axisPointerModel: axisPointerModel,
-        triggerTooltip: triggerTooltip,
-        involveSeries: involveSeries,
-        snap: snap,
-        useHandle: isHandleTrigger(axisPointerModel),
-        seriesModels: []
-      };
-      axesInfoInCoordSys[key] = axisInfo;
-      result.seriesInvolved |= involveSeries;
-      var groupIndex = getLinkGroupIndex(linksOption, axis);
-
-      if (groupIndex != null) {
-        var linkGroup = linkGroups[groupIndex] || (linkGroups[groupIndex] = {
-          axesInfo: {}
-        });
-        linkGroup.axesInfo[key] = axisInfo;
-        linkGroup.mapper = linksOption[groupIndex].mapper;
-        axisInfo.linkGroup = linkGroup;
-      }
-    }
-  });
-}
-
-function makeAxisPointerModel(axis, baseTooltipModel, globalAxisPointerModel, ecModel, fromTooltip, triggerTooltip) {
-  var tooltipAxisPointerModel = baseTooltipModel.getModel('axisPointer');
-  var volatileOption = {};
-  each(['type', 'snap', 'lineStyle', 'shadowStyle', 'label', 'animation', 'animationDurationUpdate', 'animationEasingUpdate', 'z'], function (field) {
-    volatileOption[field] = zrUtil.clone(tooltipAxisPointerModel.get(field));
-  }); // category axis do not auto snap, otherwise some tick that do not
-  // has value can not be hovered. value/time/log axis default snap if
-  // triggered from tooltip and trigger tooltip.
-
-  volatileOption.snap = axis.type !== 'category' && !!triggerTooltip; // Compatibel with previous behavior, tooltip axis do not show label by default.
-  // Only these properties can be overrided from tooltip to axisPointer.
-
-  if (tooltipAxisPointerModel.get('type') === 'cross') {
-    volatileOption.type = 'line';
-  }
-
-  var labelOption = volatileOption.label || (volatileOption.label = {}); // Follow the convention, do not show label when triggered by tooltip by default.
-
-  labelOption.show == null && (labelOption.show = false);
-
-  if (fromTooltip === 'cross') {
-    // When 'cross', both axes show labels.
-    var tooltipAxisPointerLabelShow = tooltipAxisPointerModel.get('label.show');
-    labelOption.show = tooltipAxisPointerLabelShow != null ? tooltipAxisPointerLabelShow : true; // If triggerTooltip, this is a base axis, which should better not use cross style
-    // (cross style is dashed by default)
-
-    if (!triggerTooltip) {
-      var crossStyle = volatileOption.lineStyle = tooltipAxisPointerModel.get('crossStyle');
-      crossStyle && zrUtil.defaults(labelOption, crossStyle.textStyle);
-    }
-  }
-
-  return axis.model.getModel('axisPointer', new Model(volatileOption, globalAxisPointerModel, ecModel));
-}
-
-function collectSeriesInfo(result, ecModel) {
-  // Prepare data for axis trigger
-  ecModel.eachSeries(function (seriesModel) {
-    // Notice this case: this coordSys is `cartesian2D` but not `grid`.
-    var coordSys = seriesModel.coordinateSystem;
-    var seriesTooltipTrigger = seriesModel.get('tooltip.trigger', true);
-    var seriesTooltipShow = seriesModel.get('tooltip.show', true);
-
-    if (!coordSys || seriesTooltipTrigger === 'none' || seriesTooltipTrigger === false || seriesTooltipTrigger === 'item' || seriesTooltipShow === false || seriesModel.get('axisPointer.show', true) === false) {
-      return;
-    }
-
-    each(result.coordSysAxesInfo[makeKey(coordSys.model)], function (axisInfo) {
-      var axis = axisInfo.axis;
-
-      if (coordSys.getAxis(axis.dim) === axis) {
-        axisInfo.seriesModels.push(seriesModel);
-        axisInfo.seriesDataCount == null && (axisInfo.seriesDataCount = 0);
-        axisInfo.seriesDataCount += seriesModel.getData().count();
-      }
-    });
-  }, this);
-}
-/**
- * For example:
- * {
- *     axisPointer: {
- *         links: [{
- *             xAxisIndex: [2, 4],
- *             yAxisIndex: 'all'
- *         }, {
- *             xAxisId: ['a5', 'a7'],
- *             xAxisName: 'xxx'
- *         }]
- *     }
- * }
- */
-
-
-function getLinkGroupIndex(linksOption, axis) {
-  var axisModel = axis.model;
-  var dim = axis.dim;
-
-  for (var i = 0; i < linksOption.length; i++) {
-    var linkOption = linksOption[i] || {};
-
-    if (checkPropInLink(linkOption[dim + 'AxisId'], axisModel.id) || checkPropInLink(linkOption[dim + 'AxisIndex'], axisModel.componentIndex) || checkPropInLink(linkOption[dim + 'AxisName'], axisModel.name)) {
-      return i;
-    }
-  }
-}
-
-function checkPropInLink(linkPropValue, axisPropValue) {
-  return linkPropValue === 'all' || zrUtil.isArray(linkPropValue) && zrUtil.indexOf(linkPropValue, axisPropValue) >= 0 || linkPropValue === axisPropValue;
-}
-
-function fixValue(axisModel) {
-  var axisInfo = getAxisInfo(axisModel);
-
-  if (!axisInfo) {
-    return;
-  }
-
-  var axisPointerModel = axisInfo.axisPointerModel;
-  var scale = axisInfo.axis.scale;
-  var option = axisPointerModel.option;
-  var status = axisPointerModel.get('status');
-  var value = axisPointerModel.get('value'); // Parse init value for category and time axis.
-
-  if (value != null) {
-    value = scale.parse(value);
-  }
-
-  var useHandle = isHandleTrigger(axisPointerModel); // If `handle` used, `axisPointer` will always be displayed, so value
-  // and status should be initialized.
-
-  if (status == null) {
-    option.status = useHandle ? 'show' : 'hide';
-  }
-
-  var extent = scale.getExtent().slice();
-  extent[0] > extent[1] && extent.reverse();
-
-  if ( // Pick a value on axis when initializing.
-  value == null // If both `handle` and `dataZoom` are used, value may be out of axis extent,
-  // where we should re-pick a value to keep `handle` displaying normally.
-  || value > extent[1]) {
-    // Make handle displayed on the end of the axis when init, which looks better.
-    value = extent[1];
-  }
-
-  if (value < extent[0]) {
-    value = extent[0];
-  }
-
-  option.value = value;
-
-  if (useHandle) {
-    option.status = axisInfo.axis.scale.isBlank() ? 'hide' : 'show';
-  }
-}
-
-function getAxisInfo(axisModel) {
-  var coordSysAxesInfo = (axisModel.ecModel.getComponent('axisPointer') || {}).coordSysAxesInfo;
-  return coordSysAxesInfo && coordSysAxesInfo.axesInfo[makeKey(axisModel)];
-}
-
-function getAxisPointerModel(axisModel) {
-  var axisInfo = getAxisInfo(axisModel);
-  return axisInfo && axisInfo.axisPointerModel;
-}
-
-function isHandleTrigger(axisPointerModel) {
-  return !!axisPointerModel.get('handle.show');
-}
-/**
- * @param {module:echarts/model/Model} model
- * @return {string} unique key
- */
-
-
-function makeKey(model) {
-  return model.type + '||' + model.id;
-}
-
-exports.collect = collect;
-exports.fixValue = fixValue;
-exports.getAxisInfo = getAxisInfo;
-exports.getAxisPointerModel = getAxisPointerModel;
-exports.makeKey = makeKey;
-
-/***/ }),
-/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {/**
@@ -22004,6 +18894,3116 @@ module.exports = isEqual;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(49), __webpack_require__(68)(module)))
 
 /***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var zrUtil = __webpack_require__(0);
+
+var Element = __webpack_require__(73);
+
+var BoundingRect = __webpack_require__(12);
+
+/**
+ * Group是一个容器，可以插入子节点，Group的变换也会被应用到子节点上
+ * @module zrender/graphic/Group
+ * @example
+ *     var Group = require('zrender/container/Group');
+ *     var Circle = require('zrender/graphic/shape/Circle');
+ *     var g = new Group();
+ *     g.position[0] = 100;
+ *     g.position[1] = 100;
+ *     g.add(new Circle({
+ *         style: {
+ *             x: 100,
+ *             y: 100,
+ *             r: 20,
+ *         }
+ *     }));
+ *     zr.add(g);
+ */
+
+/**
+ * @alias module:zrender/graphic/Group
+ * @constructor
+ * @extends module:zrender/mixin/Transformable
+ * @extends module:zrender/mixin/Eventful
+ */
+var Group = function (opts) {
+  opts = opts || {};
+  Element.call(this, opts);
+
+  for (var key in opts) {
+    if (opts.hasOwnProperty(key)) {
+      this[key] = opts[key];
+    }
+  }
+
+  this._children = [];
+  this.__storage = null;
+  this.__dirty = true;
+};
+
+Group.prototype = {
+  constructor: Group,
+  isGroup: true,
+
+  /**
+   * @type {string}
+   */
+  type: 'group',
+
+  /**
+   * 所有子孙元素是否响应鼠标事件
+   * @name module:/zrender/container/Group#silent
+   * @type {boolean}
+   * @default false
+   */
+  silent: false,
+
+  /**
+   * @return {Array.<module:zrender/Element>}
+   */
+  children: function () {
+    return this._children.slice();
+  },
+
+  /**
+   * 获取指定 index 的儿子节点
+   * @param  {number} idx
+   * @return {module:zrender/Element}
+   */
+  childAt: function (idx) {
+    return this._children[idx];
+  },
+
+  /**
+   * 获取指定名字的儿子节点
+   * @param  {string} name
+   * @return {module:zrender/Element}
+   */
+  childOfName: function (name) {
+    var children = this._children;
+
+    for (var i = 0; i < children.length; i++) {
+      if (children[i].name === name) {
+        return children[i];
+      }
+    }
+  },
+
+  /**
+   * @return {number}
+   */
+  childCount: function () {
+    return this._children.length;
+  },
+
+  /**
+   * 添加子节点到最后
+   * @param {module:zrender/Element} child
+   */
+  add: function (child) {
+    if (child && child !== this && child.parent !== this) {
+      this._children.push(child);
+
+      this._doAdd(child);
+    }
+
+    return this;
+  },
+
+  /**
+   * 添加子节点在 nextSibling 之前
+   * @param {module:zrender/Element} child
+   * @param {module:zrender/Element} nextSibling
+   */
+  addBefore: function (child, nextSibling) {
+    if (child && child !== this && child.parent !== this && nextSibling && nextSibling.parent === this) {
+      var children = this._children;
+      var idx = children.indexOf(nextSibling);
+
+      if (idx >= 0) {
+        children.splice(idx, 0, child);
+
+        this._doAdd(child);
+      }
+    }
+
+    return this;
+  },
+  _doAdd: function (child) {
+    if (child.parent) {
+      child.parent.remove(child);
+    }
+
+    child.parent = this;
+    var storage = this.__storage;
+    var zr = this.__zr;
+
+    if (storage && storage !== child.__storage) {
+      storage.addToStorage(child);
+
+      if (child instanceof Group) {
+        child.addChildrenToStorage(storage);
+      }
+    }
+
+    zr && zr.refresh();
+  },
+
+  /**
+   * 移除子节点
+   * @param {module:zrender/Element} child
+   */
+  remove: function (child) {
+    var zr = this.__zr;
+    var storage = this.__storage;
+    var children = this._children;
+    var idx = zrUtil.indexOf(children, child);
+
+    if (idx < 0) {
+      return this;
+    }
+
+    children.splice(idx, 1);
+    child.parent = null;
+
+    if (storage) {
+      storage.delFromStorage(child);
+
+      if (child instanceof Group) {
+        child.delChildrenFromStorage(storage);
+      }
+    }
+
+    zr && zr.refresh();
+    return this;
+  },
+
+  /**
+   * 移除所有子节点
+   */
+  removeAll: function () {
+    var children = this._children;
+    var storage = this.__storage;
+    var child;
+    var i;
+
+    for (i = 0; i < children.length; i++) {
+      child = children[i];
+
+      if (storage) {
+        storage.delFromStorage(child);
+
+        if (child instanceof Group) {
+          child.delChildrenFromStorage(storage);
+        }
+      }
+
+      child.parent = null;
+    }
+
+    children.length = 0;
+    return this;
+  },
+
+  /**
+   * 遍历所有子节点
+   * @param  {Function} cb
+   * @param  {}   context
+   */
+  eachChild: function (cb, context) {
+    var children = this._children;
+
+    for (var i = 0; i < children.length; i++) {
+      var child = children[i];
+      cb.call(context, child, i);
+    }
+
+    return this;
+  },
+
+  /**
+   * 深度优先遍历所有子孙节点
+   * @param  {Function} cb
+   * @param  {}   context
+   */
+  traverse: function (cb, context) {
+    for (var i = 0; i < this._children.length; i++) {
+      var child = this._children[i];
+      cb.call(context, child);
+
+      if (child.type === 'group') {
+        child.traverse(cb, context);
+      }
+    }
+
+    return this;
+  },
+  addChildrenToStorage: function (storage) {
+    for (var i = 0; i < this._children.length; i++) {
+      var child = this._children[i];
+      storage.addToStorage(child);
+
+      if (child instanceof Group) {
+        child.addChildrenToStorage(storage);
+      }
+    }
+  },
+  delChildrenFromStorage: function (storage) {
+    for (var i = 0; i < this._children.length; i++) {
+      var child = this._children[i];
+      storage.delFromStorage(child);
+
+      if (child instanceof Group) {
+        child.delChildrenFromStorage(storage);
+      }
+    }
+  },
+  dirty: function () {
+    this.__dirty = true;
+    this.__zr && this.__zr.refresh();
+    return this;
+  },
+
+  /**
+   * @return {module:zrender/core/BoundingRect}
+   */
+  getBoundingRect: function (includeChildren) {
+    // TODO Caching
+    var rect = null;
+    var tmpRect = new BoundingRect(0, 0, 0, 0);
+    var children = includeChildren || this._children;
+    var tmpMat = [];
+
+    for (var i = 0; i < children.length; i++) {
+      var child = children[i];
+
+      if (child.ignore || child.invisible) {
+        continue;
+      }
+
+      var childRect = child.getBoundingRect();
+      var transform = child.getLocalTransform(tmpMat); // TODO
+      // The boundingRect cacluated by transforming original
+      // rect may be bigger than the actual bundingRect when rotation
+      // is used. (Consider a circle rotated aginst its center, where
+      // the actual boundingRect should be the same as that not be
+      // rotated.) But we can not find better approach to calculate
+      // actual boundingRect yet, considering performance.
+
+      if (transform) {
+        tmpRect.copy(childRect);
+        tmpRect.applyTransform(transform);
+        rect = rect || tmpRect.clone();
+        rect.union(tmpRect);
+      } else {
+        rect = rect || childRect.clone();
+        rect.union(childRect);
+      }
+    }
+
+    return rect || tmpRect;
+  }
+};
+zrUtil.inherits(Group, Element);
+var _default = Group;
+module.exports = _default;
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports) {
+
+var dpr = 1; // If in browser environment
+
+if (typeof window !== 'undefined') {
+  dpr = Math.max(window.devicePixelRatio || 1, 1);
+}
+/**
+ * config默认配置项
+ * @exports zrender/config
+ * @author Kener (@Kener-林峰, kener.linfeng@gmail.com)
+ */
+
+/**
+ * debug日志选项：catchBrushException为true下有效
+ * 0 : 不生成debug数据，发布用
+ * 1 : 异常抛出，调试用
+ * 2 : 控制台输出，调试用
+ */
+
+
+var debugMode = 0; // retina 屏幕优化
+
+var devicePixelRatio = dpr;
+exports.debugMode = debugMode;
+exports.devicePixelRatio = devicePixelRatio;
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var zrUtil = __webpack_require__(0);
+
+var Style = __webpack_require__(78);
+
+var Element = __webpack_require__(73);
+
+var RectText = __webpack_require__(173);
+
+/**
+ * 可绘制的图形基类
+ * Base class of all displayable graphic objects
+ * @module zrender/graphic/Displayable
+ */
+
+/**
+ * @alias module:zrender/graphic/Displayable
+ * @extends module:zrender/Element
+ * @extends module:zrender/graphic/mixin/RectText
+ */
+function Displayable(opts) {
+  opts = opts || {};
+  Element.call(this, opts); // Extend properties
+
+  for (var name in opts) {
+    if (opts.hasOwnProperty(name) && name !== 'style') {
+      this[name] = opts[name];
+    }
+  }
+  /**
+   * @type {module:zrender/graphic/Style}
+   */
+
+
+  this.style = new Style(opts.style, this);
+  this._rect = null; // Shapes for cascade clipping.
+
+  this.__clipPaths = []; // FIXME Stateful must be mixined after style is setted
+  // Stateful.call(this, opts);
+}
+
+Displayable.prototype = {
+  constructor: Displayable,
+  type: 'displayable',
+
+  /**
+   * Displayable 是否为脏，Painter 中会根据该标记判断是否需要是否需要重新绘制
+   * Dirty flag. From which painter will determine if this displayable object needs brush
+   * @name module:zrender/graphic/Displayable#__dirty
+   * @type {boolean}
+   */
+  __dirty: true,
+
+  /**
+   * 图形是否可见，为true时不绘制图形，但是仍能触发鼠标事件
+   * If ignore drawing of the displayable object. Mouse event will still be triggered
+   * @name module:/zrender/graphic/Displayable#invisible
+   * @type {boolean}
+   * @default false
+   */
+  invisible: false,
+
+  /**
+   * @name module:/zrender/graphic/Displayable#z
+   * @type {number}
+   * @default 0
+   */
+  z: 0,
+
+  /**
+   * @name module:/zrender/graphic/Displayable#z
+   * @type {number}
+   * @default 0
+   */
+  z2: 0,
+
+  /**
+   * z层level，决定绘画在哪层canvas中
+   * @name module:/zrender/graphic/Displayable#zlevel
+   * @type {number}
+   * @default 0
+   */
+  zlevel: 0,
+
+  /**
+   * 是否可拖拽
+   * @name module:/zrender/graphic/Displayable#draggable
+   * @type {boolean}
+   * @default false
+   */
+  draggable: false,
+
+  /**
+   * 是否正在拖拽
+   * @name module:/zrender/graphic/Displayable#draggable
+   * @type {boolean}
+   * @default false
+   */
+  dragging: false,
+
+  /**
+   * 是否相应鼠标事件
+   * @name module:/zrender/graphic/Displayable#silent
+   * @type {boolean}
+   * @default false
+   */
+  silent: false,
+
+  /**
+   * If enable culling
+   * @type {boolean}
+   * @default false
+   */
+  culling: false,
+
+  /**
+   * Mouse cursor when hovered
+   * @name module:/zrender/graphic/Displayable#cursor
+   * @type {string}
+   */
+  cursor: 'pointer',
+
+  /**
+   * If hover area is bounding rect
+   * @name module:/zrender/graphic/Displayable#rectHover
+   * @type {string}
+   */
+  rectHover: false,
+
+  /**
+   * Render the element progressively when the value >= 0,
+   * usefull for large data.
+   * @type {boolean}
+   */
+  progressive: false,
+
+  /**
+   * @type {boolean}
+   */
+  incremental: false,
+  // inplace is used with incremental
+  inplace: false,
+  beforeBrush: function (ctx) {},
+  afterBrush: function (ctx) {},
+
+  /**
+   * 图形绘制方法
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  // Interface
+  brush: function (ctx, prevEl) {},
+
+  /**
+   * 获取最小包围盒
+   * @return {module:zrender/core/BoundingRect}
+   */
+  // Interface
+  getBoundingRect: function () {},
+
+  /**
+   * 判断坐标 x, y 是否在图形上
+   * If displayable element contain coord x, y
+   * @param  {number} x
+   * @param  {number} y
+   * @return {boolean}
+   */
+  contain: function (x, y) {
+    return this.rectContain(x, y);
+  },
+
+  /**
+   * @param  {Function} cb
+   * @param  {}   context
+   */
+  traverse: function (cb, context) {
+    cb.call(context, this);
+  },
+
+  /**
+   * 判断坐标 x, y 是否在图形的包围盒上
+   * If bounding rect of element contain coord x, y
+   * @param  {number} x
+   * @param  {number} y
+   * @return {boolean}
+   */
+  rectContain: function (x, y) {
+    var coord = this.transformCoordToLocal(x, y);
+    var rect = this.getBoundingRect();
+    return rect.contain(coord[0], coord[1]);
+  },
+
+  /**
+   * 标记图形元素为脏，并且在下一帧重绘
+   * Mark displayable element dirty and refresh next frame
+   */
+  dirty: function () {
+    this.__dirty = true;
+    this._rect = null;
+    this.__zr && this.__zr.refresh();
+  },
+
+  /**
+   * 图形是否会触发事件
+   * If displayable object binded any event
+   * @return {boolean}
+   */
+  // TODO, 通过 bind 绑定的事件
+  // isSilent: function () {
+  //     return !(
+  //         this.hoverable || this.draggable
+  //         || this.onmousemove || this.onmouseover || this.onmouseout
+  //         || this.onmousedown || this.onmouseup || this.onclick
+  //         || this.ondragenter || this.ondragover || this.ondragleave
+  //         || this.ondrop
+  //     );
+  // },
+
+  /**
+   * Alias for animate('style')
+   * @param {boolean} loop
+   */
+  animateStyle: function (loop) {
+    return this.animate('style', loop);
+  },
+  attrKV: function (key, value) {
+    if (key !== 'style') {
+      Element.prototype.attrKV.call(this, key, value);
+    } else {
+      this.style.set(value);
+    }
+  },
+
+  /**
+   * @param {Object|string} key
+   * @param {*} value
+   */
+  setStyle: function (key, value) {
+    this.style.set(key, value);
+    this.dirty(false);
+    return this;
+  },
+
+  /**
+   * Use given style object
+   * @param  {Object} obj
+   */
+  useStyle: function (obj) {
+    this.style = new Style(obj, this);
+    this.dirty(false);
+    return this;
+  }
+};
+zrUtil.inherits(Displayable, Element);
+zrUtil.mixin(Displayable, RectText); // zrUtil.mixin(Displayable, Stateful);
+
+var _default = Displayable;
+module.exports = _default;
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var curve = __webpack_require__(20);
+
+var vec2 = __webpack_require__(7);
+
+var bbox = __webpack_require__(86);
+
+var BoundingRect = __webpack_require__(12);
+
+var _config = __webpack_require__(37);
+
+var dpr = _config.devicePixelRatio;
+
+/**
+ * Path 代理，可以在`buildPath`中用于替代`ctx`, 会保存每个path操作的命令到pathCommands属性中
+ * 可以用于 isInsidePath 判断以及获取boundingRect
+ *
+ * @module zrender/core/PathProxy
+ * @author Yi Shen (http://www.github.com/pissang)
+ */
+// TODO getTotalLength, getPointAtLength
+var CMD = {
+  M: 1,
+  L: 2,
+  C: 3,
+  Q: 4,
+  A: 5,
+  Z: 6,
+  // Rect
+  R: 7
+}; // var CMD_MEM_SIZE = {
+//     M: 3,
+//     L: 3,
+//     C: 7,
+//     Q: 5,
+//     A: 9,
+//     R: 5,
+//     Z: 1
+// };
+
+var min = [];
+var max = [];
+var min2 = [];
+var max2 = [];
+var mathMin = Math.min;
+var mathMax = Math.max;
+var mathCos = Math.cos;
+var mathSin = Math.sin;
+var mathSqrt = Math.sqrt;
+var mathAbs = Math.abs;
+var hasTypedArray = typeof Float32Array != 'undefined';
+/**
+ * @alias module:zrender/core/PathProxy
+ * @constructor
+ */
+
+var PathProxy = function (notSaveData) {
+  this._saveData = !(notSaveData || false);
+
+  if (this._saveData) {
+    /**
+     * Path data. Stored as flat array
+     * @type {Array.<Object>}
+     */
+    this.data = [];
+  }
+
+  this._ctx = null;
+};
+/**
+ * 快速计算Path包围盒（并不是最小包围盒）
+ * @return {Object}
+ */
+
+
+PathProxy.prototype = {
+  constructor: PathProxy,
+  _xi: 0,
+  _yi: 0,
+  _x0: 0,
+  _y0: 0,
+  // Unit x, Unit y. Provide for avoiding drawing that too short line segment
+  _ux: 0,
+  _uy: 0,
+  _len: 0,
+  _lineDash: null,
+  _dashOffset: 0,
+  _dashIdx: 0,
+  _dashSum: 0,
+
+  /**
+   * @readOnly
+   */
+  setScale: function (sx, sy) {
+    this._ux = mathAbs(1 / dpr / sx) || 0;
+    this._uy = mathAbs(1 / dpr / sy) || 0;
+  },
+  getContext: function () {
+    return this._ctx;
+  },
+
+  /**
+   * @param  {CanvasRenderingContext2D} ctx
+   * @return {module:zrender/core/PathProxy}
+   */
+  beginPath: function (ctx) {
+    this._ctx = ctx;
+    ctx && ctx.beginPath();
+    ctx && (this.dpr = ctx.dpr); // Reset
+
+    if (this._saveData) {
+      this._len = 0;
+    }
+
+    if (this._lineDash) {
+      this._lineDash = null;
+      this._dashOffset = 0;
+    }
+
+    return this;
+  },
+
+  /**
+   * @param  {number} x
+   * @param  {number} y
+   * @return {module:zrender/core/PathProxy}
+   */
+  moveTo: function (x, y) {
+    this.addData(CMD.M, x, y);
+    this._ctx && this._ctx.moveTo(x, y); // x0, y0, xi, yi 是记录在 _dashedXXXXTo 方法中使用
+    // xi, yi 记录当前点, x0, y0 在 closePath 的时候回到起始点。
+    // 有可能在 beginPath 之后直接调用 lineTo，这时候 x0, y0 需要
+    // 在 lineTo 方法中记录，这里先不考虑这种情况，dashed line 也只在 IE10- 中不支持
+
+    this._x0 = x;
+    this._y0 = y;
+    this._xi = x;
+    this._yi = y;
+    return this;
+  },
+
+  /**
+   * @param  {number} x
+   * @param  {number} y
+   * @return {module:zrender/core/PathProxy}
+   */
+  lineTo: function (x, y) {
+    var exceedUnit = mathAbs(x - this._xi) > this._ux || mathAbs(y - this._yi) > this._uy // Force draw the first segment
+    || this._len < 5;
+    this.addData(CMD.L, x, y);
+
+    if (this._ctx && exceedUnit) {
+      this._needsDash() ? this._dashedLineTo(x, y) : this._ctx.lineTo(x, y);
+    }
+
+    if (exceedUnit) {
+      this._xi = x;
+      this._yi = y;
+    }
+
+    return this;
+  },
+
+  /**
+   * @param  {number} x1
+   * @param  {number} y1
+   * @param  {number} x2
+   * @param  {number} y2
+   * @param  {number} x3
+   * @param  {number} y3
+   * @return {module:zrender/core/PathProxy}
+   */
+  bezierCurveTo: function (x1, y1, x2, y2, x3, y3) {
+    this.addData(CMD.C, x1, y1, x2, y2, x3, y3);
+
+    if (this._ctx) {
+      this._needsDash() ? this._dashedBezierTo(x1, y1, x2, y2, x3, y3) : this._ctx.bezierCurveTo(x1, y1, x2, y2, x3, y3);
+    }
+
+    this._xi = x3;
+    this._yi = y3;
+    return this;
+  },
+
+  /**
+   * @param  {number} x1
+   * @param  {number} y1
+   * @param  {number} x2
+   * @param  {number} y2
+   * @return {module:zrender/core/PathProxy}
+   */
+  quadraticCurveTo: function (x1, y1, x2, y2) {
+    this.addData(CMD.Q, x1, y1, x2, y2);
+
+    if (this._ctx) {
+      this._needsDash() ? this._dashedQuadraticTo(x1, y1, x2, y2) : this._ctx.quadraticCurveTo(x1, y1, x2, y2);
+    }
+
+    this._xi = x2;
+    this._yi = y2;
+    return this;
+  },
+
+  /**
+   * @param  {number} cx
+   * @param  {number} cy
+   * @param  {number} r
+   * @param  {number} startAngle
+   * @param  {number} endAngle
+   * @param  {boolean} anticlockwise
+   * @return {module:zrender/core/PathProxy}
+   */
+  arc: function (cx, cy, r, startAngle, endAngle, anticlockwise) {
+    this.addData(CMD.A, cx, cy, r, r, startAngle, endAngle - startAngle, 0, anticlockwise ? 0 : 1);
+    this._ctx && this._ctx.arc(cx, cy, r, startAngle, endAngle, anticlockwise);
+    this._xi = mathCos(endAngle) * r + cx;
+    this._yi = mathSin(endAngle) * r + cx;
+    return this;
+  },
+  // TODO
+  arcTo: function (x1, y1, x2, y2, radius) {
+    if (this._ctx) {
+      this._ctx.arcTo(x1, y1, x2, y2, radius);
+    }
+
+    return this;
+  },
+  // TODO
+  rect: function (x, y, w, h) {
+    this._ctx && this._ctx.rect(x, y, w, h);
+    this.addData(CMD.R, x, y, w, h);
+    return this;
+  },
+
+  /**
+   * @return {module:zrender/core/PathProxy}
+   */
+  closePath: function () {
+    this.addData(CMD.Z);
+    var ctx = this._ctx;
+    var x0 = this._x0;
+    var y0 = this._y0;
+
+    if (ctx) {
+      this._needsDash() && this._dashedLineTo(x0, y0);
+      ctx.closePath();
+    }
+
+    this._xi = x0;
+    this._yi = y0;
+    return this;
+  },
+
+  /**
+   * Context 从外部传入，因为有可能是 rebuildPath 完之后再 fill。
+   * stroke 同样
+   * @param {CanvasRenderingContext2D} ctx
+   * @return {module:zrender/core/PathProxy}
+   */
+  fill: function (ctx) {
+    ctx && ctx.fill();
+    this.toStatic();
+  },
+
+  /**
+   * @param {CanvasRenderingContext2D} ctx
+   * @return {module:zrender/core/PathProxy}
+   */
+  stroke: function (ctx) {
+    ctx && ctx.stroke();
+    this.toStatic();
+  },
+
+  /**
+   * 必须在其它绘制命令前调用
+   * Must be invoked before all other path drawing methods
+   * @return {module:zrender/core/PathProxy}
+   */
+  setLineDash: function (lineDash) {
+    if (lineDash instanceof Array) {
+      this._lineDash = lineDash;
+      this._dashIdx = 0;
+      var lineDashSum = 0;
+
+      for (var i = 0; i < lineDash.length; i++) {
+        lineDashSum += lineDash[i];
+      }
+
+      this._dashSum = lineDashSum;
+    }
+
+    return this;
+  },
+
+  /**
+   * 必须在其它绘制命令前调用
+   * Must be invoked before all other path drawing methods
+   * @return {module:zrender/core/PathProxy}
+   */
+  setLineDashOffset: function (offset) {
+    this._dashOffset = offset;
+    return this;
+  },
+
+  /**
+   *
+   * @return {boolean}
+   */
+  len: function () {
+    return this._len;
+  },
+
+  /**
+   * 直接设置 Path 数据
+   */
+  setData: function (data) {
+    var len = data.length;
+
+    if (!(this.data && this.data.length == len) && hasTypedArray) {
+      this.data = new Float32Array(len);
+    }
+
+    for (var i = 0; i < len; i++) {
+      this.data[i] = data[i];
+    }
+
+    this._len = len;
+  },
+
+  /**
+   * 添加子路径
+   * @param {module:zrender/core/PathProxy|Array.<module:zrender/core/PathProxy>} path
+   */
+  appendPath: function (path) {
+    if (!(path instanceof Array)) {
+      path = [path];
+    }
+
+    var len = path.length;
+    var appendSize = 0;
+    var offset = this._len;
+
+    for (var i = 0; i < len; i++) {
+      appendSize += path[i].len();
+    }
+
+    if (hasTypedArray && this.data instanceof Float32Array) {
+      this.data = new Float32Array(offset + appendSize);
+    }
+
+    for (var i = 0; i < len; i++) {
+      var appendPathData = path[i].data;
+
+      for (var k = 0; k < appendPathData.length; k++) {
+        this.data[offset++] = appendPathData[k];
+      }
+    }
+
+    this._len = offset;
+  },
+
+  /**
+   * 填充 Path 数据。
+   * 尽量复用而不申明新的数组。大部分图形重绘的指令数据长度都是不变的。
+   */
+  addData: function (cmd) {
+    if (!this._saveData) {
+      return;
+    }
+
+    var data = this.data;
+
+    if (this._len + arguments.length > data.length) {
+      // 因为之前的数组已经转换成静态的 Float32Array
+      // 所以不够用时需要扩展一个新的动态数组
+      this._expandData();
+
+      data = this.data;
+    }
+
+    for (var i = 0; i < arguments.length; i++) {
+      data[this._len++] = arguments[i];
+    }
+
+    this._prevCmd = cmd;
+  },
+  _expandData: function () {
+    // Only if data is Float32Array
+    if (!(this.data instanceof Array)) {
+      var newData = [];
+
+      for (var i = 0; i < this._len; i++) {
+        newData[i] = this.data[i];
+      }
+
+      this.data = newData;
+    }
+  },
+
+  /**
+   * If needs js implemented dashed line
+   * @return {boolean}
+   * @private
+   */
+  _needsDash: function () {
+    return this._lineDash;
+  },
+  _dashedLineTo: function (x1, y1) {
+    var dashSum = this._dashSum;
+    var offset = this._dashOffset;
+    var lineDash = this._lineDash;
+    var ctx = this._ctx;
+    var x0 = this._xi;
+    var y0 = this._yi;
+    var dx = x1 - x0;
+    var dy = y1 - y0;
+    var dist = mathSqrt(dx * dx + dy * dy);
+    var x = x0;
+    var y = y0;
+    var dash;
+    var nDash = lineDash.length;
+    var idx;
+    dx /= dist;
+    dy /= dist;
+
+    if (offset < 0) {
+      // Convert to positive offset
+      offset = dashSum + offset;
+    }
+
+    offset %= dashSum;
+    x -= offset * dx;
+    y -= offset * dy;
+
+    while (dx > 0 && x <= x1 || dx < 0 && x >= x1 || dx == 0 && (dy > 0 && y <= y1 || dy < 0 && y >= y1)) {
+      idx = this._dashIdx;
+      dash = lineDash[idx];
+      x += dx * dash;
+      y += dy * dash;
+      this._dashIdx = (idx + 1) % nDash; // Skip positive offset
+
+      if (dx > 0 && x < x0 || dx < 0 && x > x0 || dy > 0 && y < y0 || dy < 0 && y > y0) {
+        continue;
+      }
+
+      ctx[idx % 2 ? 'moveTo' : 'lineTo'](dx >= 0 ? mathMin(x, x1) : mathMax(x, x1), dy >= 0 ? mathMin(y, y1) : mathMax(y, y1));
+    } // Offset for next lineTo
+
+
+    dx = x - x1;
+    dy = y - y1;
+    this._dashOffset = -mathSqrt(dx * dx + dy * dy);
+  },
+  // Not accurate dashed line to
+  _dashedBezierTo: function (x1, y1, x2, y2, x3, y3) {
+    var dashSum = this._dashSum;
+    var offset = this._dashOffset;
+    var lineDash = this._lineDash;
+    var ctx = this._ctx;
+    var x0 = this._xi;
+    var y0 = this._yi;
+    var t;
+    var dx;
+    var dy;
+    var cubicAt = curve.cubicAt;
+    var bezierLen = 0;
+    var idx = this._dashIdx;
+    var nDash = lineDash.length;
+    var x;
+    var y;
+    var tmpLen = 0;
+
+    if (offset < 0) {
+      // Convert to positive offset
+      offset = dashSum + offset;
+    }
+
+    offset %= dashSum; // Bezier approx length
+
+    for (t = 0; t < 1; t += 0.1) {
+      dx = cubicAt(x0, x1, x2, x3, t + 0.1) - cubicAt(x0, x1, x2, x3, t);
+      dy = cubicAt(y0, y1, y2, y3, t + 0.1) - cubicAt(y0, y1, y2, y3, t);
+      bezierLen += mathSqrt(dx * dx + dy * dy);
+    } // Find idx after add offset
+
+
+    for (; idx < nDash; idx++) {
+      tmpLen += lineDash[idx];
+
+      if (tmpLen > offset) {
+        break;
+      }
+    }
+
+    t = (tmpLen - offset) / bezierLen;
+
+    while (t <= 1) {
+      x = cubicAt(x0, x1, x2, x3, t);
+      y = cubicAt(y0, y1, y2, y3, t); // Use line to approximate dashed bezier
+      // Bad result if dash is long
+
+      idx % 2 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      t += lineDash[idx] / bezierLen;
+      idx = (idx + 1) % nDash;
+    } // Finish the last segment and calculate the new offset
+
+
+    idx % 2 !== 0 && ctx.lineTo(x3, y3);
+    dx = x3 - x;
+    dy = y3 - y;
+    this._dashOffset = -mathSqrt(dx * dx + dy * dy);
+  },
+  _dashedQuadraticTo: function (x1, y1, x2, y2) {
+    // Convert quadratic to cubic using degree elevation
+    var x3 = x2;
+    var y3 = y2;
+    x2 = (x2 + 2 * x1) / 3;
+    y2 = (y2 + 2 * y1) / 3;
+    x1 = (this._xi + 2 * x1) / 3;
+    y1 = (this._yi + 2 * y1) / 3;
+
+    this._dashedBezierTo(x1, y1, x2, y2, x3, y3);
+  },
+
+  /**
+   * 转成静态的 Float32Array 减少堆内存占用
+   * Convert dynamic array to static Float32Array
+   */
+  toStatic: function () {
+    var data = this.data;
+
+    if (data instanceof Array) {
+      data.length = this._len;
+
+      if (hasTypedArray) {
+        this.data = new Float32Array(data);
+      }
+    }
+  },
+
+  /**
+   * @return {module:zrender/core/BoundingRect}
+   */
+  getBoundingRect: function () {
+    min[0] = min[1] = min2[0] = min2[1] = Number.MAX_VALUE;
+    max[0] = max[1] = max2[0] = max2[1] = -Number.MAX_VALUE;
+    var data = this.data;
+    var xi = 0;
+    var yi = 0;
+    var x0 = 0;
+    var y0 = 0;
+
+    for (var i = 0; i < data.length;) {
+      var cmd = data[i++];
+
+      if (i == 1) {
+        // 如果第一个命令是 L, C, Q
+        // 则 previous point 同绘制命令的第一个 point
+        //
+        // 第一个命令为 Arc 的情况下会在后面特殊处理
+        xi = data[i];
+        yi = data[i + 1];
+        x0 = xi;
+        y0 = yi;
+      }
+
+      switch (cmd) {
+        case CMD.M:
+          // moveTo 命令重新创建一个新的 subpath, 并且更新新的起点
+          // 在 closePath 的时候使用
+          x0 = data[i++];
+          y0 = data[i++];
+          xi = x0;
+          yi = y0;
+          min2[0] = x0;
+          min2[1] = y0;
+          max2[0] = x0;
+          max2[1] = y0;
+          break;
+
+        case CMD.L:
+          bbox.fromLine(xi, yi, data[i], data[i + 1], min2, max2);
+          xi = data[i++];
+          yi = data[i++];
+          break;
+
+        case CMD.C:
+          bbox.fromCubic(xi, yi, data[i++], data[i++], data[i++], data[i++], data[i], data[i + 1], min2, max2);
+          xi = data[i++];
+          yi = data[i++];
+          break;
+
+        case CMD.Q:
+          bbox.fromQuadratic(xi, yi, data[i++], data[i++], data[i], data[i + 1], min2, max2);
+          xi = data[i++];
+          yi = data[i++];
+          break;
+
+        case CMD.A:
+          // TODO Arc 判断的开销比较大
+          var cx = data[i++];
+          var cy = data[i++];
+          var rx = data[i++];
+          var ry = data[i++];
+          var startAngle = data[i++];
+          var endAngle = data[i++] + startAngle; // TODO Arc 旋转
+
+          var psi = data[i++];
+          var anticlockwise = 1 - data[i++];
+
+          if (i == 1) {
+            // 直接使用 arc 命令
+            // 第一个命令起点还未定义
+            x0 = mathCos(startAngle) * rx + cx;
+            y0 = mathSin(startAngle) * ry + cy;
+          }
+
+          bbox.fromArc(cx, cy, rx, ry, startAngle, endAngle, anticlockwise, min2, max2);
+          xi = mathCos(endAngle) * rx + cx;
+          yi = mathSin(endAngle) * ry + cy;
+          break;
+
+        case CMD.R:
+          x0 = xi = data[i++];
+          y0 = yi = data[i++];
+          var width = data[i++];
+          var height = data[i++]; // Use fromLine
+
+          bbox.fromLine(x0, y0, x0 + width, y0 + height, min2, max2);
+          break;
+
+        case CMD.Z:
+          xi = x0;
+          yi = y0;
+          break;
+      } // Union
+
+
+      vec2.min(min, min, min2);
+      vec2.max(max, max, max2);
+    } // No data
+
+
+    if (i === 0) {
+      min[0] = min[1] = max[0] = max[1] = 0;
+    }
+
+    return new BoundingRect(min[0], min[1], max[0] - min[0], max[1] - min[1]);
+  },
+
+  /**
+   * Rebuild path from current data
+   * Rebuild path will not consider javascript implemented line dash.
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  rebuildPath: function (ctx) {
+    var d = this.data;
+    var x0, y0;
+    var xi, yi;
+    var x, y;
+    var ux = this._ux;
+    var uy = this._uy;
+    var len = this._len;
+
+    for (var i = 0; i < len;) {
+      var cmd = d[i++];
+
+      if (i == 1) {
+        // 如果第一个命令是 L, C, Q
+        // 则 previous point 同绘制命令的第一个 point
+        //
+        // 第一个命令为 Arc 的情况下会在后面特殊处理
+        xi = d[i];
+        yi = d[i + 1];
+        x0 = xi;
+        y0 = yi;
+      }
+
+      switch (cmd) {
+        case CMD.M:
+          x0 = xi = d[i++];
+          y0 = yi = d[i++];
+          ctx.moveTo(xi, yi);
+          break;
+
+        case CMD.L:
+          x = d[i++];
+          y = d[i++]; // Not draw too small seg between
+
+          if (mathAbs(x - xi) > ux || mathAbs(y - yi) > uy || i === len - 1) {
+            ctx.lineTo(x, y);
+            xi = x;
+            yi = y;
+          }
+
+          break;
+
+        case CMD.C:
+          ctx.bezierCurveTo(d[i++], d[i++], d[i++], d[i++], d[i++], d[i++]);
+          xi = d[i - 2];
+          yi = d[i - 1];
+          break;
+
+        case CMD.Q:
+          ctx.quadraticCurveTo(d[i++], d[i++], d[i++], d[i++]);
+          xi = d[i - 2];
+          yi = d[i - 1];
+          break;
+
+        case CMD.A:
+          var cx = d[i++];
+          var cy = d[i++];
+          var rx = d[i++];
+          var ry = d[i++];
+          var theta = d[i++];
+          var dTheta = d[i++];
+          var psi = d[i++];
+          var fs = d[i++];
+          var r = rx > ry ? rx : ry;
+          var scaleX = rx > ry ? 1 : rx / ry;
+          var scaleY = rx > ry ? ry / rx : 1;
+          var isEllipse = Math.abs(rx - ry) > 1e-3;
+          var endAngle = theta + dTheta;
+
+          if (isEllipse) {
+            ctx.translate(cx, cy);
+            ctx.rotate(psi);
+            ctx.scale(scaleX, scaleY);
+            ctx.arc(0, 0, r, theta, endAngle, 1 - fs);
+            ctx.scale(1 / scaleX, 1 / scaleY);
+            ctx.rotate(-psi);
+            ctx.translate(-cx, -cy);
+          } else {
+            ctx.arc(cx, cy, r, theta, endAngle, 1 - fs);
+          }
+
+          if (i == 1) {
+            // 直接使用 arc 命令
+            // 第一个命令起点还未定义
+            x0 = mathCos(theta) * rx + cx;
+            y0 = mathSin(theta) * ry + cy;
+          }
+
+          xi = mathCos(endAngle) * rx + cx;
+          yi = mathSin(endAngle) * ry + cy;
+          break;
+
+        case CMD.R:
+          x0 = xi = d[i];
+          y0 = yi = d[i + 1];
+          ctx.rect(d[i++], d[i++], d[i++], d[i++]);
+          break;
+
+        case CMD.Z:
+          ctx.closePath();
+          xi = x0;
+          yi = y0;
+      }
+    }
+  }
+};
+PathProxy.CMD = CMD;
+var _default = PathProxy;
+module.exports = _default;
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var zrUtil = __webpack_require__(0);
+
+var _clazz = __webpack_require__(17);
+
+var parseClassType = _clazz.parseClassType;
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+var base = 0;
+/**
+ * @public
+ * @param {string} type
+ * @return {string}
+ */
+
+function getUID(type) {
+  // Considering the case of crossing js context,
+  // use Math.random to make id as unique as possible.
+  return [type || '', base++, Math.random().toFixed(5)].join('_');
+}
+/**
+ * @inner
+ */
+
+
+function enableSubTypeDefaulter(entity) {
+  var subTypeDefaulters = {};
+
+  entity.registerSubTypeDefaulter = function (componentType, defaulter) {
+    componentType = parseClassType(componentType);
+    subTypeDefaulters[componentType.main] = defaulter;
+  };
+
+  entity.determineSubType = function (componentType, option) {
+    var type = option.type;
+
+    if (!type) {
+      var componentTypeMain = parseClassType(componentType).main;
+
+      if (entity.hasSubTypes(componentType) && subTypeDefaulters[componentTypeMain]) {
+        type = subTypeDefaulters[componentTypeMain](option);
+      }
+    }
+
+    return type;
+  };
+
+  return entity;
+}
+/**
+ * Topological travel on Activity Network (Activity On Vertices).
+ * Dependencies is defined in Model.prototype.dependencies, like ['xAxis', 'yAxis'].
+ *
+ * If 'xAxis' or 'yAxis' is absent in componentTypeList, just ignore it in topology.
+ *
+ * If there is circle dependencey, Error will be thrown.
+ *
+ */
+
+
+function enableTopologicalTravel(entity, dependencyGetter) {
+  /**
+   * @public
+   * @param {Array.<string>} targetNameList Target Component type list.
+   *                                           Can be ['aa', 'bb', 'aa.xx']
+   * @param {Array.<string>} fullNameList By which we can build dependency graph.
+   * @param {Function} callback Params: componentType, dependencies.
+   * @param {Object} context Scope of callback.
+   */
+  entity.topologicalTravel = function (targetNameList, fullNameList, callback, context) {
+    if (!targetNameList.length) {
+      return;
+    }
+
+    var result = makeDepndencyGraph(fullNameList);
+    var graph = result.graph;
+    var stack = result.noEntryList;
+    var targetNameSet = {};
+    zrUtil.each(targetNameList, function (name) {
+      targetNameSet[name] = true;
+    });
+
+    while (stack.length) {
+      var currComponentType = stack.pop();
+      var currVertex = graph[currComponentType];
+      var isInTargetNameSet = !!targetNameSet[currComponentType];
+
+      if (isInTargetNameSet) {
+        callback.call(context, currComponentType, currVertex.originalDeps.slice());
+        delete targetNameSet[currComponentType];
+      }
+
+      zrUtil.each(currVertex.successor, isInTargetNameSet ? removeEdgeAndAdd : removeEdge);
+    }
+
+    zrUtil.each(targetNameSet, function () {
+      throw new Error('Circle dependency may exists');
+    });
+
+    function removeEdge(succComponentType) {
+      graph[succComponentType].entryCount--;
+
+      if (graph[succComponentType].entryCount === 0) {
+        stack.push(succComponentType);
+      }
+    } // Consider this case: legend depends on series, and we call
+    // chart.setOption({series: [...]}), where only series is in option.
+    // If we do not have 'removeEdgeAndAdd', legendModel.mergeOption will
+    // not be called, but only sereis.mergeOption is called. Thus legend
+    // have no chance to update its local record about series (like which
+    // name of series is available in legend).
+
+
+    function removeEdgeAndAdd(succComponentType) {
+      targetNameSet[succComponentType] = true;
+      removeEdge(succComponentType);
+    }
+  };
+  /**
+   * DepndencyGraph: {Object}
+   * key: conponentType,
+   * value: {
+   *     successor: [conponentTypes...],
+   *     originalDeps: [conponentTypes...],
+   *     entryCount: {number}
+   * }
+   */
+
+
+  function makeDepndencyGraph(fullNameList) {
+    var graph = {};
+    var noEntryList = [];
+    zrUtil.each(fullNameList, function (name) {
+      var thisItem = createDependencyGraphItem(graph, name);
+      var originalDeps = thisItem.originalDeps = dependencyGetter(name);
+      var availableDeps = getAvailableDependencies(originalDeps, fullNameList);
+      thisItem.entryCount = availableDeps.length;
+
+      if (thisItem.entryCount === 0) {
+        noEntryList.push(name);
+      }
+
+      zrUtil.each(availableDeps, function (dependentName) {
+        if (zrUtil.indexOf(thisItem.predecessor, dependentName) < 0) {
+          thisItem.predecessor.push(dependentName);
+        }
+
+        var thatItem = createDependencyGraphItem(graph, dependentName);
+
+        if (zrUtil.indexOf(thatItem.successor, dependentName) < 0) {
+          thatItem.successor.push(name);
+        }
+      });
+    });
+    return {
+      graph: graph,
+      noEntryList: noEntryList
+    };
+  }
+
+  function createDependencyGraphItem(graph, name) {
+    if (!graph[name]) {
+      graph[name] = {
+        predecessor: [],
+        successor: []
+      };
+    }
+
+    return graph[name];
+  }
+
+  function getAvailableDependencies(originalDeps, fullNameList) {
+    var availableDeps = [];
+    zrUtil.each(originalDeps, function (dep) {
+      zrUtil.indexOf(fullNameList, dep) >= 0 && availableDeps.push(dep);
+    });
+    return availableDeps;
+  }
+}
+
+exports.getUID = getUID;
+exports.enableSubTypeDefaulter = enableSubTypeDefaulter;
+exports.enableTopologicalTravel = enableTopologicalTravel;
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _config = __webpack_require__(6);
+
+var __DEV__ = _config.__DEV__;
+
+var _model = __webpack_require__(4);
+
+var makeInner = _model.makeInner;
+var getDataItemValue = _model.getDataItemValue;
+
+var _referHelper = __webpack_require__(95);
+
+var getCoordSysDefineBySeries = _referHelper.getCoordSysDefineBySeries;
+
+var _util = __webpack_require__(0);
+
+var createHashMap = _util.createHashMap;
+var each = _util.each;
+var map = _util.map;
+var isArray = _util.isArray;
+var isString = _util.isString;
+var isObject = _util.isObject;
+var isTypedArray = _util.isTypedArray;
+var isArrayLike = _util.isArrayLike;
+var extend = _util.extend;
+var assert = _util.assert;
+
+var Source = __webpack_require__(28);
+
+var _sourceType = __webpack_require__(29);
+
+var SOURCE_FORMAT_ORIGINAL = _sourceType.SOURCE_FORMAT_ORIGINAL;
+var SOURCE_FORMAT_ARRAY_ROWS = _sourceType.SOURCE_FORMAT_ARRAY_ROWS;
+var SOURCE_FORMAT_OBJECT_ROWS = _sourceType.SOURCE_FORMAT_OBJECT_ROWS;
+var SOURCE_FORMAT_KEYED_COLUMNS = _sourceType.SOURCE_FORMAT_KEYED_COLUMNS;
+var SOURCE_FORMAT_UNKNOWN = _sourceType.SOURCE_FORMAT_UNKNOWN;
+var SOURCE_FORMAT_TYPED_ARRAY = _sourceType.SOURCE_FORMAT_TYPED_ARRAY;
+var SERIES_LAYOUT_BY_ROW = _sourceType.SERIES_LAYOUT_BY_ROW;
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+var inner = makeInner();
+/**
+ * @see {module:echarts/data/Source}
+ * @param {module:echarts/component/dataset/DatasetModel} datasetModel
+ * @return {string} sourceFormat
+ */
+
+function detectSourceFormat(datasetModel) {
+  var data = datasetModel.option.source;
+  var sourceFormat = SOURCE_FORMAT_UNKNOWN;
+
+  if (isTypedArray(data)) {
+    sourceFormat = SOURCE_FORMAT_TYPED_ARRAY;
+  } else if (isArray(data)) {
+    // FIXME Whether tolerate null in top level array?
+    for (var i = 0, len = data.length; i < len; i++) {
+      var item = data[i];
+
+      if (item == null) {
+        continue;
+      } else if (isArray(item)) {
+        sourceFormat = SOURCE_FORMAT_ARRAY_ROWS;
+        break;
+      } else if (isObject(item)) {
+        sourceFormat = SOURCE_FORMAT_OBJECT_ROWS;
+        break;
+      }
+    }
+  } else if (isObject(data)) {
+    for (var key in data) {
+      if (data.hasOwnProperty(key) && isArrayLike(data[key])) {
+        sourceFormat = SOURCE_FORMAT_KEYED_COLUMNS;
+        break;
+      }
+    }
+  } else if (data != null) {
+    throw new Error('Invalid data');
+  }
+
+  inner(datasetModel).sourceFormat = sourceFormat;
+}
+/**
+ * [Scenarios]:
+ * (1) Provide source data directly:
+ *     series: {
+ *         encode: {...},
+ *         dimensions: [...]
+ *         seriesLayoutBy: 'row',
+ *         data: [[...]]
+ *     }
+ * (2) Refer to datasetModel.
+ *     series: [{
+ *         encode: {...}
+ *         // Ignore datasetIndex means `datasetIndex: 0`
+ *         // and the dimensions defination in dataset is used
+ *     }, {
+ *         encode: {...},
+ *         seriesLayoutBy: 'column',
+ *         datasetIndex: 1
+ *     }]
+ *
+ * Get data from series itself or datset.
+ * @return {module:echarts/data/Source} source
+ */
+
+
+function getSource(seriesModel) {
+  return inner(seriesModel).source;
+}
+/**
+ * MUST be called before mergeOption of all series.
+ * @param {module:echarts/model/Global} ecModel
+ */
+
+
+function resetSourceDefaulter(ecModel) {
+  // `datasetMap` is used to make default encode.
+  inner(ecModel).datasetMap = createHashMap();
+}
+/**
+ * [Caution]:
+ * MUST be called after series option merged and
+ * before "series.getInitailData()" called.
+ *
+ * [The rule of making default encode]:
+ * Category axis (if exists) alway map to the first dimension.
+ * Each other axis occupies a subsequent dimension.
+ *
+ * [Why make default encode]:
+ * Simplify the typing of encode in option, avoiding the case like that:
+ * series: [{encode: {x: 0, y: 1}}, {encode: {x: 0, y: 2}}, {encode: {x: 0, y: 3}}],
+ * where the "y" have to be manually typed as "1, 2, 3, ...".
+ *
+ * @param {module:echarts/model/Series} seriesModel
+ */
+
+
+function prepareSource(seriesModel) {
+  var seriesOption = seriesModel.option;
+  var data = seriesOption.data;
+  var sourceFormat = isTypedArray(data) ? SOURCE_FORMAT_TYPED_ARRAY : SOURCE_FORMAT_ORIGINAL;
+  var fromDataset = false;
+  var seriesLayoutBy = seriesOption.seriesLayoutBy;
+  var sourceHeader = seriesOption.sourceHeader;
+  var dimensionsDefine = seriesOption.dimensions;
+  var datasetModel = getDatasetModel(seriesModel);
+
+  if (datasetModel) {
+    var datasetOption = datasetModel.option;
+    data = datasetOption.source;
+    sourceFormat = inner(datasetModel).sourceFormat;
+    fromDataset = true; // These settings from series has higher priority.
+
+    seriesLayoutBy = seriesLayoutBy || datasetOption.seriesLayoutBy;
+    sourceHeader == null && (sourceHeader = datasetOption.sourceHeader);
+    dimensionsDefine = dimensionsDefine || datasetOption.dimensions;
+  }
+
+  var completeResult = completeBySourceData(data, sourceFormat, seriesLayoutBy, sourceHeader, dimensionsDefine); // Note: dataset option does not have `encode`.
+
+  var encodeDefine = seriesOption.encode;
+
+  if (!encodeDefine && datasetModel) {
+    encodeDefine = makeDefaultEncode(seriesModel, datasetModel, data, sourceFormat, seriesLayoutBy, completeResult);
+  }
+
+  inner(seriesModel).source = new Source({
+    data: data,
+    fromDataset: fromDataset,
+    seriesLayoutBy: seriesLayoutBy,
+    sourceFormat: sourceFormat,
+    dimensionsDefine: completeResult.dimensionsDefine,
+    startIndex: completeResult.startIndex,
+    dimensionsDetectCount: completeResult.dimensionsDetectCount,
+    encodeDefine: encodeDefine
+  });
+} // return {startIndex, dimensionsDefine, dimensionsCount}
+
+
+function completeBySourceData(data, sourceFormat, seriesLayoutBy, sourceHeader, dimensionsDefine) {
+  if (!data) {
+    return {
+      dimensionsDefine: normalizeDimensionsDefine(dimensionsDefine)
+    };
+  }
+
+  var dimensionsDetectCount;
+  var startIndex;
+  var findPotentialName;
+
+  if (sourceFormat === SOURCE_FORMAT_ARRAY_ROWS) {
+    // Rule: Most of the first line are string: it is header.
+    // Caution: consider a line with 5 string and 1 number,
+    // it still can not be sure it is a head, because the
+    // 5 string may be 5 values of category columns.
+    if (sourceHeader === 'auto' || sourceHeader == null) {
+      arrayRowsTravelFirst(function (val) {
+        // '-' is regarded as null/undefined.
+        if (val != null && val !== '-') {
+          if (isString(val)) {
+            startIndex == null && (startIndex = 1);
+          } else {
+            startIndex = 0;
+          }
+        } // 10 is an experience number, avoid long loop.
+
+      }, seriesLayoutBy, data, 10);
+    } else {
+      startIndex = sourceHeader ? 1 : 0;
+    }
+
+    if (!dimensionsDefine && startIndex === 1) {
+      dimensionsDefine = [];
+      arrayRowsTravelFirst(function (val, index) {
+        dimensionsDefine[index] = val != null ? val : '';
+      }, seriesLayoutBy, data);
+    }
+
+    dimensionsDetectCount = dimensionsDefine ? dimensionsDefine.length : seriesLayoutBy === SERIES_LAYOUT_BY_ROW ? data.length : data[0] ? data[0].length : null;
+  } else if (sourceFormat === SOURCE_FORMAT_OBJECT_ROWS) {
+    if (!dimensionsDefine) {
+      dimensionsDefine = objectRowsCollectDimensions(data);
+      findPotentialName = true;
+    }
+  } else if (sourceFormat === SOURCE_FORMAT_KEYED_COLUMNS) {
+    if (!dimensionsDefine) {
+      dimensionsDefine = [];
+      findPotentialName = true;
+      each(data, function (colArr, key) {
+        dimensionsDefine.push(key);
+      });
+    }
+  } else if (sourceFormat === SOURCE_FORMAT_ORIGINAL) {
+    var value0 = getDataItemValue(data[0]);
+    dimensionsDetectCount = isArray(value0) && value0.length || 1;
+  } else if (sourceFormat === SOURCE_FORMAT_TYPED_ARRAY) {}
+
+  var potentialNameDimIndex;
+
+  if (findPotentialName) {
+    each(dimensionsDefine, function (dim, idx) {
+      if ((isObject(dim) ? dim.name : dim) === 'name') {
+        potentialNameDimIndex = idx;
+      }
+    });
+  }
+
+  return {
+    startIndex: startIndex,
+    dimensionsDefine: normalizeDimensionsDefine(dimensionsDefine),
+    dimensionsDetectCount: dimensionsDetectCount,
+    potentialNameDimIndex: potentialNameDimIndex // TODO: potentialIdDimIdx
+
+  };
+} // Consider dimensions defined like ['A', 'price', 'B', 'price', 'C', 'price'],
+// which is reasonable. But dimension name is duplicated.
+// Returns undefined or an array contains only object without null/undefiend or string.
+
+
+function normalizeDimensionsDefine(dimensionsDefine) {
+  if (!dimensionsDefine) {
+    // The meaning of null/undefined is different from empty array.
+    return;
+  }
+
+  var nameMap = createHashMap();
+  return map(dimensionsDefine, function (item, index) {
+    item = extend({}, isObject(item) ? item : {
+      name: item
+    }); // User can set null in dimensions.
+    // We dont auto specify name, othewise a given name may
+    // cause it be refered unexpectedly.
+
+    if (item.name == null) {
+      return item;
+    } // Also consider number form like 2012.
+
+
+    item.name += ''; // User may also specify displayName.
+    // displayName will always exists except user not
+    // specified or dim name is not specified or detected.
+    // (A auto generated dim name will not be used as
+    // displayName).
+
+    if (item.displayName == null) {
+      item.displayName = item.name;
+    }
+
+    var exist = nameMap.get(item.name);
+
+    if (!exist) {
+      nameMap.set(item.name, {
+        count: 1
+      });
+    } else {
+      item.name += '-' + exist.count++;
+    }
+
+    return item;
+  });
+}
+
+function arrayRowsTravelFirst(cb, seriesLayoutBy, data, maxLoop) {
+  maxLoop == null && (maxLoop = Infinity);
+
+  if (seriesLayoutBy === SERIES_LAYOUT_BY_ROW) {
+    for (var i = 0; i < data.length && i < maxLoop; i++) {
+      cb(data[i] ? data[i][0] : null, i);
+    }
+  } else {
+    var value0 = data[0] || [];
+
+    for (var i = 0; i < value0.length && i < maxLoop; i++) {
+      cb(value0[i], i);
+    }
+  }
+}
+
+function objectRowsCollectDimensions(data) {
+  var firstIndex = 0;
+  var obj;
+
+  while (firstIndex < data.length && !(obj = data[firstIndex++])) {} // jshint ignore: line
+
+
+  if (obj) {
+    var dimensions = [];
+    each(obj, function (value, key) {
+      dimensions.push(key);
+    });
+    return dimensions;
+  }
+} // ??? TODO merge to completedimensions, where also has
+// default encode making logic. And the default rule
+// should depends on series? consider 'map'.
+
+
+function makeDefaultEncode(seriesModel, datasetModel, data, sourceFormat, seriesLayoutBy, completeResult) {
+  var coordSysDefine = getCoordSysDefineBySeries(seriesModel);
+  var encode = {}; // var encodeTooltip = [];
+  // var encodeLabel = [];
+
+  var encodeItemName = [];
+  var encodeSeriesName = [];
+  var seriesType = seriesModel.subType; // ??? TODO refactor: provide by series itself.
+  // Consider the case: 'map' series is based on geo coordSys,
+  // 'graph', 'heatmap' can be based on cartesian. But can not
+  // give default rule simply here.
+
+  var nSeriesMap = createHashMap(['pie', 'map', 'funnel']);
+  var cSeriesMap = createHashMap(['line', 'bar', 'pictorialBar', 'scatter', 'effectScatter', 'candlestick', 'boxplot']); // Usually in this case series will use the first data
+  // dimension as the "value" dimension, or other default
+  // processes respectively.
+
+  if (coordSysDefine && cSeriesMap.get(seriesType) != null) {
+    var ecModel = seriesModel.ecModel;
+    var datasetMap = inner(ecModel).datasetMap;
+    var key = datasetModel.uid + '_' + seriesLayoutBy;
+    var datasetRecord = datasetMap.get(key) || datasetMap.set(key, {
+      categoryWayDim: 1,
+      valueWayDim: 0
+    }); // TODO
+    // Auto detect first time axis and do arrangement.
+
+    each(coordSysDefine.coordSysDims, function (coordDim) {
+      // In value way.
+      if (coordSysDefine.firstCategoryDimIndex == null) {
+        var dataDim = datasetRecord.valueWayDim++;
+        encode[coordDim] = dataDim; // ??? TODO give a better default series name rule?
+        // especially when encode x y specified.
+        // consider: when mutiple series share one dimension
+        // category axis, series name should better use
+        // the other dimsion name. On the other hand, use
+        // both dimensions name.
+
+        encodeSeriesName.push(dataDim); // encodeTooltip.push(dataDim);
+        // encodeLabel.push(dataDim);
+      } // In category way, category axis.
+      else if (coordSysDefine.categoryAxisMap.get(coordDim)) {
+          encode[coordDim] = 0;
+          encodeItemName.push(0);
+        } // In category way, non-category axis.
+        else {
+            var dataDim = datasetRecord.categoryWayDim++;
+            encode[coordDim] = dataDim; // encodeTooltip.push(dataDim);
+            // encodeLabel.push(dataDim);
+
+            encodeSeriesName.push(dataDim);
+          }
+    });
+  } // Do not make a complex rule! Hard to code maintain and not necessary.
+  // ??? TODO refactor: provide by series itself.
+  // [{name: ..., value: ...}, ...] like:
+  else if (nSeriesMap.get(seriesType) != null) {
+      // Find the first not ordinal. (5 is an experience value)
+      var firstNotOrdinal;
+
+      for (var i = 0; i < 5 && firstNotOrdinal == null; i++) {
+        if (!doGuessOrdinal(data, sourceFormat, seriesLayoutBy, completeResult.dimensionsDefine, completeResult.startIndex, i)) {
+          firstNotOrdinal = i;
+        }
+      }
+
+      if (firstNotOrdinal != null) {
+        encode.value = firstNotOrdinal;
+        var nameDimIndex = completeResult.potentialNameDimIndex || Math.max(firstNotOrdinal - 1, 0); // By default, label use itemName in charts.
+        // So we dont set encodeLabel here.
+
+        encodeSeriesName.push(nameDimIndex);
+        encodeItemName.push(nameDimIndex); // encodeTooltip.push(firstNotOrdinal);
+      }
+    } // encodeTooltip.length && (encode.tooltip = encodeTooltip);
+  // encodeLabel.length && (encode.label = encodeLabel);
+
+
+  encodeItemName.length && (encode.itemName = encodeItemName);
+  encodeSeriesName.length && (encode.seriesName = encodeSeriesName);
+  return encode;
+}
+/**
+ * If return null/undefined, indicate that should not use datasetModel.
+ */
+
+
+function getDatasetModel(seriesModel) {
+  var option = seriesModel.option; // Caution: consider the scenario:
+  // A dataset is declared and a series is not expected to use the dataset,
+  // and at the beginning `setOption({series: { noData })` (just prepare other
+  // option but no data), then `setOption({series: {data: [...]}); In this case,
+  // the user should set an empty array to avoid that dataset is used by default.
+
+  var thisData = option.data;
+
+  if (!thisData) {
+    return seriesModel.ecModel.getComponent('dataset', option.datasetIndex || 0);
+  }
+}
+/**
+ * The rule should not be complex, otherwise user might not
+ * be able to known where the data is wrong.
+ * The code is ugly, but how to make it neat?
+ *
+ * @param {module:echars/data/Source} source
+ * @param {number} dimIndex
+ * @return {boolean} Whether ordinal.
+ */
+
+
+function guessOrdinal(source, dimIndex) {
+  return doGuessOrdinal(source.data, source.sourceFormat, source.seriesLayoutBy, source.dimensionsDefine, source.startIndex, dimIndex);
+} // dimIndex may be overflow source data.
+
+
+function doGuessOrdinal(data, sourceFormat, seriesLayoutBy, dimensionsDefine, startIndex, dimIndex) {
+  var result; // Experience value.
+
+  var maxLoop = 5;
+
+  if (isTypedArray(data)) {
+    return false;
+  } // When sourceType is 'objectRows' or 'keyedColumns', dimensionsDefine
+  // always exists in source.
+
+
+  var dimName;
+
+  if (dimensionsDefine) {
+    dimName = dimensionsDefine[dimIndex];
+    dimName = isObject(dimName) ? dimName.name : dimName;
+  }
+
+  if (sourceFormat === SOURCE_FORMAT_ARRAY_ROWS) {
+    if (seriesLayoutBy === SERIES_LAYOUT_BY_ROW) {
+      var sample = data[dimIndex];
+
+      for (var i = 0; i < (sample || []).length && i < maxLoop; i++) {
+        if ((result = detectValue(sample[startIndex + i])) != null) {
+          return result;
+        }
+      }
+    } else {
+      for (var i = 0; i < data.length && i < maxLoop; i++) {
+        var row = data[startIndex + i];
+
+        if (row && (result = detectValue(row[dimIndex])) != null) {
+          return result;
+        }
+      }
+    }
+  } else if (sourceFormat === SOURCE_FORMAT_OBJECT_ROWS) {
+    if (!dimName) {
+      return;
+    }
+
+    for (var i = 0; i < data.length && i < maxLoop; i++) {
+      var item = data[i];
+
+      if (item && (result = detectValue(item[dimName])) != null) {
+        return result;
+      }
+    }
+  } else if (sourceFormat === SOURCE_FORMAT_KEYED_COLUMNS) {
+    if (!dimName) {
+      return;
+    }
+
+    var sample = data[dimName];
+
+    if (!sample || isTypedArray(sample)) {
+      return false;
+    }
+
+    for (var i = 0; i < sample.length && i < maxLoop; i++) {
+      if ((result = detectValue(sample[i])) != null) {
+        return result;
+      }
+    }
+  } else if (sourceFormat === SOURCE_FORMAT_ORIGINAL) {
+    for (var i = 0; i < data.length && i < maxLoop; i++) {
+      var item = data[i];
+      var val = getDataItemValue(item);
+
+      if (!isArray(val)) {
+        return false;
+      }
+
+      if ((result = detectValue(val[dimIndex])) != null) {
+        return result;
+      }
+    }
+  }
+
+  function detectValue(val) {
+    // Consider usage convenience, '1', '2' will be treated as "number".
+    // `isFinit('')` get `true`.
+    if (val != null && isFinite(val) && val !== '') {
+      return false;
+    } else if (isString(val) && val !== '-') {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+exports.detectSourceFormat = detectSourceFormat;
+exports.getSource = getSource;
+exports.resetSourceDefaulter = resetSourceDefaulter;
+exports.prepareSource = prepareSource;
+exports.guessOrdinal = guessOrdinal;
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var zrUtil = __webpack_require__(0);
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+var coordinateSystemCreators = {};
+
+function CoordinateSystemManager() {
+  this._coordinateSystems = [];
+}
+
+CoordinateSystemManager.prototype = {
+  constructor: CoordinateSystemManager,
+  create: function (ecModel, api) {
+    var coordinateSystems = [];
+    zrUtil.each(coordinateSystemCreators, function (creater, type) {
+      var list = creater.create(ecModel, api);
+      coordinateSystems = coordinateSystems.concat(list || []);
+    });
+    this._coordinateSystems = coordinateSystems;
+  },
+  update: function (ecModel, api) {
+    zrUtil.each(this._coordinateSystems, function (coordSys) {
+      coordSys.update && coordSys.update(ecModel, api);
+    });
+  },
+  getCoordinateSystems: function () {
+    return this._coordinateSystems.slice();
+  }
+};
+
+CoordinateSystemManager.register = function (type, coordinateSystemCreator) {
+  coordinateSystemCreators[type] = coordinateSystemCreator;
+};
+
+CoordinateSystemManager.get = function (type) {
+  return coordinateSystemCreators[type];
+};
+
+var _default = CoordinateSystemManager;
+module.exports = _default;
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _model = __webpack_require__(4);
+
+var makeInner = _model.makeInner;
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
+/**
+ * @return {string} If large mode changed, return string 'reset';
+ */
+function _default() {
+  var inner = makeInner();
+  return function (seriesModel) {
+    var fields = inner(seriesModel);
+    var pipelineContext = seriesModel.pipelineContext;
+    var originalLarge = fields.large;
+    var originalProgressive = fields.progressiveRender;
+    var large = fields.large = pipelineContext.large;
+    var progressive = fields.progressiveRender = pipelineContext.progressiveRender;
+    return !!(originalLarge ^ large || originalProgressive ^ progressive) && 'reset';
+  };
+}
+
+module.exports = _default;
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var zrUtil = __webpack_require__(0);
+
+var List = __webpack_require__(32);
+
+var createDimensions = __webpack_require__(100);
+
+var _sourceType = __webpack_require__(29);
+
+var SOURCE_FORMAT_ORIGINAL = _sourceType.SOURCE_FORMAT_ORIGINAL;
+
+var _dimensionHelper = __webpack_require__(57);
+
+var getDimensionTypeByAxis = _dimensionHelper.getDimensionTypeByAxis;
+
+var _model = __webpack_require__(4);
+
+var getDataItemValue = _model.getDataItemValue;
+
+var CoordinateSystem = __webpack_require__(42);
+
+var _referHelper = __webpack_require__(95);
+
+var getCoordSysDefineBySeries = _referHelper.getCoordSysDefineBySeries;
+
+var Source = __webpack_require__(28);
+
+var _dataStackHelper = __webpack_require__(21);
+
+var enableDataStack = _dataStackHelper.enableDataStack;
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
+/**
+ * @param {module:echarts/data/Source|Array} source Or raw data.
+ * @param {module:echarts/model/Series} seriesModel
+ * @param {Object} [opt]
+ * @param {string} [opt.generateCoord]
+ */
+function createListFromArray(source, seriesModel, opt) {
+  opt = opt || {};
+
+  if (!Source.isInstance(source)) {
+    source = Source.seriesDataToSource(source);
+  }
+
+  var coordSysName = seriesModel.get('coordinateSystem');
+  var registeredCoordSys = CoordinateSystem.get(coordSysName);
+  var coordSysDefine = getCoordSysDefineBySeries(seriesModel);
+  var coordSysDimDefs;
+
+  if (coordSysDefine) {
+    coordSysDimDefs = zrUtil.map(coordSysDefine.coordSysDims, function (dim) {
+      var dimInfo = {
+        name: dim
+      };
+      var axisModel = coordSysDefine.axisMap.get(dim);
+
+      if (axisModel) {
+        var axisType = axisModel.get('type');
+        dimInfo.type = getDimensionTypeByAxis(axisType); // dimInfo.stackable = isStackable(axisType);
+      }
+
+      return dimInfo;
+    });
+  }
+
+  if (!coordSysDimDefs) {
+    // Get dimensions from registered coordinate system
+    coordSysDimDefs = registeredCoordSys && (registeredCoordSys.getDimensionsInfo ? registeredCoordSys.getDimensionsInfo() : registeredCoordSys.dimensions.slice()) || ['x', 'y'];
+  }
+
+  var dimInfoList = createDimensions(source, {
+    coordDimensions: coordSysDimDefs,
+    generateCoord: opt.generateCoord
+  });
+  var firstCategoryDimIndex;
+  var hasNameEncode;
+  coordSysDefine && zrUtil.each(dimInfoList, function (dimInfo, dimIndex) {
+    var coordDim = dimInfo.coordDim;
+    var categoryAxisModel = coordSysDefine.categoryAxisMap.get(coordDim);
+
+    if (categoryAxisModel) {
+      if (firstCategoryDimIndex == null) {
+        firstCategoryDimIndex = dimIndex;
+      }
+
+      dimInfo.ordinalMeta = categoryAxisModel.getOrdinalMeta();
+    }
+
+    if (dimInfo.otherDims.itemName != null) {
+      hasNameEncode = true;
+    }
+  });
+
+  if (!hasNameEncode && firstCategoryDimIndex != null) {
+    dimInfoList[firstCategoryDimIndex].otherDims.itemName = 0;
+  }
+
+  var stackCalculationInfo = enableDataStack(seriesModel, dimInfoList);
+  var list = new List(dimInfoList, seriesModel);
+  list.setCalculationInfo(stackCalculationInfo);
+  var dimValueGetter = firstCategoryDimIndex != null && isNeedCompleteOrdinalData(source) ? function (itemOpt, dimName, dataIndex, dimIndex) {
+    // Use dataIndex as ordinal value in categoryAxis
+    return dimIndex === firstCategoryDimIndex ? dataIndex : this.defaultDimValueGetter(itemOpt, dimName, dataIndex, dimIndex);
+  } : null;
+  list.hasItemOption = false;
+  list.initData(source, null, dimValueGetter);
+  return list;
+}
+
+function isNeedCompleteOrdinalData(source) {
+  if (source.sourceFormat === SOURCE_FORMAT_ORIGINAL) {
+    var sampleItem = firstDataNotNull(source.data || []);
+    return sampleItem != null && !zrUtil.isArray(getDataItemValue(sampleItem));
+  }
+}
+
+function firstDataNotNull(data) {
+  var i = 0;
+
+  while (i < data.length && data[i] == null) {
+    i++;
+  }
+
+  return data[i];
+}
+
+var _default = createListFromArray;
+module.exports = _default;
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var clazzUtil = __webpack_require__(17);
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
+/**
+ * // Scale class management
+ * @module echarts/scale/Scale
+ */
+
+/**
+ * @param {Object} [setting]
+ */
+function Scale(setting) {
+  this._setting = setting || {};
+  /**
+   * Extent
+   * @type {Array.<number>}
+   * @protected
+   */
+
+  this._extent = [Infinity, -Infinity];
+  /**
+   * Step is calculated in adjustExtent
+   * @type {Array.<number>}
+   * @protected
+   */
+
+  this._interval = 0;
+  this.init && this.init.apply(this, arguments);
+}
+/**
+ * Parse input val to valid inner number.
+ * @param {*} val
+ * @return {number}
+ */
+
+
+Scale.prototype.parse = function (val) {
+  // Notice: This would be a trap here, If the implementation
+  // of this method depends on extent, and this method is used
+  // before extent set (like in dataZoom), it would be wrong.
+  // Nevertheless, parse does not depend on extent generally.
+  return val;
+};
+
+Scale.prototype.getSetting = function (name) {
+  return this._setting[name];
+};
+
+Scale.prototype.contain = function (val) {
+  var extent = this._extent;
+  return val >= extent[0] && val <= extent[1];
+};
+/**
+ * Normalize value to linear [0, 1], return 0.5 if extent span is 0
+ * @param {number} val
+ * @return {number}
+ */
+
+
+Scale.prototype.normalize = function (val) {
+  var extent = this._extent;
+
+  if (extent[1] === extent[0]) {
+    return 0.5;
+  }
+
+  return (val - extent[0]) / (extent[1] - extent[0]);
+};
+/**
+ * Scale normalized value
+ * @param {number} val
+ * @return {number}
+ */
+
+
+Scale.prototype.scale = function (val) {
+  var extent = this._extent;
+  return val * (extent[1] - extent[0]) + extent[0];
+};
+/**
+ * Set extent from data
+ * @param {Array.<number>} other
+ */
+
+
+Scale.prototype.unionExtent = function (other) {
+  var extent = this._extent;
+  other[0] < extent[0] && (extent[0] = other[0]);
+  other[1] > extent[1] && (extent[1] = other[1]); // not setExtent because in log axis it may transformed to power
+  // this.setExtent(extent[0], extent[1]);
+};
+/**
+ * Set extent from data
+ * @param {module:echarts/data/List} data
+ * @param {string} dim
+ */
+
+
+Scale.prototype.unionExtentFromData = function (data, dim) {
+  this.unionExtent(data.getApproximateExtent(dim));
+};
+/**
+ * Get extent
+ * @return {Array.<number>}
+ */
+
+
+Scale.prototype.getExtent = function () {
+  return this._extent.slice();
+};
+/**
+ * Set extent
+ * @param {number} start
+ * @param {number} end
+ */
+
+
+Scale.prototype.setExtent = function (start, end) {
+  var thisExtent = this._extent;
+
+  if (!isNaN(start)) {
+    thisExtent[0] = start;
+  }
+
+  if (!isNaN(end)) {
+    thisExtent[1] = end;
+  }
+};
+/**
+ * When axis extent depends on data and no data exists,
+ * axis ticks should not be drawn, which is named 'blank'.
+ */
+
+
+Scale.prototype.isBlank = function () {
+  return this._isBlank;
+},
+/**
+ * When axis extent depends on data and no data exists,
+ * axis ticks should not be drawn, which is named 'blank'.
+ */
+Scale.prototype.setBlank = function (isBlank) {
+  this._isBlank = isBlank;
+};
+/**
+ * @abstract
+ * @param {*} tick
+ * @return {string} label of the tick.
+ */
+
+Scale.prototype.getLabel = null;
+clazzUtil.enableClassExtend(Scale);
+clazzUtil.enableClassManagement(Scale, {
+  registerWhenExtend: true
+});
+var _default = Scale;
+module.exports = _default;
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var graphic = __webpack_require__(3);
+
+var SymbolClz = __webpack_require__(59);
+
+var _util = __webpack_require__(0);
+
+var isObject = _util.isObject;
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
+/**
+ * @module echarts/chart/helper/SymbolDraw
+ */
+
+/**
+ * @constructor
+ * @alias module:echarts/chart/helper/SymbolDraw
+ * @param {module:zrender/graphic/Group} [symbolCtor]
+ */
+function SymbolDraw(symbolCtor) {
+  this.group = new graphic.Group();
+  this._symbolCtor = symbolCtor || SymbolClz;
+}
+
+var symbolDrawProto = SymbolDraw.prototype;
+
+function symbolNeedsDraw(data, point, idx, opt) {
+  return point && !isNaN(point[0]) && !isNaN(point[1]) && !(opt.isIgnore && opt.isIgnore(idx)) // We do not set clipShape on group, because it will cut part of
+  // the symbol element shape. We use the same clip shape here as
+  // the line clip.
+  && !(opt.clipShape && !opt.clipShape.contain(point[0], point[1])) && data.getItemVisual(idx, 'symbol') !== 'none';
+}
+/**
+ * Update symbols draw by new data
+ * @param {module:echarts/data/List} data
+ * @param {Object} [opt] Or isIgnore
+ * @param {Function} [opt.isIgnore]
+ * @param {Object} [opt.clipShape]
+ */
+
+
+symbolDrawProto.updateData = function (data, opt) {
+  opt = normalizeUpdateOpt(opt);
+  var group = this.group;
+  var seriesModel = data.hostModel;
+  var oldData = this._data;
+  var SymbolCtor = this._symbolCtor;
+  var seriesScope = makeSeriesScope(data); // There is no oldLineData only when first rendering or switching from
+  // stream mode to normal mode, where previous elements should be removed.
+
+  if (!oldData) {
+    group.removeAll();
+  }
+
+  data.diff(oldData).add(function (newIdx) {
+    var point = data.getItemLayout(newIdx);
+
+    if (symbolNeedsDraw(data, point, newIdx, opt)) {
+      var symbolEl = new SymbolCtor(data, newIdx, seriesScope);
+      symbolEl.attr('position', point);
+      data.setItemGraphicEl(newIdx, symbolEl);
+      group.add(symbolEl);
+    }
+  }).update(function (newIdx, oldIdx) {
+    var symbolEl = oldData.getItemGraphicEl(oldIdx);
+    var point = data.getItemLayout(newIdx);
+
+    if (!symbolNeedsDraw(data, point, newIdx, opt)) {
+      group.remove(symbolEl);
+      return;
+    }
+
+    if (!symbolEl) {
+      symbolEl = new SymbolCtor(data, newIdx);
+      symbolEl.attr('position', point);
+    } else {
+      symbolEl.updateData(data, newIdx, seriesScope);
+      graphic.updateProps(symbolEl, {
+        position: point
+      }, seriesModel);
+    } // Add back
+
+
+    group.add(symbolEl);
+    data.setItemGraphicEl(newIdx, symbolEl);
+  }).remove(function (oldIdx) {
+    var el = oldData.getItemGraphicEl(oldIdx);
+    el && el.fadeOut(function () {
+      group.remove(el);
+    });
+  }).execute();
+  this._data = data;
+};
+
+symbolDrawProto.isPersistent = function () {
+  return true;
+};
+
+symbolDrawProto.updateLayout = function () {
+  var data = this._data;
+
+  if (data) {
+    // Not use animation
+    data.eachItemGraphicEl(function (el, idx) {
+      var point = data.getItemLayout(idx);
+      el.attr('position', point);
+    });
+  }
+};
+
+symbolDrawProto.incrementalPrepareUpdate = function (data) {
+  this._seriesScope = makeSeriesScope(data);
+  this._data = null;
+  this.group.removeAll();
+};
+/**
+ * Update symbols draw by new data
+ * @param {module:echarts/data/List} data
+ * @param {Object} [opt] Or isIgnore
+ * @param {Function} [opt.isIgnore]
+ * @param {Object} [opt.clipShape]
+ */
+
+
+symbolDrawProto.incrementalUpdate = function (taskParams, data, opt) {
+  opt = normalizeUpdateOpt(opt);
+
+  function updateIncrementalAndHover(el) {
+    if (!el.isGroup) {
+      el.incremental = el.useHoverLayer = true;
+    }
+  }
+
+  for (var idx = taskParams.start; idx < taskParams.end; idx++) {
+    var point = data.getItemLayout(idx);
+
+    if (symbolNeedsDraw(data, point, idx, opt)) {
+      var el = new this._symbolCtor(data, idx, this._seriesScope);
+      el.traverse(updateIncrementalAndHover);
+      el.attr('position', point);
+      this.group.add(el);
+      data.setItemGraphicEl(idx, el);
+    }
+  }
+};
+
+function normalizeUpdateOpt(opt) {
+  if (opt != null && !isObject(opt)) {
+    opt = {
+      isIgnore: opt
+    };
+  }
+
+  return opt || {};
+}
+
+symbolDrawProto.remove = function (enableAnimation) {
+  var group = this.group;
+  var data = this._data; // Incremental model do not have this._data.
+
+  if (data && enableAnimation) {
+    data.eachItemGraphicEl(function (el) {
+      el.fadeOut(function () {
+        group.remove(el);
+      });
+    });
+  } else {
+    group.removeAll();
+  }
+};
+
+function makeSeriesScope(data) {
+  var seriesModel = data.hostModel;
+  return {
+    itemStyle: seriesModel.getModel('itemStyle').getItemStyle(['color']),
+    hoverItemStyle: seriesModel.getModel('emphasis.itemStyle').getItemStyle(),
+    symbolRotate: seriesModel.get('symbolRotate'),
+    symbolOffset: seriesModel.get('symbolOffset'),
+    hoverAnimation: seriesModel.get('hoverAnimation'),
+    labelModel: seriesModel.getModel('label'),
+    hoverLabelModel: seriesModel.getModel('emphasis.label'),
+    cursorStyle: seriesModel.get('cursor')
+  };
+}
+
+var _default = SymbolDraw;
+module.exports = _default;
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var zrUtil = __webpack_require__(0);
+
+var Model = __webpack_require__(15);
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+var each = zrUtil.each;
+var curry = zrUtil.curry; // Build axisPointerModel, mergin tooltip.axisPointer model for each axis.
+// allAxesInfo should be updated when setOption performed.
+
+function collect(ecModel, api) {
+  var result = {
+    /**
+     * key: makeKey(axis.model)
+     * value: {
+     *      axis,
+     *      coordSys,
+     *      axisPointerModel,
+     *      triggerTooltip,
+     *      involveSeries,
+     *      snap,
+     *      seriesModels,
+     *      seriesDataCount
+     * }
+     */
+    axesInfo: {},
+    seriesInvolved: false,
+
+    /**
+     * key: makeKey(coordSys.model)
+     * value: Object: key makeKey(axis.model), value: axisInfo
+     */
+    coordSysAxesInfo: {},
+    coordSysMap: {}
+  };
+  collectAxesInfo(result, ecModel, api); // Check seriesInvolved for performance, in case too many series in some chart.
+
+  result.seriesInvolved && collectSeriesInfo(result, ecModel);
+  return result;
+}
+
+function collectAxesInfo(result, ecModel, api) {
+  var globalTooltipModel = ecModel.getComponent('tooltip');
+  var globalAxisPointerModel = ecModel.getComponent('axisPointer'); // links can only be set on global.
+
+  var linksOption = globalAxisPointerModel.get('link', true) || [];
+  var linkGroups = []; // Collect axes info.
+
+  each(api.getCoordinateSystems(), function (coordSys) {
+    // Some coordinate system do not support axes, like geo.
+    if (!coordSys.axisPointerEnabled) {
+      return;
+    }
+
+    var coordSysKey = makeKey(coordSys.model);
+    var axesInfoInCoordSys = result.coordSysAxesInfo[coordSysKey] = {};
+    result.coordSysMap[coordSysKey] = coordSys; // Set tooltip (like 'cross') is a convienent way to show axisPointer
+    // for user. So we enable seting tooltip on coordSys model.
+
+    var coordSysModel = coordSys.model;
+    var baseTooltipModel = coordSysModel.getModel('tooltip', globalTooltipModel);
+    each(coordSys.getAxes(), curry(saveTooltipAxisInfo, false, null)); // If axis tooltip used, choose tooltip axis for each coordSys.
+    // Notice this case: coordSys is `grid` but not `cartesian2D` here.
+
+    if (coordSys.getTooltipAxes && globalTooltipModel // If tooltip.showContent is set as false, tooltip will not
+    // show but axisPointer will show as normal.
+    && baseTooltipModel.get('show')) {
+      // Compatible with previous logic. But series.tooltip.trigger: 'axis'
+      // or series.data[n].tooltip.trigger: 'axis' are not support any more.
+      var triggerAxis = baseTooltipModel.get('trigger') === 'axis';
+      var cross = baseTooltipModel.get('axisPointer.type') === 'cross';
+      var tooltipAxes = coordSys.getTooltipAxes(baseTooltipModel.get('axisPointer.axis'));
+
+      if (triggerAxis || cross) {
+        each(tooltipAxes.baseAxes, curry(saveTooltipAxisInfo, cross ? 'cross' : true, triggerAxis));
+      }
+
+      if (cross) {
+        each(tooltipAxes.otherAxes, curry(saveTooltipAxisInfo, 'cross', false));
+      }
+    } // fromTooltip: true | false | 'cross'
+    // triggerTooltip: true | false | null
+
+
+    function saveTooltipAxisInfo(fromTooltip, triggerTooltip, axis) {
+      var axisPointerModel = axis.model.getModel('axisPointer', globalAxisPointerModel);
+      var axisPointerShow = axisPointerModel.get('show');
+
+      if (!axisPointerShow || axisPointerShow === 'auto' && !fromTooltip && !isHandleTrigger(axisPointerModel)) {
+        return;
+      }
+
+      if (triggerTooltip == null) {
+        triggerTooltip = axisPointerModel.get('triggerTooltip');
+      }
+
+      axisPointerModel = fromTooltip ? makeAxisPointerModel(axis, baseTooltipModel, globalAxisPointerModel, ecModel, fromTooltip, triggerTooltip) : axisPointerModel;
+      var snap = axisPointerModel.get('snap');
+      var key = makeKey(axis.model);
+      var involveSeries = triggerTooltip || snap || axis.type === 'category'; // If result.axesInfo[key] exist, override it (tooltip has higher priority).
+
+      var axisInfo = result.axesInfo[key] = {
+        key: key,
+        axis: axis,
+        coordSys: coordSys,
+        axisPointerModel: axisPointerModel,
+        triggerTooltip: triggerTooltip,
+        involveSeries: involveSeries,
+        snap: snap,
+        useHandle: isHandleTrigger(axisPointerModel),
+        seriesModels: []
+      };
+      axesInfoInCoordSys[key] = axisInfo;
+      result.seriesInvolved |= involveSeries;
+      var groupIndex = getLinkGroupIndex(linksOption, axis);
+
+      if (groupIndex != null) {
+        var linkGroup = linkGroups[groupIndex] || (linkGroups[groupIndex] = {
+          axesInfo: {}
+        });
+        linkGroup.axesInfo[key] = axisInfo;
+        linkGroup.mapper = linksOption[groupIndex].mapper;
+        axisInfo.linkGroup = linkGroup;
+      }
+    }
+  });
+}
+
+function makeAxisPointerModel(axis, baseTooltipModel, globalAxisPointerModel, ecModel, fromTooltip, triggerTooltip) {
+  var tooltipAxisPointerModel = baseTooltipModel.getModel('axisPointer');
+  var volatileOption = {};
+  each(['type', 'snap', 'lineStyle', 'shadowStyle', 'label', 'animation', 'animationDurationUpdate', 'animationEasingUpdate', 'z'], function (field) {
+    volatileOption[field] = zrUtil.clone(tooltipAxisPointerModel.get(field));
+  }); // category axis do not auto snap, otherwise some tick that do not
+  // has value can not be hovered. value/time/log axis default snap if
+  // triggered from tooltip and trigger tooltip.
+
+  volatileOption.snap = axis.type !== 'category' && !!triggerTooltip; // Compatibel with previous behavior, tooltip axis do not show label by default.
+  // Only these properties can be overrided from tooltip to axisPointer.
+
+  if (tooltipAxisPointerModel.get('type') === 'cross') {
+    volatileOption.type = 'line';
+  }
+
+  var labelOption = volatileOption.label || (volatileOption.label = {}); // Follow the convention, do not show label when triggered by tooltip by default.
+
+  labelOption.show == null && (labelOption.show = false);
+
+  if (fromTooltip === 'cross') {
+    // When 'cross', both axes show labels.
+    var tooltipAxisPointerLabelShow = tooltipAxisPointerModel.get('label.show');
+    labelOption.show = tooltipAxisPointerLabelShow != null ? tooltipAxisPointerLabelShow : true; // If triggerTooltip, this is a base axis, which should better not use cross style
+    // (cross style is dashed by default)
+
+    if (!triggerTooltip) {
+      var crossStyle = volatileOption.lineStyle = tooltipAxisPointerModel.get('crossStyle');
+      crossStyle && zrUtil.defaults(labelOption, crossStyle.textStyle);
+    }
+  }
+
+  return axis.model.getModel('axisPointer', new Model(volatileOption, globalAxisPointerModel, ecModel));
+}
+
+function collectSeriesInfo(result, ecModel) {
+  // Prepare data for axis trigger
+  ecModel.eachSeries(function (seriesModel) {
+    // Notice this case: this coordSys is `cartesian2D` but not `grid`.
+    var coordSys = seriesModel.coordinateSystem;
+    var seriesTooltipTrigger = seriesModel.get('tooltip.trigger', true);
+    var seriesTooltipShow = seriesModel.get('tooltip.show', true);
+
+    if (!coordSys || seriesTooltipTrigger === 'none' || seriesTooltipTrigger === false || seriesTooltipTrigger === 'item' || seriesTooltipShow === false || seriesModel.get('axisPointer.show', true) === false) {
+      return;
+    }
+
+    each(result.coordSysAxesInfo[makeKey(coordSys.model)], function (axisInfo) {
+      var axis = axisInfo.axis;
+
+      if (coordSys.getAxis(axis.dim) === axis) {
+        axisInfo.seriesModels.push(seriesModel);
+        axisInfo.seriesDataCount == null && (axisInfo.seriesDataCount = 0);
+        axisInfo.seriesDataCount += seriesModel.getData().count();
+      }
+    });
+  }, this);
+}
+/**
+ * For example:
+ * {
+ *     axisPointer: {
+ *         links: [{
+ *             xAxisIndex: [2, 4],
+ *             yAxisIndex: 'all'
+ *         }, {
+ *             xAxisId: ['a5', 'a7'],
+ *             xAxisName: 'xxx'
+ *         }]
+ *     }
+ * }
+ */
+
+
+function getLinkGroupIndex(linksOption, axis) {
+  var axisModel = axis.model;
+  var dim = axis.dim;
+
+  for (var i = 0; i < linksOption.length; i++) {
+    var linkOption = linksOption[i] || {};
+
+    if (checkPropInLink(linkOption[dim + 'AxisId'], axisModel.id) || checkPropInLink(linkOption[dim + 'AxisIndex'], axisModel.componentIndex) || checkPropInLink(linkOption[dim + 'AxisName'], axisModel.name)) {
+      return i;
+    }
+  }
+}
+
+function checkPropInLink(linkPropValue, axisPropValue) {
+  return linkPropValue === 'all' || zrUtil.isArray(linkPropValue) && zrUtil.indexOf(linkPropValue, axisPropValue) >= 0 || linkPropValue === axisPropValue;
+}
+
+function fixValue(axisModel) {
+  var axisInfo = getAxisInfo(axisModel);
+
+  if (!axisInfo) {
+    return;
+  }
+
+  var axisPointerModel = axisInfo.axisPointerModel;
+  var scale = axisInfo.axis.scale;
+  var option = axisPointerModel.option;
+  var status = axisPointerModel.get('status');
+  var value = axisPointerModel.get('value'); // Parse init value for category and time axis.
+
+  if (value != null) {
+    value = scale.parse(value);
+  }
+
+  var useHandle = isHandleTrigger(axisPointerModel); // If `handle` used, `axisPointer` will always be displayed, so value
+  // and status should be initialized.
+
+  if (status == null) {
+    option.status = useHandle ? 'show' : 'hide';
+  }
+
+  var extent = scale.getExtent().slice();
+  extent[0] > extent[1] && extent.reverse();
+
+  if ( // Pick a value on axis when initializing.
+  value == null // If both `handle` and `dataZoom` are used, value may be out of axis extent,
+  // where we should re-pick a value to keep `handle` displaying normally.
+  || value > extent[1]) {
+    // Make handle displayed on the end of the axis when init, which looks better.
+    value = extent[1];
+  }
+
+  if (value < extent[0]) {
+    value = extent[0];
+  }
+
+  option.value = value;
+
+  if (useHandle) {
+    option.status = axisInfo.axis.scale.isBlank() ? 'hide' : 'show';
+  }
+}
+
+function getAxisInfo(axisModel) {
+  var coordSysAxesInfo = (axisModel.ecModel.getComponent('axisPointer') || {}).coordSysAxesInfo;
+  return coordSysAxesInfo && coordSysAxesInfo.axesInfo[makeKey(axisModel)];
+}
+
+function getAxisPointerModel(axisModel) {
+  var axisInfo = getAxisInfo(axisModel);
+  return axisInfo && axisInfo.axisPointerModel;
+}
+
+function isHandleTrigger(axisPointerModel) {
+  return !!axisPointerModel.get('handle.show');
+}
+/**
+ * @param {module:echarts/model/Model} model
+ * @return {string} unique key
+ */
+
+
+function makeKey(model) {
+  return model.type + '||' + model.id;
+}
+
+exports.collect = collect;
+exports.fixValue = fixValue;
+exports.getAxisInfo = getAxisInfo;
+exports.getAxisPointerModel = getAxisPointerModel;
+exports.makeKey = makeKey;
+
+/***/ }),
 /* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22983,7 +22983,7 @@ var _util = __webpack_require__(0);
 
 var inherits = _util.inherits;
 
-var Displayble = __webpack_require__(37);
+var Displayble = __webpack_require__(38);
 
 var BoundingRect = __webpack_require__(12);
 
@@ -23786,7 +23786,7 @@ var numberUtil = __webpack_require__(5);
 
 var formatUtil = __webpack_require__(9);
 
-var Scale = __webpack_require__(44);
+var Scale = __webpack_require__(45);
 
 var helper = __webpack_require__(103);
 
@@ -25982,7 +25982,7 @@ module.exports = _default;
 /* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var matrix = __webpack_require__(18);
+var matrix = __webpack_require__(19);
 
 var vector = __webpack_require__(7);
 
@@ -27126,7 +27126,7 @@ module.exports = _default;
 /* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _config = __webpack_require__(36);
+var _config = __webpack_require__(37);
 
 var debugMode = _config.debugMode;
 
@@ -27669,7 +27669,7 @@ module.exports = _default;
 /* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Displayable = __webpack_require__(37);
+var Displayable = __webpack_require__(38);
 
 var BoundingRect = __webpack_require__(12);
 
@@ -28320,7 +28320,7 @@ var globalDefault = __webpack_require__(201);
 
 var colorPaletteMixin = __webpack_require__(94);
 
-var _sourceHelper = __webpack_require__(40);
+var _sourceHelper = __webpack_require__(41);
 
 var resetSourceDefaulter = _sourceHelper.resetSourceDefaulter;
 
@@ -29002,7 +29002,7 @@ module.exports = _default;
 
 var vec2 = __webpack_require__(7);
 
-var curve = __webpack_require__(19);
+var curve = __webpack_require__(20);
 
 /**
  * @author Yi Shen(https://github.com/pissang)
@@ -29270,7 +29270,7 @@ exports.containStroke = containStroke;
 /* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _curve = __webpack_require__(19);
+var _curve = __webpack_require__(20);
 
 var quadraticProjectPoint = _curve.quadraticProjectPoint;
 
@@ -29892,9 +29892,9 @@ module.exports = _default;
 /* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Group = __webpack_require__(35);
+var Group = __webpack_require__(36);
 
-var componentUtil = __webpack_require__(39);
+var componentUtil = __webpack_require__(40);
 
 var clazzUtil = __webpack_require__(17);
 
@@ -29958,9 +29958,9 @@ var _util = __webpack_require__(0);
 
 var each = _util.each;
 
-var Group = __webpack_require__(35);
+var Group = __webpack_require__(36);
 
-var componentUtil = __webpack_require__(39);
+var componentUtil = __webpack_require__(40);
 
 var clazzUtil = __webpack_require__(17);
 
@@ -29970,7 +29970,7 @@ var _task = __webpack_require__(55);
 
 var createTask = _task.createTask;
 
-var createRenderPlanner = __webpack_require__(42);
+var createRenderPlanner = __webpack_require__(43);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -30278,7 +30278,7 @@ var _model = __webpack_require__(4);
 
 var normalizeToArray = _model.normalizeToArray;
 
-var _sourceHelper = __webpack_require__(40);
+var _sourceHelper = __webpack_require__(41);
 
 var guessOrdinal = _sourceHelper.guessOrdinal;
 
@@ -31269,7 +31269,7 @@ module.exports = _default;
 /* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _dataStackHelper = __webpack_require__(20);
+var _dataStackHelper = __webpack_require__(21);
 
 var isDimensionStacked = _dataStackHelper.isDimensionStacked;
 
@@ -31505,7 +31505,7 @@ var _symbol = __webpack_require__(16);
 
 var createSymbol = _symbol.createSymbol;
 
-var matrixUtil = __webpack_require__(18);
+var matrixUtil = __webpack_require__(19);
 
 var _vector = __webpack_require__(7);
 
@@ -32107,7 +32107,7 @@ var __DEV__ = _config.__DEV__;
 
 var echarts = __webpack_require__(2);
 
-var axisPointerModelHelper = __webpack_require__(46);
+var axisPointerModelHelper = __webpack_require__(47);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -32503,7 +32503,7 @@ var createSymbol = _symbol.createSymbol;
 
 var vec2 = __webpack_require__(7);
 
-var curveUtil = __webpack_require__(19);
+var curveUtil = __webpack_require__(20);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -32790,7 +32790,7 @@ module.exports = _default;
 /* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createRenderPlanner = __webpack_require__(42);
+var createRenderPlanner = __webpack_require__(43);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -33035,7 +33035,7 @@ var textContain = __webpack_require__(24);
 
 var formatUtil = __webpack_require__(9);
 
-var matrix = __webpack_require__(18);
+var matrix = __webpack_require__(19);
 
 var axisHelper = __webpack_require__(26);
 
@@ -33276,7 +33276,7 @@ var echarts = __webpack_require__(2);
 
 var zrUtil = __webpack_require__(0);
 
-var axisPointerModelHelper = __webpack_require__(46);
+var axisPointerModelHelper = __webpack_require__(47);
 
 var axisTrigger = __webpack_require__(258);
 
@@ -35034,7 +35034,7 @@ var zrUtil = __webpack_require__(0);
 
 var numberUtil = __webpack_require__(5);
 
-var _dataStackHelper = __webpack_require__(20);
+var _dataStackHelper = __webpack_require__(21);
 
 var isDimensionStacked = _dataStackHelper.isDimensionStacked;
 
@@ -35354,7 +35354,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(21);
+var _react = __webpack_require__(22);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -37666,7 +37666,7 @@ var util = __webpack_require__(0);
 
 var env = __webpack_require__(8);
 
-var Group = __webpack_require__(35);
+var Group = __webpack_require__(36);
 
 var timsort = __webpack_require__(50);
 
@@ -38647,7 +38647,7 @@ module.exports = _default;
 /* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _config = __webpack_require__(36);
+var _config = __webpack_require__(37);
 
 var devicePixelRatio = _config.devicePixelRatio;
 
@@ -39658,7 +39658,7 @@ module.exports = _default;
 
 var util = __webpack_require__(0);
 
-var _config = __webpack_require__(36);
+var _config = __webpack_require__(37);
 
 var devicePixelRatio = _config.devicePixelRatio;
 
@@ -40783,7 +40783,7 @@ module.exports = _default;
 
 var Path = __webpack_require__(10);
 
-var PathProxy = __webpack_require__(38);
+var PathProxy = __webpack_require__(39);
 
 var transformPath = __webpack_require__(184);
 
@@ -41195,7 +41195,7 @@ exports.mergePath = mergePath;
 /* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var PathProxy = __webpack_require__(38);
+var PathProxy = __webpack_require__(39);
 
 var line = __webpack_require__(87);
 
@@ -41209,7 +41209,7 @@ var _util = __webpack_require__(89);
 
 var normalizeRadian = _util.normalizeRadian;
 
-var curve = __webpack_require__(19);
+var curve = __webpack_require__(20);
 
 var windingLine = __webpack_require__(90);
 
@@ -41595,7 +41595,7 @@ exports.containStroke = containStroke;
 /* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var curve = __webpack_require__(19);
+var curve = __webpack_require__(20);
 
 /**
  * 三次贝塞尔曲线描边包含判断
@@ -41698,7 +41698,7 @@ exports.containStroke = containStroke;
 /* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var PathProxy = __webpack_require__(38);
+var PathProxy = __webpack_require__(39);
 
 var _vector = __webpack_require__(7);
 
@@ -41803,7 +41803,7 @@ module.exports = _default;
 /* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Displayable = __webpack_require__(37);
+var Displayable = __webpack_require__(38);
 
 var zrUtil = __webpack_require__(0);
 
@@ -42341,7 +42341,7 @@ var Path = __webpack_require__(10);
 
 var vec2 = __webpack_require__(7);
 
-var _curve = __webpack_require__(19);
+var _curve = __webpack_require__(20);
 
 var quadraticSubdivide = _curve.quadraticSubdivide;
 var cubicSubdivide = _curve.cubicSubdivide;
@@ -44204,7 +44204,7 @@ var _task = __webpack_require__(55);
 
 var createTask = _task.createTask;
 
-var _component = __webpack_require__(39);
+var _component = __webpack_require__(40);
 
 var getUID = _component.getUID;
 
@@ -44929,7 +44929,7 @@ var ComponentModel = __webpack_require__(14);
 
 var ComponentView = __webpack_require__(98);
 
-var _sourceHelper = __webpack_require__(40);
+var _sourceHelper = __webpack_require__(41);
 
 var detectSourceFormat = _sourceHelper.detectSourceFormat;
 
@@ -44994,7 +44994,7 @@ var zrender = __webpack_require__(71);
 
 exports.zrender = zrender;
 
-var matrix = __webpack_require__(18);
+var matrix = __webpack_require__(19);
 
 exports.matrix = matrix;
 
@@ -45085,7 +45085,7 @@ exports.util = ecUtil;
 
 var zrUtil = __webpack_require__(0);
 
-var createListFromArray = __webpack_require__(43);
+var createListFromArray = __webpack_require__(44);
 
 var axisHelper = __webpack_require__(26);
 
@@ -45098,7 +45098,7 @@ var _layout = __webpack_require__(13);
 var getLayoutRect = _layout.getLayoutRect;
 exports.getLayoutRect = _layout.getLayoutRect;
 
-var _dataStackHelper = __webpack_require__(20);
+var _dataStackHelper = __webpack_require__(21);
 
 var enableDataStack = _dataStackHelper.enableDataStack;
 var isDimensionStacked = _dataStackHelper.isDimensionStacked;
@@ -45361,7 +45361,7 @@ module.exports = _default;
 
 var zrUtil = __webpack_require__(0);
 
-var Scale = __webpack_require__(44);
+var Scale = __webpack_require__(45);
 
 var OrdinalMeta = __webpack_require__(102);
 
@@ -45499,11 +45499,11 @@ var _number = __webpack_require__(5);
 
 var parsePercent = _number.parsePercent;
 
-var _dataStackHelper = __webpack_require__(20);
+var _dataStackHelper = __webpack_require__(21);
 
 var isDimensionStacked = _dataStackHelper.isDimensionStacked;
 
-var createRenderPlanner = __webpack_require__(42);
+var createRenderPlanner = __webpack_require__(43);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -46130,7 +46130,7 @@ module.exports = _default;
 
 var zrUtil = __webpack_require__(0);
 
-var Scale = __webpack_require__(44);
+var Scale = __webpack_require__(45);
 
 var numberUtil = __webpack_require__(5);
 
@@ -47083,7 +47083,7 @@ var _config = __webpack_require__(6);
 
 var __DEV__ = _config.__DEV__;
 
-var createListFromArray = __webpack_require__(43);
+var createListFromArray = __webpack_require__(44);
 
 var SeriesModel = __webpack_require__(30);
 
@@ -47177,7 +47177,7 @@ var __DEV__ = _config.__DEV__;
 
 var zrUtil = __webpack_require__(0);
 
-var SymbolDraw = __webpack_require__(45);
+var SymbolDraw = __webpack_require__(46);
 
 var SymbolClz = __webpack_require__(59);
 
@@ -48657,9 +48657,9 @@ var Cartesian2D = __webpack_require__(233);
 
 var Axis2D = __webpack_require__(235);
 
-var CoordinateSystem = __webpack_require__(41);
+var CoordinateSystem = __webpack_require__(42);
 
-var _dataStackHelper = __webpack_require__(20);
+var _dataStackHelper = __webpack_require__(21);
 
 var getStackedDimension = _dataStackHelper.getStackedDimension;
 
@@ -50240,7 +50240,7 @@ var _format = __webpack_require__(9);
 
 var encodeHTML = _format.encodeHTML;
 
-var CoordinateSystem = __webpack_require__(41);
+var CoordinateSystem = __webpack_require__(42);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -51284,7 +51284,7 @@ echarts.registerLayout(layoutPoints('scatter')); // echarts.registerProcessor(fu
 /* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createListFromArray = __webpack_require__(43);
+var createListFromArray = __webpack_require__(44);
 
 var SeriesModel = __webpack_require__(30);
 
@@ -51378,7 +51378,7 @@ module.exports = _default;
 
 var echarts = __webpack_require__(2);
 
-var SymbolDraw = __webpack_require__(45);
+var SymbolDraw = __webpack_require__(46);
 
 var LargeSymbolDraw = __webpack_require__(251);
 
@@ -51781,7 +51781,7 @@ echarts.registerLayout(layoutPoints('effectScatter'));
 /* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createListFromArray = __webpack_require__(43);
+var createListFromArray = __webpack_require__(44);
 
 var SeriesModel = __webpack_require__(30);
 
@@ -51855,11 +51855,11 @@ module.exports = _default;
 
 var echarts = __webpack_require__(2);
 
-var SymbolDraw = __webpack_require__(45);
+var SymbolDraw = __webpack_require__(46);
 
 var EffectSymbol = __webpack_require__(255);
 
-var matrix = __webpack_require__(18);
+var matrix = __webpack_require__(19);
 
 var pointsLayout = __webpack_require__(33);
 
@@ -52190,7 +52190,7 @@ var clazzUtil = __webpack_require__(17);
 
 var graphic = __webpack_require__(3);
 
-var axisPointerModelHelper = __webpack_require__(46);
+var axisPointerModelHelper = __webpack_require__(47);
 
 var eventTool = __webpack_require__(25);
 
@@ -52702,7 +52702,7 @@ var _model = __webpack_require__(4);
 
 var makeInner = _model.makeInner;
 
-var modelHelper = __webpack_require__(46);
+var modelHelper = __webpack_require__(47);
 
 var findPointFromSeries = __webpack_require__(118);
 
@@ -57550,7 +57550,7 @@ module.exports = _default;
 
 var zrUtil = __webpack_require__(0);
 
-var SymbolDraw = __webpack_require__(45);
+var SymbolDraw = __webpack_require__(46);
 
 var numberUtil = __webpack_require__(5);
 
@@ -58159,7 +58159,7 @@ module.exports = _default;
 __webpack_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: external {"root":"React","commonjs2":"react","commonjs":"react","amd":"react"}
-var external_root_React_commonjs2_react_commonjs_react_amd_react_ = __webpack_require__(21);
+var external_root_React_commonjs2_react_commonjs_react_amd_react_ = __webpack_require__(22);
 var external_root_React_commonjs2_react_commonjs_react_amd_react_default = /*#__PURE__*/__webpack_require__.n(external_root_React_commonjs2_react_commonjs_react_amd_react_);
 
 // EXTERNAL MODULE: ./node_modules/prop-types/index.js
@@ -58299,7 +58299,7 @@ var getScatterplotData = function getScatterplotData() {
   });
 };
 // EXTERNAL MODULE: ./node_modules/lodash.merge/index.js
-var lodash_merge = __webpack_require__(22);
+var lodash_merge = __webpack_require__(18);
 
 // CONCATENATED MODULE: ./src/style.js
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -58403,7 +58403,7 @@ var getScatterplotOptions = function getScatterplotOptions() {
   });
 };
 // EXTERNAL MODULE: ./node_modules/lodash.isequal/index.js
-var lodash_isequal = __webpack_require__(47);
+var lodash_isequal = __webpack_require__(35);
 
 // CONCATENATED MODULE: ./node_modules/d3-scale/node_modules/d3-array/src/ascending.js
 /* harmony default export */ var ascending = (function(a, b) {
@@ -64044,9 +64044,10 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
         yVar = _props.yVar,
         zVar = _props.zVar,
         selected = _props.selected,
+        highlighted = _props.highlighted,
         options = _props.options;
 
-    if (!lodash_isequal(Object.keys(prevProps.data || {}), Object.keys(data || {})) || prevProps.xVar !== xVar || prevProps.zVar !== zVar || prevProps.yVar !== yVar || !lodash_isequal(prevProps.selected, selected) || !lodash_isequal(prevProps.options, options)) {
+    if (!lodash_isequal(Object.keys(prevProps.data || {}), Object.keys(data || {})) || prevProps.xVar !== xVar || prevProps.zVar !== zVar || prevProps.yVar !== yVar || !lodash_isequal(prevProps.highlighted, highlighted) || !lodash_isequal(prevProps.selected, selected) || !lodash_isequal(prevProps.options, options)) {
       this.updateOptions();
     }
   };
@@ -64056,32 +64057,51 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
     this.setState({ options: options });
   };
 
-  /**
-   * Gets a data series with selected items
-   */
-
-
-  Scatterplot.prototype._getSelectedSeries = function _getSelectedSeries(scatterData, sizeScale) {
+  Scatterplot.prototype._getHighlightedSeries = function _getHighlightedSeries(scatterData, sizeScale) {
     var _props2 = this.props,
-        selected = _props2.selected,
-        selectedColors = _props2.selectedColors,
+        _props2$highlighted = _props2.highlighted,
+        highlighted = _props2$highlighted === undefined ? [] : _props2$highlighted,
         options = _props2.options;
 
-    if (!selected || !selected.length) {
-      return {};
-    }
-    var overrides = options ? getDataSeries('selected', options.series) : {};
-    var data = selected.map(function (id, i) {
+    var baseSeries = {
+      id: 'highlighted',
+      type: 'scatter',
+      symbolSize: function symbolSize(value) {
+        return sizeScale(value[2]);
+      },
+      itemStyle: {
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,1)',
+        color: '#ffc'
+      },
+      z: 3
+    };
+    var overrides = options ? getDataSeries('highlighted', options.series) : {};
+    var data = highlighted.map(function (id, i) {
       return scatterData.find(function (d) {
         return d[3] === id;
       });
     }).filter(function (d) {
       return Boolean(d);
     });
-    return lodash_merge({
+    return lodash_merge(Scatterplot_extends({}, baseSeries, { data: data }), overrides ? overrides : {});
+  };
+
+  /**
+   * Gets a data series with selected items
+   */
+
+
+  Scatterplot.prototype._getSelectedSeries = function _getSelectedSeries(scatterData, sizeScale) {
+    var _props3 = this.props,
+        _props3$selected = _props3.selected,
+        selected = _props3$selected === undefined ? [] : _props3$selected,
+        selectedColors = _props3.selectedColors,
+        options = _props3.options;
+
+    var baseSeries = {
       id: 'selected',
       type: 'scatter',
-      data: data,
       symbolSize: function symbolSize(value) {
         return sizeScale(value[2]);
       },
@@ -64092,8 +64112,18 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
           var dataIndex = _ref2.dataIndex;
           return selectedColors[dataIndex % selectedColors.length];
         }
-      }
-    }, overrides ? overrides : {});
+      },
+      z: 4
+    };
+    var overrides = options ? getDataSeries('selected', options.series) : {};
+    var data = selected.map(function (id, i) {
+      return scatterData.find(function (d) {
+        return d[3] === id;
+      });
+    }).filter(function (d) {
+      return Boolean(d);
+    });
+    return lodash_merge(Scatterplot_extends({}, baseSeries, { data: data }), overrides ? overrides : {});
   };
 
   /** 
@@ -64111,7 +64141,8 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
       data: scatterData,
       symbolSize: function symbolSize(value) {
         return sizeScale(value[2]);
-      }
+      },
+      z: 2
     }, overrides ? overrides : {});
     return series;
   };
@@ -64123,12 +64154,12 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
 
 
   Scatterplot.prototype._getScatterplotSeries = function _getScatterplotSeries() {
-    var _props3 = this.props,
-        data = _props3.data,
-        xVar = _props3.xVar,
-        yVar = _props3.yVar,
-        zVar = _props3.zVar,
-        options = _props3.options;
+    var _props4 = this.props,
+        data = _props4.data,
+        xVar = _props4.xVar,
+        yVar = _props4.yVar,
+        zVar = _props4.zVar,
+        options = _props4.options;
 
     var otherSeries = options && options.series ? options.series.filter(function (s) {
       return s.id !== 'base';
@@ -64136,11 +64167,7 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
     if (data && data[xVar] && data[yVar] && data[zVar]) {
       var sizeScale = Scatterplot_getDataScale(data[zVar], { range: [6, 48] });
       var scatterData = getScatterplotData(data[xVar], data[yVar], data[zVar]);
-      var series = [this._getBaseSeries(scatterData, sizeScale)].concat(otherSeries);
-      var selected = this._getSelectedSeries(scatterData, sizeScale);
-      if (Object.keys(selected).length > 0) {
-        series.push(selected);
-      }
+      var series = [this._getBaseSeries(scatterData, sizeScale), this._getSelectedSeries(scatterData, sizeScale), this._getHighlightedSeries(scatterData, sizeScale)].concat(otherSeries);
       return series;
     }
     return [];
@@ -64436,6 +64463,16 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
     });
   };
 
+  /** Sets the loading state for the scatterplot */
+
+
+  SedaScatterplot.prototype._setLoadingState = function _setLoadingState(loading) {
+    this.setState({ loading: loading });
+    this.echart && loading && this.echart.showLoading();
+    this.echart && !loading && this.echart.hideLoading();
+    this.props.onLoading && this.props.onLoading(loading);
+  };
+
   /**
    * Loads variables for a region if they do not exist in the data
    */
@@ -64462,20 +64499,17 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
     if (vars.length === 0) {
       return;
     }
-    this.setState({ loading: true });
-    this.echart && this.echart.showLoading();
+    this._setLoadingState(true);
     utils_fetchScatterplotVars(vars, prefix, endpoint).then(function (data) {
       _this4._setData(data, prefix);
-      _this4.setState({ loading: false });
-      _this4.echart && _this4.echart.hideLoading();
+      _this4._setLoadingState(false);
       return data;
     }).catch(function (err) {
-      _this4.echart && _this4.echart.hideLoading();
-      _this4.props.onError && _this4.props.onError(err);
       _this4.setState({
-        errorMessage: err.message ? err.message : err,
-        loading: false
+        errorMessage: err.message ? err.message : err
       });
+      _this4._setLoadingState(false);
+      _this4.props.onError && _this4.props.onError(err);
     });
   };
 
@@ -64541,6 +64575,7 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
       yVar: this.props.yVar,
       zVar: this.props.zVar,
       selected: this.props.selected,
+      highlighted: this.props.highlighted,
       selectedColors: this.props.selectedColors,
       options: this.props.options,
       notMerge: this.props.notMerge,
@@ -64566,7 +64601,8 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
   onReady: prop_types_default.a.func,
   onMouseMove: prop_types_default.a.func,
   onDataLoaded: prop_types_default.a.func,
-  onError: prop_types_default.a.func
+  onError: prop_types_default.a.func,
+  onLoading: prop_types_default.a.func
 }, SedaScatterplot_temp);
 
 /* harmony default export */ var src_SedaScatterplot = (SedaScatterplot_SedaScatterplot);

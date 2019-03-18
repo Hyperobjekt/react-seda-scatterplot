@@ -194,7 +194,7 @@ class Demo extends Component {
         zVar = 'sz'
         endpoint = 'https://d2fypeb6f974r1.cloudfront.net/dev/scatterplot/'
         prefix = 'districts'
-        selected = {["1709930", "2612000"]}
+        highlighted = {["1709930", "2612000"]}
         selectedColors = {['#f00', '#0f0']}
         options = {baseOptions}
         onReady = {

@@ -118,7 +118,7 @@ export class Scatterplot extends Component {
    * - selected ids change
    */
   componentDidUpdate(prevProps) {
-    const { data, xVar, yVar, zVar, selected, options } = this.props;
+    const { data, xVar, yVar, zVar, selected, highlighted, options } = this.props;
     if (
       !_isEqual(
         Object.keys(prevProps.data || {}), 
@@ -127,6 +127,7 @@ export class Scatterplot extends Component {
       prevProps.xVar !== xVar ||
       prevProps.zVar !== zVar ||
       prevProps.yVar !== yVar ||
+      !_isEqual(prevProps.highlighted, highlighted) ||
       !_isEqual(prevProps.selected, selected) ||
       !_isEqual(prevProps.options, options)
     ) {
@@ -141,29 +142,56 @@ export class Scatterplot extends Component {
     this.setState({ options });
   }
 
+  _getHighlightedSeries(scatterData, sizeScale) {
+    const { highlighted = [], options } = this.props;
+    const baseSeries = {
+      id: 'highlighted',
+      type: 'scatter',
+      symbolSize: (value) => sizeScale(value[2]),
+      itemStyle: {
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,1)',
+        color: '#ffc'
+      },
+      z:3
+    }
+    const overrides = options ? 
+      getDataSeries('highlighted', options.series) : {};
+    const data = highlighted
+      .map((id, i) => scatterData.find(d => d[3] === id))
+      .filter(d => Boolean(d))
+    return merge(
+      { ...baseSeries, data: data }, 
+      overrides ? overrides : {}
+    )
+  }
+
   /**
    * Gets a data series with selected items
    */
   _getSelectedSeries(scatterData, sizeScale) {
-    const { selected, selectedColors, options } = this.props;
-    if (!selected || !selected.length) { return {} }
-    const overrides = options ? 
-      getDataSeries('selected', options.series) : {};
-    const data = selected
-      .map((id, i) => scatterData.find(d => d[3] === id))
-      .filter(d => Boolean(d))
-    return merge({
+    const { selected = [], selectedColors, options } = this.props;
+    const baseSeries = {
       id: 'selected',
       type: 'scatter',
-      data: data,
       symbolSize: (value) => sizeScale(value[2]),
       itemStyle: {
         borderWidth: 1,
         borderColor: 'rgba(0,0,0,1)',
         color: ({dataIndex}) => 
           selectedColors[dataIndex % selectedColors.length]
-      }
-    }, overrides ? overrides : {})
+      },
+      z:4
+    }
+    const overrides = options ? 
+      getDataSeries('selected', options.series) : {};
+    const data = selected
+      .map((id, i) => scatterData.find(d => d[3] === id))
+      .filter(d => Boolean(d))
+    return merge(
+      { ...baseSeries, data: data }, 
+      overrides ? overrides : {}
+    )
   }
 
   /** 
@@ -178,6 +206,7 @@ export class Scatterplot extends Component {
       type: 'scatter',
       data: scatterData,
       symbolSize: (value) => sizeScale(value[2]),
+      z:2
     }, overrides ? overrides : {})
     return series;
   }
@@ -197,12 +226,10 @@ export class Scatterplot extends Component {
         getScatterplotData(data[xVar], data[yVar], data[zVar]);
       const series = [ 
         this._getBaseSeries(scatterData, sizeScale),
+        this._getSelectedSeries(scatterData, sizeScale),
+        this._getHighlightedSeries(scatterData, sizeScale),
         ...otherSeries
       ];
-      const selected = this._getSelectedSeries(scatterData, sizeScale)
-      if (Object.keys(selected).length > 0) {
-        series.push(selected);
-      }
       return series;
     }
     return [];
