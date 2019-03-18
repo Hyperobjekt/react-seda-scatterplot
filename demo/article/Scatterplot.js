@@ -49,7 +49,6 @@ function Scatterplot(container, props) {
           fontSize: 12,
         }
       },
-      series: [],
       tooltip: {
         trigger: 'item'
       },

@@ -34,6 +34,7 @@ export class SedaScatterplot extends Component {
     yVar: PropTypes.string,
     zVar: PropTypes.string,
     initialData: PropTypes.object,
+    theme: PropTypes.object,
     prefix: PropTypes.string,
     options: PropTypes.object,
     hovered: PropTypes.string,
@@ -44,6 +45,7 @@ export class SedaScatterplot extends Component {
     onReady: PropTypes.func,
     onMouseMove: PropTypes.func,
     onDataLoaded: PropTypes.func,
+    onError: PropTypes.func,
   }
 
   state = {
@@ -185,6 +187,7 @@ export class SedaScatterplot extends Component {
       })
       .catch(err => {
         this.echart && this.echart.hideLoading()
+        this.props.onError && this.props.onError(err);
         this.setState({
           errorMessage: err.message ? err.message : err,
           loading: false
@@ -292,6 +295,7 @@ export class SedaScatterplot extends Component {
         selectedColors={this.props.selectedColors}
         options={this.props.options}
         notMerge={this.props.notMerge}
+        theme={this.props.theme}
       />  
     )
   }

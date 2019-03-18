@@ -839,6 +839,24 @@ exports.noop = noop;
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+if (false) { var throwOnDirectAccess, ReactIs; } else {
+  // By explicitly using `prop-types` you are opting into new production behavior.
+  // http://fb.me/prop-types-in-prod
+  module.exports = __webpack_require__(136)();
+}
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var _config = __webpack_require__(6);
 
 var __DEV__ = _config.__DEV__;
@@ -847,7 +865,7 @@ var zrender = __webpack_require__(71);
 
 var zrUtil = __webpack_require__(0);
 
-var colorTool = __webpack_require__(22);
+var colorTool = __webpack_require__(23);
 
 var env = __webpack_require__(8);
 
@@ -2899,24 +2917,6 @@ var ___ec_export = __webpack_require__(214);
 })();
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-if (false) { var throwOnDirectAccess, ReactIs; } else {
-  // By explicitly using `prop-types` you are opting into new production behavior.
-  // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(136)();
-}
-
-
-/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2924,7 +2924,7 @@ var zrUtil = __webpack_require__(0);
 
 var pathTool = __webpack_require__(180);
 
-var colorTool = __webpack_require__(22);
+var colorTool = __webpack_require__(23);
 
 var matrix = __webpack_require__(18);
 
@@ -5565,7 +5565,7 @@ module.exports = _default;
 
 var zrUtil = __webpack_require__(0);
 
-var textContain = __webpack_require__(23);
+var textContain = __webpack_require__(24);
 
 var numberUtil = __webpack_require__(5);
 
@@ -9080,1900 +9080,6 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__21__;
 /* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var LRU = __webpack_require__(76);
-
-var kCSSColorTable = {
-  'transparent': [0, 0, 0, 0],
-  'aliceblue': [240, 248, 255, 1],
-  'antiquewhite': [250, 235, 215, 1],
-  'aqua': [0, 255, 255, 1],
-  'aquamarine': [127, 255, 212, 1],
-  'azure': [240, 255, 255, 1],
-  'beige': [245, 245, 220, 1],
-  'bisque': [255, 228, 196, 1],
-  'black': [0, 0, 0, 1],
-  'blanchedalmond': [255, 235, 205, 1],
-  'blue': [0, 0, 255, 1],
-  'blueviolet': [138, 43, 226, 1],
-  'brown': [165, 42, 42, 1],
-  'burlywood': [222, 184, 135, 1],
-  'cadetblue': [95, 158, 160, 1],
-  'chartreuse': [127, 255, 0, 1],
-  'chocolate': [210, 105, 30, 1],
-  'coral': [255, 127, 80, 1],
-  'cornflowerblue': [100, 149, 237, 1],
-  'cornsilk': [255, 248, 220, 1],
-  'crimson': [220, 20, 60, 1],
-  'cyan': [0, 255, 255, 1],
-  'darkblue': [0, 0, 139, 1],
-  'darkcyan': [0, 139, 139, 1],
-  'darkgoldenrod': [184, 134, 11, 1],
-  'darkgray': [169, 169, 169, 1],
-  'darkgreen': [0, 100, 0, 1],
-  'darkgrey': [169, 169, 169, 1],
-  'darkkhaki': [189, 183, 107, 1],
-  'darkmagenta': [139, 0, 139, 1],
-  'darkolivegreen': [85, 107, 47, 1],
-  'darkorange': [255, 140, 0, 1],
-  'darkorchid': [153, 50, 204, 1],
-  'darkred': [139, 0, 0, 1],
-  'darksalmon': [233, 150, 122, 1],
-  'darkseagreen': [143, 188, 143, 1],
-  'darkslateblue': [72, 61, 139, 1],
-  'darkslategray': [47, 79, 79, 1],
-  'darkslategrey': [47, 79, 79, 1],
-  'darkturquoise': [0, 206, 209, 1],
-  'darkviolet': [148, 0, 211, 1],
-  'deeppink': [255, 20, 147, 1],
-  'deepskyblue': [0, 191, 255, 1],
-  'dimgray': [105, 105, 105, 1],
-  'dimgrey': [105, 105, 105, 1],
-  'dodgerblue': [30, 144, 255, 1],
-  'firebrick': [178, 34, 34, 1],
-  'floralwhite': [255, 250, 240, 1],
-  'forestgreen': [34, 139, 34, 1],
-  'fuchsia': [255, 0, 255, 1],
-  'gainsboro': [220, 220, 220, 1],
-  'ghostwhite': [248, 248, 255, 1],
-  'gold': [255, 215, 0, 1],
-  'goldenrod': [218, 165, 32, 1],
-  'gray': [128, 128, 128, 1],
-  'green': [0, 128, 0, 1],
-  'greenyellow': [173, 255, 47, 1],
-  'grey': [128, 128, 128, 1],
-  'honeydew': [240, 255, 240, 1],
-  'hotpink': [255, 105, 180, 1],
-  'indianred': [205, 92, 92, 1],
-  'indigo': [75, 0, 130, 1],
-  'ivory': [255, 255, 240, 1],
-  'khaki': [240, 230, 140, 1],
-  'lavender': [230, 230, 250, 1],
-  'lavenderblush': [255, 240, 245, 1],
-  'lawngreen': [124, 252, 0, 1],
-  'lemonchiffon': [255, 250, 205, 1],
-  'lightblue': [173, 216, 230, 1],
-  'lightcoral': [240, 128, 128, 1],
-  'lightcyan': [224, 255, 255, 1],
-  'lightgoldenrodyellow': [250, 250, 210, 1],
-  'lightgray': [211, 211, 211, 1],
-  'lightgreen': [144, 238, 144, 1],
-  'lightgrey': [211, 211, 211, 1],
-  'lightpink': [255, 182, 193, 1],
-  'lightsalmon': [255, 160, 122, 1],
-  'lightseagreen': [32, 178, 170, 1],
-  'lightskyblue': [135, 206, 250, 1],
-  'lightslategray': [119, 136, 153, 1],
-  'lightslategrey': [119, 136, 153, 1],
-  'lightsteelblue': [176, 196, 222, 1],
-  'lightyellow': [255, 255, 224, 1],
-  'lime': [0, 255, 0, 1],
-  'limegreen': [50, 205, 50, 1],
-  'linen': [250, 240, 230, 1],
-  'magenta': [255, 0, 255, 1],
-  'maroon': [128, 0, 0, 1],
-  'mediumaquamarine': [102, 205, 170, 1],
-  'mediumblue': [0, 0, 205, 1],
-  'mediumorchid': [186, 85, 211, 1],
-  'mediumpurple': [147, 112, 219, 1],
-  'mediumseagreen': [60, 179, 113, 1],
-  'mediumslateblue': [123, 104, 238, 1],
-  'mediumspringgreen': [0, 250, 154, 1],
-  'mediumturquoise': [72, 209, 204, 1],
-  'mediumvioletred': [199, 21, 133, 1],
-  'midnightblue': [25, 25, 112, 1],
-  'mintcream': [245, 255, 250, 1],
-  'mistyrose': [255, 228, 225, 1],
-  'moccasin': [255, 228, 181, 1],
-  'navajowhite': [255, 222, 173, 1],
-  'navy': [0, 0, 128, 1],
-  'oldlace': [253, 245, 230, 1],
-  'olive': [128, 128, 0, 1],
-  'olivedrab': [107, 142, 35, 1],
-  'orange': [255, 165, 0, 1],
-  'orangered': [255, 69, 0, 1],
-  'orchid': [218, 112, 214, 1],
-  'palegoldenrod': [238, 232, 170, 1],
-  'palegreen': [152, 251, 152, 1],
-  'paleturquoise': [175, 238, 238, 1],
-  'palevioletred': [219, 112, 147, 1],
-  'papayawhip': [255, 239, 213, 1],
-  'peachpuff': [255, 218, 185, 1],
-  'peru': [205, 133, 63, 1],
-  'pink': [255, 192, 203, 1],
-  'plum': [221, 160, 221, 1],
-  'powderblue': [176, 224, 230, 1],
-  'purple': [128, 0, 128, 1],
-  'red': [255, 0, 0, 1],
-  'rosybrown': [188, 143, 143, 1],
-  'royalblue': [65, 105, 225, 1],
-  'saddlebrown': [139, 69, 19, 1],
-  'salmon': [250, 128, 114, 1],
-  'sandybrown': [244, 164, 96, 1],
-  'seagreen': [46, 139, 87, 1],
-  'seashell': [255, 245, 238, 1],
-  'sienna': [160, 82, 45, 1],
-  'silver': [192, 192, 192, 1],
-  'skyblue': [135, 206, 235, 1],
-  'slateblue': [106, 90, 205, 1],
-  'slategray': [112, 128, 144, 1],
-  'slategrey': [112, 128, 144, 1],
-  'snow': [255, 250, 250, 1],
-  'springgreen': [0, 255, 127, 1],
-  'steelblue': [70, 130, 180, 1],
-  'tan': [210, 180, 140, 1],
-  'teal': [0, 128, 128, 1],
-  'thistle': [216, 191, 216, 1],
-  'tomato': [255, 99, 71, 1],
-  'turquoise': [64, 224, 208, 1],
-  'violet': [238, 130, 238, 1],
-  'wheat': [245, 222, 179, 1],
-  'white': [255, 255, 255, 1],
-  'whitesmoke': [245, 245, 245, 1],
-  'yellow': [255, 255, 0, 1],
-  'yellowgreen': [154, 205, 50, 1]
-};
-
-function clampCssByte(i) {
-  // Clamp to integer 0 .. 255.
-  i = Math.round(i); // Seems to be what Chrome does (vs truncation).
-
-  return i < 0 ? 0 : i > 255 ? 255 : i;
-}
-
-function clampCssAngle(i) {
-  // Clamp to integer 0 .. 360.
-  i = Math.round(i); // Seems to be what Chrome does (vs truncation).
-
-  return i < 0 ? 0 : i > 360 ? 360 : i;
-}
-
-function clampCssFloat(f) {
-  // Clamp to float 0.0 .. 1.0.
-  return f < 0 ? 0 : f > 1 ? 1 : f;
-}
-
-function parseCssInt(str) {
-  // int or percentage.
-  if (str.length && str.charAt(str.length - 1) === '%') {
-    return clampCssByte(parseFloat(str) / 100 * 255);
-  }
-
-  return clampCssByte(parseInt(str, 10));
-}
-
-function parseCssFloat(str) {
-  // float or percentage.
-  if (str.length && str.charAt(str.length - 1) === '%') {
-    return clampCssFloat(parseFloat(str) / 100);
-  }
-
-  return clampCssFloat(parseFloat(str));
-}
-
-function cssHueToRgb(m1, m2, h) {
-  if (h < 0) {
-    h += 1;
-  } else if (h > 1) {
-    h -= 1;
-  }
-
-  if (h * 6 < 1) {
-    return m1 + (m2 - m1) * h * 6;
-  }
-
-  if (h * 2 < 1) {
-    return m2;
-  }
-
-  if (h * 3 < 2) {
-    return m1 + (m2 - m1) * (2 / 3 - h) * 6;
-  }
-
-  return m1;
-}
-
-function lerpNumber(a, b, p) {
-  return a + (b - a) * p;
-}
-
-function setRgba(out, r, g, b, a) {
-  out[0] = r;
-  out[1] = g;
-  out[2] = b;
-  out[3] = a;
-  return out;
-}
-
-function copyRgba(out, a) {
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  out[3] = a[3];
-  return out;
-}
-
-var colorCache = new LRU(20);
-var lastRemovedArr = null;
-
-function putToCache(colorStr, rgbaArr) {
-  // Reuse removed array
-  if (lastRemovedArr) {
-    copyRgba(lastRemovedArr, rgbaArr);
-  }
-
-  lastRemovedArr = colorCache.put(colorStr, lastRemovedArr || rgbaArr.slice());
-}
-/**
- * @param {string} colorStr
- * @param {Array.<number>} out
- * @return {Array.<number>}
- * @memberOf module:zrender/util/color
- */
-
-
-function parse(colorStr, rgbaArr) {
-  if (!colorStr) {
-    return;
-  }
-
-  rgbaArr = rgbaArr || [];
-  var cached = colorCache.get(colorStr);
-
-  if (cached) {
-    return copyRgba(rgbaArr, cached);
-  } // colorStr may be not string
-
-
-  colorStr = colorStr + ''; // Remove all whitespace, not compliant, but should just be more accepting.
-
-  var str = colorStr.replace(/ /g, '').toLowerCase(); // Color keywords (and transparent) lookup.
-
-  if (str in kCSSColorTable) {
-    copyRgba(rgbaArr, kCSSColorTable[str]);
-    putToCache(colorStr, rgbaArr);
-    return rgbaArr;
-  } // #abc and #abc123 syntax.
-
-
-  if (str.charAt(0) === '#') {
-    if (str.length === 4) {
-      var iv = parseInt(str.substr(1), 16); // TODO(deanm): Stricter parsing.
-
-      if (!(iv >= 0 && iv <= 0xfff)) {
-        setRgba(rgbaArr, 0, 0, 0, 1);
-        return; // Covers NaN.
-      }
-
-      setRgba(rgbaArr, (iv & 0xf00) >> 4 | (iv & 0xf00) >> 8, iv & 0xf0 | (iv & 0xf0) >> 4, iv & 0xf | (iv & 0xf) << 4, 1);
-      putToCache(colorStr, rgbaArr);
-      return rgbaArr;
-    } else if (str.length === 7) {
-      var iv = parseInt(str.substr(1), 16); // TODO(deanm): Stricter parsing.
-
-      if (!(iv >= 0 && iv <= 0xffffff)) {
-        setRgba(rgbaArr, 0, 0, 0, 1);
-        return; // Covers NaN.
-      }
-
-      setRgba(rgbaArr, (iv & 0xff0000) >> 16, (iv & 0xff00) >> 8, iv & 0xff, 1);
-      putToCache(colorStr, rgbaArr);
-      return rgbaArr;
-    }
-
-    return;
-  }
-
-  var op = str.indexOf('('),
-      ep = str.indexOf(')');
-
-  if (op !== -1 && ep + 1 === str.length) {
-    var fname = str.substr(0, op);
-    var params = str.substr(op + 1, ep - (op + 1)).split(',');
-    var alpha = 1; // To allow case fallthrough.
-
-    switch (fname) {
-      case 'rgba':
-        if (params.length !== 4) {
-          setRgba(rgbaArr, 0, 0, 0, 1);
-          return;
-        }
-
-        alpha = parseCssFloat(params.pop());
-      // jshint ignore:line
-      // Fall through.
-
-      case 'rgb':
-        if (params.length !== 3) {
-          setRgba(rgbaArr, 0, 0, 0, 1);
-          return;
-        }
-
-        setRgba(rgbaArr, parseCssInt(params[0]), parseCssInt(params[1]), parseCssInt(params[2]), alpha);
-        putToCache(colorStr, rgbaArr);
-        return rgbaArr;
-
-      case 'hsla':
-        if (params.length !== 4) {
-          setRgba(rgbaArr, 0, 0, 0, 1);
-          return;
-        }
-
-        params[3] = parseCssFloat(params[3]);
-        hsla2rgba(params, rgbaArr);
-        putToCache(colorStr, rgbaArr);
-        return rgbaArr;
-
-      case 'hsl':
-        if (params.length !== 3) {
-          setRgba(rgbaArr, 0, 0, 0, 1);
-          return;
-        }
-
-        hsla2rgba(params, rgbaArr);
-        putToCache(colorStr, rgbaArr);
-        return rgbaArr;
-
-      default:
-        return;
-    }
-  }
-
-  setRgba(rgbaArr, 0, 0, 0, 1);
-  return;
-}
-/**
- * @param {Array.<number>} hsla
- * @param {Array.<number>} rgba
- * @return {Array.<number>} rgba
- */
-
-
-function hsla2rgba(hsla, rgba) {
-  var h = (parseFloat(hsla[0]) % 360 + 360) % 360 / 360; // 0 .. 1
-  // NOTE(deanm): According to the CSS spec s/l should only be
-  // percentages, but we don't bother and let float or percentage.
-
-  var s = parseCssFloat(hsla[1]);
-  var l = parseCssFloat(hsla[2]);
-  var m2 = l <= 0.5 ? l * (s + 1) : l + s - l * s;
-  var m1 = l * 2 - m2;
-  rgba = rgba || [];
-  setRgba(rgba, clampCssByte(cssHueToRgb(m1, m2, h + 1 / 3) * 255), clampCssByte(cssHueToRgb(m1, m2, h) * 255), clampCssByte(cssHueToRgb(m1, m2, h - 1 / 3) * 255), 1);
-
-  if (hsla.length === 4) {
-    rgba[3] = hsla[3];
-  }
-
-  return rgba;
-}
-/**
- * @param {Array.<number>} rgba
- * @return {Array.<number>} hsla
- */
-
-
-function rgba2hsla(rgba) {
-  if (!rgba) {
-    return;
-  } // RGB from 0 to 255
-
-
-  var R = rgba[0] / 255;
-  var G = rgba[1] / 255;
-  var B = rgba[2] / 255;
-  var vMin = Math.min(R, G, B); // Min. value of RGB
-
-  var vMax = Math.max(R, G, B); // Max. value of RGB
-
-  var delta = vMax - vMin; // Delta RGB value
-
-  var L = (vMax + vMin) / 2;
-  var H;
-  var S; // HSL results from 0 to 1
-
-  if (delta === 0) {
-    H = 0;
-    S = 0;
-  } else {
-    if (L < 0.5) {
-      S = delta / (vMax + vMin);
-    } else {
-      S = delta / (2 - vMax - vMin);
-    }
-
-    var deltaR = ((vMax - R) / 6 + delta / 2) / delta;
-    var deltaG = ((vMax - G) / 6 + delta / 2) / delta;
-    var deltaB = ((vMax - B) / 6 + delta / 2) / delta;
-
-    if (R === vMax) {
-      H = deltaB - deltaG;
-    } else if (G === vMax) {
-      H = 1 / 3 + deltaR - deltaB;
-    } else if (B === vMax) {
-      H = 2 / 3 + deltaG - deltaR;
-    }
-
-    if (H < 0) {
-      H += 1;
-    }
-
-    if (H > 1) {
-      H -= 1;
-    }
-  }
-
-  var hsla = [H * 360, S, L];
-
-  if (rgba[3] != null) {
-    hsla.push(rgba[3]);
-  }
-
-  return hsla;
-}
-/**
- * @param {string} color
- * @param {number} level
- * @return {string}
- * @memberOf module:zrender/util/color
- */
-
-
-function lift(color, level) {
-  var colorArr = parse(color);
-
-  if (colorArr) {
-    for (var i = 0; i < 3; i++) {
-      if (level < 0) {
-        colorArr[i] = colorArr[i] * (1 - level) | 0;
-      } else {
-        colorArr[i] = (255 - colorArr[i]) * level + colorArr[i] | 0;
-      }
-
-      if (colorArr[i] > 255) {
-        colorArr[i] = 255;
-      } else if (color[i] < 0) {
-        colorArr[i] = 0;
-      }
-    }
-
-    return stringify(colorArr, colorArr.length === 4 ? 'rgba' : 'rgb');
-  }
-}
-/**
- * @param {string} color
- * @return {string}
- * @memberOf module:zrender/util/color
- */
-
-
-function toHex(color) {
-  var colorArr = parse(color);
-
-  if (colorArr) {
-    return ((1 << 24) + (colorArr[0] << 16) + (colorArr[1] << 8) + +colorArr[2]).toString(16).slice(1);
-  }
-}
-/**
- * Map value to color. Faster than lerp methods because color is represented by rgba array.
- * @param {number} normalizedValue A float between 0 and 1.
- * @param {Array.<Array.<number>>} colors List of rgba color array
- * @param {Array.<number>} [out] Mapped gba color array
- * @return {Array.<number>} will be null/undefined if input illegal.
- */
-
-
-function fastLerp(normalizedValue, colors, out) {
-  if (!(colors && colors.length) || !(normalizedValue >= 0 && normalizedValue <= 1)) {
-    return;
-  }
-
-  out = out || [];
-  var value = normalizedValue * (colors.length - 1);
-  var leftIndex = Math.floor(value);
-  var rightIndex = Math.ceil(value);
-  var leftColor = colors[leftIndex];
-  var rightColor = colors[rightIndex];
-  var dv = value - leftIndex;
-  out[0] = clampCssByte(lerpNumber(leftColor[0], rightColor[0], dv));
-  out[1] = clampCssByte(lerpNumber(leftColor[1], rightColor[1], dv));
-  out[2] = clampCssByte(lerpNumber(leftColor[2], rightColor[2], dv));
-  out[3] = clampCssFloat(lerpNumber(leftColor[3], rightColor[3], dv));
-  return out;
-}
-/**
- * @deprecated
- */
-
-
-var fastMapToColor = fastLerp;
-/**
- * @param {number} normalizedValue A float between 0 and 1.
- * @param {Array.<string>} colors Color list.
- * @param {boolean=} fullOutput Default false.
- * @return {(string|Object)} Result color. If fullOutput,
- *                           return {color: ..., leftIndex: ..., rightIndex: ..., value: ...},
- * @memberOf module:zrender/util/color
- */
-
-function lerp(normalizedValue, colors, fullOutput) {
-  if (!(colors && colors.length) || !(normalizedValue >= 0 && normalizedValue <= 1)) {
-    return;
-  }
-
-  var value = normalizedValue * (colors.length - 1);
-  var leftIndex = Math.floor(value);
-  var rightIndex = Math.ceil(value);
-  var leftColor = parse(colors[leftIndex]);
-  var rightColor = parse(colors[rightIndex]);
-  var dv = value - leftIndex;
-  var color = stringify([clampCssByte(lerpNumber(leftColor[0], rightColor[0], dv)), clampCssByte(lerpNumber(leftColor[1], rightColor[1], dv)), clampCssByte(lerpNumber(leftColor[2], rightColor[2], dv)), clampCssFloat(lerpNumber(leftColor[3], rightColor[3], dv))], 'rgba');
-  return fullOutput ? {
-    color: color,
-    leftIndex: leftIndex,
-    rightIndex: rightIndex,
-    value: value
-  } : color;
-}
-/**
- * @deprecated
- */
-
-
-var mapToColor = lerp;
-/**
- * @param {string} color
- * @param {number=} h 0 ~ 360, ignore when null.
- * @param {number=} s 0 ~ 1, ignore when null.
- * @param {number=} l 0 ~ 1, ignore when null.
- * @return {string} Color string in rgba format.
- * @memberOf module:zrender/util/color
- */
-
-function modifyHSL(color, h, s, l) {
-  color = parse(color);
-
-  if (color) {
-    color = rgba2hsla(color);
-    h != null && (color[0] = clampCssAngle(h));
-    s != null && (color[1] = parseCssFloat(s));
-    l != null && (color[2] = parseCssFloat(l));
-    return stringify(hsla2rgba(color), 'rgba');
-  }
-}
-/**
- * @param {string} color
- * @param {number=} alpha 0 ~ 1
- * @return {string} Color string in rgba format.
- * @memberOf module:zrender/util/color
- */
-
-
-function modifyAlpha(color, alpha) {
-  color = parse(color);
-
-  if (color && alpha != null) {
-    color[3] = clampCssFloat(alpha);
-    return stringify(color, 'rgba');
-  }
-}
-/**
- * @param {Array.<number>} arrColor like [12,33,44,0.4]
- * @param {string} type 'rgba', 'hsva', ...
- * @return {string} Result color. (If input illegal, return undefined).
- */
-
-
-function stringify(arrColor, type) {
-  if (!arrColor || !arrColor.length) {
-    return;
-  }
-
-  var colorStr = arrColor[0] + ',' + arrColor[1] + ',' + arrColor[2];
-
-  if (type === 'rgba' || type === 'hsva' || type === 'hsla') {
-    colorStr += ',' + arrColor[3];
-  }
-
-  return type + '(' + colorStr + ')';
-}
-
-exports.parse = parse;
-exports.lift = lift;
-exports.toHex = toHex;
-exports.fastLerp = fastLerp;
-exports.fastMapToColor = fastMapToColor;
-exports.lerp = lerp;
-exports.mapToColor = mapToColor;
-exports.modifyHSL = modifyHSL;
-exports.modifyAlpha = modifyAlpha;
-exports.stringify = stringify;
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var BoundingRect = __webpack_require__(12);
-
-var imageHelper = __webpack_require__(51);
-
-var _util = __webpack_require__(0);
-
-var getContext = _util.getContext;
-var extend = _util.extend;
-var retrieve2 = _util.retrieve2;
-var retrieve3 = _util.retrieve3;
-var trim = _util.trim;
-var textWidthCache = {};
-var textWidthCacheCounter = 0;
-var TEXT_CACHE_MAX = 5000;
-var STYLE_REG = /\{([a-zA-Z0-9_]+)\|([^}]*)\}/g;
-var DEFAULT_FONT = '12px sans-serif'; // Avoid assign to an exported variable, for transforming to cjs.
-
-var methods = {};
-
-function $override(name, fn) {
-  methods[name] = fn;
-}
-/**
- * @public
- * @param {string} text
- * @param {string} font
- * @return {number} width
- */
-
-
-function getWidth(text, font) {
-  font = font || DEFAULT_FONT;
-  var key = text + ':' + font;
-
-  if (textWidthCache[key]) {
-    return textWidthCache[key];
-  }
-
-  var textLines = (text + '').split('\n');
-  var width = 0;
-
-  for (var i = 0, l = textLines.length; i < l; i++) {
-    // textContain.measureText may be overrided in SVG or VML
-    width = Math.max(measureText(textLines[i], font).width, width);
-  }
-
-  if (textWidthCacheCounter > TEXT_CACHE_MAX) {
-    textWidthCacheCounter = 0;
-    textWidthCache = {};
-  }
-
-  textWidthCacheCounter++;
-  textWidthCache[key] = width;
-  return width;
-}
-/**
- * @public
- * @param {string} text
- * @param {string} font
- * @param {string} [textAlign='left']
- * @param {string} [textVerticalAlign='top']
- * @param {Array.<number>} [textPadding]
- * @param {Object} [rich]
- * @param {Object} [truncate]
- * @return {Object} {x, y, width, height, lineHeight}
- */
-
-
-function getBoundingRect(text, font, textAlign, textVerticalAlign, textPadding, rich, truncate) {
-  return rich ? getRichTextRect(text, font, textAlign, textVerticalAlign, textPadding, rich, truncate) : getPlainTextRect(text, font, textAlign, textVerticalAlign, textPadding, truncate);
-}
-
-function getPlainTextRect(text, font, textAlign, textVerticalAlign, textPadding, truncate) {
-  var contentBlock = parsePlainText(text, font, textPadding, truncate);
-  var outerWidth = getWidth(text, font);
-
-  if (textPadding) {
-    outerWidth += textPadding[1] + textPadding[3];
-  }
-
-  var outerHeight = contentBlock.outerHeight;
-  var x = adjustTextX(0, outerWidth, textAlign);
-  var y = adjustTextY(0, outerHeight, textVerticalAlign);
-  var rect = new BoundingRect(x, y, outerWidth, outerHeight);
-  rect.lineHeight = contentBlock.lineHeight;
-  return rect;
-}
-
-function getRichTextRect(text, font, textAlign, textVerticalAlign, textPadding, rich, truncate) {
-  var contentBlock = parseRichText(text, {
-    rich: rich,
-    truncate: truncate,
-    font: font,
-    textAlign: textAlign,
-    textPadding: textPadding
-  });
-  var outerWidth = contentBlock.outerWidth;
-  var outerHeight = contentBlock.outerHeight;
-  var x = adjustTextX(0, outerWidth, textAlign);
-  var y = adjustTextY(0, outerHeight, textVerticalAlign);
-  return new BoundingRect(x, y, outerWidth, outerHeight);
-}
-/**
- * @public
- * @param {number} x
- * @param {number} width
- * @param {string} [textAlign='left']
- * @return {number} Adjusted x.
- */
-
-
-function adjustTextX(x, width, textAlign) {
-  // FIXME Right to left language
-  if (textAlign === 'right') {
-    x -= width;
-  } else if (textAlign === 'center') {
-    x -= width / 2;
-  }
-
-  return x;
-}
-/**
- * @public
- * @param {number} y
- * @param {number} height
- * @param {string} [textVerticalAlign='top']
- * @return {number} Adjusted y.
- */
-
-
-function adjustTextY(y, height, textVerticalAlign) {
-  if (textVerticalAlign === 'middle') {
-    y -= height / 2;
-  } else if (textVerticalAlign === 'bottom') {
-    y -= height;
-  }
-
-  return y;
-}
-/**
- * @public
- * @param {stirng} textPosition
- * @param {Object} rect {x, y, width, height}
- * @param {number} distance
- * @return {Object} {x, y, textAlign, textVerticalAlign}
- */
-
-
-function adjustTextPositionOnRect(textPosition, rect, distance) {
-  var x = rect.x;
-  var y = rect.y;
-  var height = rect.height;
-  var width = rect.width;
-  var halfHeight = height / 2;
-  var textAlign = 'left';
-  var textVerticalAlign = 'top';
-
-  switch (textPosition) {
-    case 'left':
-      x -= distance;
-      y += halfHeight;
-      textAlign = 'right';
-      textVerticalAlign = 'middle';
-      break;
-
-    case 'right':
-      x += distance + width;
-      y += halfHeight;
-      textVerticalAlign = 'middle';
-      break;
-
-    case 'top':
-      x += width / 2;
-      y -= distance;
-      textAlign = 'center';
-      textVerticalAlign = 'bottom';
-      break;
-
-    case 'bottom':
-      x += width / 2;
-      y += height + distance;
-      textAlign = 'center';
-      break;
-
-    case 'inside':
-      x += width / 2;
-      y += halfHeight;
-      textAlign = 'center';
-      textVerticalAlign = 'middle';
-      break;
-
-    case 'insideLeft':
-      x += distance;
-      y += halfHeight;
-      textVerticalAlign = 'middle';
-      break;
-
-    case 'insideRight':
-      x += width - distance;
-      y += halfHeight;
-      textAlign = 'right';
-      textVerticalAlign = 'middle';
-      break;
-
-    case 'insideTop':
-      x += width / 2;
-      y += distance;
-      textAlign = 'center';
-      break;
-
-    case 'insideBottom':
-      x += width / 2;
-      y += height - distance;
-      textAlign = 'center';
-      textVerticalAlign = 'bottom';
-      break;
-
-    case 'insideTopLeft':
-      x += distance;
-      y += distance;
-      break;
-
-    case 'insideTopRight':
-      x += width - distance;
-      y += distance;
-      textAlign = 'right';
-      break;
-
-    case 'insideBottomLeft':
-      x += distance;
-      y += height - distance;
-      textVerticalAlign = 'bottom';
-      break;
-
-    case 'insideBottomRight':
-      x += width - distance;
-      y += height - distance;
-      textAlign = 'right';
-      textVerticalAlign = 'bottom';
-      break;
-  }
-
-  return {
-    x: x,
-    y: y,
-    textAlign: textAlign,
-    textVerticalAlign: textVerticalAlign
-  };
-}
-/**
- * Show ellipsis if overflow.
- *
- * @public
- * @param  {string} text
- * @param  {string} containerWidth
- * @param  {string} font
- * @param  {number} [ellipsis='...']
- * @param  {Object} [options]
- * @param  {number} [options.maxIterations=3]
- * @param  {number} [options.minChar=0] If truncate result are less
- *                  then minChar, ellipsis will not show, which is
- *                  better for user hint in some cases.
- * @param  {number} [options.placeholder=''] When all truncated, use the placeholder.
- * @return {string}
- */
-
-
-function truncateText(text, containerWidth, font, ellipsis, options) {
-  if (!containerWidth) {
-    return '';
-  }
-
-  var textLines = (text + '').split('\n');
-  options = prepareTruncateOptions(containerWidth, font, ellipsis, options); // FIXME
-  // It is not appropriate that every line has '...' when truncate multiple lines.
-
-  for (var i = 0, len = textLines.length; i < len; i++) {
-    textLines[i] = truncateSingleLine(textLines[i], options);
-  }
-
-  return textLines.join('\n');
-}
-
-function prepareTruncateOptions(containerWidth, font, ellipsis, options) {
-  options = extend({}, options);
-  options.font = font;
-  var ellipsis = retrieve2(ellipsis, '...');
-  options.maxIterations = retrieve2(options.maxIterations, 2);
-  var minChar = options.minChar = retrieve2(options.minChar, 0); // FIXME
-  // Other languages?
-
-  options.cnCharWidth = getWidth('国', font); // FIXME
-  // Consider proportional font?
-
-  var ascCharWidth = options.ascCharWidth = getWidth('a', font);
-  options.placeholder = retrieve2(options.placeholder, ''); // Example 1: minChar: 3, text: 'asdfzxcv', truncate result: 'asdf', but not: 'a...'.
-  // Example 2: minChar: 3, text: '维度', truncate result: '维', but not: '...'.
-
-  var contentWidth = containerWidth = Math.max(0, containerWidth - 1); // Reserve some gap.
-
-  for (var i = 0; i < minChar && contentWidth >= ascCharWidth; i++) {
-    contentWidth -= ascCharWidth;
-  }
-
-  var ellipsisWidth = getWidth(ellipsis);
-
-  if (ellipsisWidth > contentWidth) {
-    ellipsis = '';
-    ellipsisWidth = 0;
-  }
-
-  contentWidth = containerWidth - ellipsisWidth;
-  options.ellipsis = ellipsis;
-  options.ellipsisWidth = ellipsisWidth;
-  options.contentWidth = contentWidth;
-  options.containerWidth = containerWidth;
-  return options;
-}
-
-function truncateSingleLine(textLine, options) {
-  var containerWidth = options.containerWidth;
-  var font = options.font;
-  var contentWidth = options.contentWidth;
-
-  if (!containerWidth) {
-    return '';
-  }
-
-  var lineWidth = getWidth(textLine, font);
-
-  if (lineWidth <= containerWidth) {
-    return textLine;
-  }
-
-  for (var j = 0;; j++) {
-    if (lineWidth <= contentWidth || j >= options.maxIterations) {
-      textLine += options.ellipsis;
-      break;
-    }
-
-    var subLength = j === 0 ? estimateLength(textLine, contentWidth, options.ascCharWidth, options.cnCharWidth) : lineWidth > 0 ? Math.floor(textLine.length * contentWidth / lineWidth) : 0;
-    textLine = textLine.substr(0, subLength);
-    lineWidth = getWidth(textLine, font);
-  }
-
-  if (textLine === '') {
-    textLine = options.placeholder;
-  }
-
-  return textLine;
-}
-
-function estimateLength(text, contentWidth, ascCharWidth, cnCharWidth) {
-  var width = 0;
-  var i = 0;
-
-  for (var len = text.length; i < len && width < contentWidth; i++) {
-    var charCode = text.charCodeAt(i);
-    width += 0 <= charCode && charCode <= 127 ? ascCharWidth : cnCharWidth;
-  }
-
-  return i;
-}
-/**
- * @public
- * @param {string} font
- * @return {number} line height
- */
-
-
-function getLineHeight(font) {
-  // FIXME A rough approach.
-  return getWidth('国', font);
-}
-/**
- * @public
- * @param {string} text
- * @param {string} font
- * @return {Object} width
- */
-
-
-function measureText(text, font) {
-  return methods.measureText(text, font);
-} // Avoid assign to an exported variable, for transforming to cjs.
-
-
-methods.measureText = function (text, font) {
-  var ctx = getContext();
-  ctx.font = font || DEFAULT_FONT;
-  return ctx.measureText(text);
-};
-/**
- * @public
- * @param {string} text
- * @param {string} font
- * @param {Object} [truncate]
- * @return {Object} block: {lineHeight, lines, height, outerHeight}
- *  Notice: for performance, do not calculate outerWidth util needed.
- */
-
-
-function parsePlainText(text, font, padding, truncate) {
-  text != null && (text += '');
-  var lineHeight = getLineHeight(font);
-  var lines = text ? text.split('\n') : [];
-  var height = lines.length * lineHeight;
-  var outerHeight = height;
-
-  if (padding) {
-    outerHeight += padding[0] + padding[2];
-  }
-
-  if (text && truncate) {
-    var truncOuterHeight = truncate.outerHeight;
-    var truncOuterWidth = truncate.outerWidth;
-
-    if (truncOuterHeight != null && outerHeight > truncOuterHeight) {
-      text = '';
-      lines = [];
-    } else if (truncOuterWidth != null) {
-      var options = prepareTruncateOptions(truncOuterWidth - (padding ? padding[1] + padding[3] : 0), font, truncate.ellipsis, {
-        minChar: truncate.minChar,
-        placeholder: truncate.placeholder
-      }); // FIXME
-      // It is not appropriate that every line has '...' when truncate multiple lines.
-
-      for (var i = 0, len = lines.length; i < len; i++) {
-        lines[i] = truncateSingleLine(lines[i], options);
-      }
-    }
-  }
-
-  return {
-    lines: lines,
-    height: height,
-    outerHeight: outerHeight,
-    lineHeight: lineHeight
-  };
-}
-/**
- * For example: 'some text {a|some text}other text{b|some text}xxx{c|}xxx'
- * Also consider 'bbbb{a|xxx\nzzz}xxxx\naaaa'.
- *
- * @public
- * @param {string} text
- * @param {Object} style
- * @return {Object} block
- * {
- *      width,
- *      height,
- *      lines: [{
- *          lineHeight,
- *          width,
- *          tokens: [[{
- *              styleName,
- *              text,
- *              width,      // include textPadding
- *              height,     // include textPadding
- *              textWidth, // pure text width
- *              textHeight, // pure text height
- *              lineHeihgt,
- *              font,
- *              textAlign,
- *              textVerticalAlign
- *          }], [...], ...]
- *      }, ...]
- * }
- * If styleName is undefined, it is plain text.
- */
-
-
-function parseRichText(text, style) {
-  var contentBlock = {
-    lines: [],
-    width: 0,
-    height: 0
-  };
-  text != null && (text += '');
-
-  if (!text) {
-    return contentBlock;
-  }
-
-  var lastIndex = STYLE_REG.lastIndex = 0;
-  var result;
-
-  while ((result = STYLE_REG.exec(text)) != null) {
-    var matchedIndex = result.index;
-
-    if (matchedIndex > lastIndex) {
-      pushTokens(contentBlock, text.substring(lastIndex, matchedIndex));
-    }
-
-    pushTokens(contentBlock, result[2], result[1]);
-    lastIndex = STYLE_REG.lastIndex;
-  }
-
-  if (lastIndex < text.length) {
-    pushTokens(contentBlock, text.substring(lastIndex, text.length));
-  }
-
-  var lines = contentBlock.lines;
-  var contentHeight = 0;
-  var contentWidth = 0; // For `textWidth: 100%`
-
-  var pendingList = [];
-  var stlPadding = style.textPadding;
-  var truncate = style.truncate;
-  var truncateWidth = truncate && truncate.outerWidth;
-  var truncateHeight = truncate && truncate.outerHeight;
-
-  if (stlPadding) {
-    truncateWidth != null && (truncateWidth -= stlPadding[1] + stlPadding[3]);
-    truncateHeight != null && (truncateHeight -= stlPadding[0] + stlPadding[2]);
-  } // Calculate layout info of tokens.
-
-
-  for (var i = 0; i < lines.length; i++) {
-    var line = lines[i];
-    var lineHeight = 0;
-    var lineWidth = 0;
-
-    for (var j = 0; j < line.tokens.length; j++) {
-      var token = line.tokens[j];
-      var tokenStyle = token.styleName && style.rich[token.styleName] || {}; // textPadding should not inherit from style.
-
-      var textPadding = token.textPadding = tokenStyle.textPadding; // textFont has been asigned to font by `normalizeStyle`.
-
-      var font = token.font = tokenStyle.font || style.font; // textHeight can be used when textVerticalAlign is specified in token.
-
-      var tokenHeight = token.textHeight = retrieve2( // textHeight should not be inherited, consider it can be specified
-      // as box height of the block.
-      tokenStyle.textHeight, getLineHeight(font));
-      textPadding && (tokenHeight += textPadding[0] + textPadding[2]);
-      token.height = tokenHeight;
-      token.lineHeight = retrieve3(tokenStyle.textLineHeight, style.textLineHeight, tokenHeight);
-      token.textAlign = tokenStyle && tokenStyle.textAlign || style.textAlign;
-      token.textVerticalAlign = tokenStyle && tokenStyle.textVerticalAlign || 'middle';
-
-      if (truncateHeight != null && contentHeight + token.lineHeight > truncateHeight) {
-        return {
-          lines: [],
-          width: 0,
-          height: 0
-        };
-      }
-
-      token.textWidth = getWidth(token.text, font);
-      var tokenWidth = tokenStyle.textWidth;
-      var tokenWidthNotSpecified = tokenWidth == null || tokenWidth === 'auto'; // Percent width, can be `100%`, can be used in drawing separate
-      // line when box width is needed to be auto.
-
-      if (typeof tokenWidth === 'string' && tokenWidth.charAt(tokenWidth.length - 1) === '%') {
-        token.percentWidth = tokenWidth;
-        pendingList.push(token);
-        tokenWidth = 0; // Do not truncate in this case, because there is no user case
-        // and it is too complicated.
-      } else {
-        if (tokenWidthNotSpecified) {
-          tokenWidth = token.textWidth; // FIXME: If image is not loaded and textWidth is not specified, calling
-          // `getBoundingRect()` will not get correct result.
-
-          var textBackgroundColor = tokenStyle.textBackgroundColor;
-          var bgImg = textBackgroundColor && textBackgroundColor.image; // Use cases:
-          // (1) If image is not loaded, it will be loaded at render phase and call
-          // `dirty()` and `textBackgroundColor.image` will be replaced with the loaded
-          // image, and then the right size will be calculated here at the next tick.
-          // See `graphic/helper/text.js`.
-          // (2) If image loaded, and `textBackgroundColor.image` is image src string,
-          // use `imageHelper.findExistImage` to find cached image.
-          // `imageHelper.findExistImage` will always be called here before
-          // `imageHelper.createOrUpdateImage` in `graphic/helper/text.js#renderRichText`
-          // which ensures that image will not be rendered before correct size calcualted.
-
-          if (bgImg) {
-            bgImg = imageHelper.findExistImage(bgImg);
-
-            if (imageHelper.isImageReady(bgImg)) {
-              tokenWidth = Math.max(tokenWidth, bgImg.width * tokenHeight / bgImg.height);
-            }
-          }
-        }
-
-        var paddingW = textPadding ? textPadding[1] + textPadding[3] : 0;
-        tokenWidth += paddingW;
-        var remianTruncWidth = truncateWidth != null ? truncateWidth - lineWidth : null;
-
-        if (remianTruncWidth != null && remianTruncWidth < tokenWidth) {
-          if (!tokenWidthNotSpecified || remianTruncWidth < paddingW) {
-            token.text = '';
-            token.textWidth = tokenWidth = 0;
-          } else {
-            token.text = truncateText(token.text, remianTruncWidth - paddingW, font, truncate.ellipsis, {
-              minChar: truncate.minChar
-            });
-            token.textWidth = getWidth(token.text, font);
-            tokenWidth = token.textWidth + paddingW;
-          }
-        }
-      }
-
-      lineWidth += token.width = tokenWidth;
-      tokenStyle && (lineHeight = Math.max(lineHeight, token.lineHeight));
-    }
-
-    line.width = lineWidth;
-    line.lineHeight = lineHeight;
-    contentHeight += lineHeight;
-    contentWidth = Math.max(contentWidth, lineWidth);
-  }
-
-  contentBlock.outerWidth = contentBlock.width = retrieve2(style.textWidth, contentWidth);
-  contentBlock.outerHeight = contentBlock.height = retrieve2(style.textHeight, contentHeight);
-
-  if (stlPadding) {
-    contentBlock.outerWidth += stlPadding[1] + stlPadding[3];
-    contentBlock.outerHeight += stlPadding[0] + stlPadding[2];
-  }
-
-  for (var i = 0; i < pendingList.length; i++) {
-    var token = pendingList[i];
-    var percentWidth = token.percentWidth; // Should not base on outerWidth, because token can not be placed out of padding.
-
-    token.width = parseInt(percentWidth, 10) / 100 * contentWidth;
-  }
-
-  return contentBlock;
-}
-
-function pushTokens(block, str, styleName) {
-  var isEmptyStr = str === '';
-  var strs = str.split('\n');
-  var lines = block.lines;
-
-  for (var i = 0; i < strs.length; i++) {
-    var text = strs[i];
-    var token = {
-      styleName: styleName,
-      text: text,
-      isLineHolder: !text && !isEmptyStr
-    }; // The first token should be appended to the last line.
-
-    if (!i) {
-      var tokens = (lines[lines.length - 1] || (lines[0] = {
-        tokens: []
-      })).tokens; // Consider cases:
-      // (1) ''.split('\n') => ['', '\n', ''], the '' at the first item
-      // (which is a placeholder) should be replaced by new token.
-      // (2) A image backage, where token likes {a|}.
-      // (3) A redundant '' will affect textAlign in line.
-      // (4) tokens with the same tplName should not be merged, because
-      // they should be displayed in different box (with border and padding).
-
-      var tokensLen = tokens.length;
-      tokensLen === 1 && tokens[0].isLineHolder ? tokens[0] = token : // Consider text is '', only insert when it is the "lineHolder" or
-      // "emptyStr". Otherwise a redundant '' will affect textAlign in line.
-      (text || !tokensLen || isEmptyStr) && tokens.push(token);
-    } // Other tokens always start a new line.
-    else {
-        // If there is '', insert it as a placeholder.
-        lines.push({
-          tokens: [token]
-        });
-      }
-  }
-}
-
-function makeFont(style) {
-  // FIXME in node-canvas fontWeight is before fontStyle
-  // Use `fontSize` `fontFamily` to check whether font properties are defined.
-  var font = (style.fontSize || style.fontFamily) && [style.fontStyle, style.fontWeight, (style.fontSize || 12) + 'px', // If font properties are defined, `fontFamily` should not be ignored.
-  style.fontFamily || 'sans-serif'].join(' ');
-  return font && trim(font) || style.textFont || style.font;
-}
-
-exports.DEFAULT_FONT = DEFAULT_FONT;
-exports.$override = $override;
-exports.getWidth = getWidth;
-exports.getBoundingRect = getBoundingRect;
-exports.adjustTextX = adjustTextX;
-exports.adjustTextY = adjustTextY;
-exports.adjustTextPositionOnRect = adjustTextPositionOnRect;
-exports.truncateText = truncateText;
-exports.getLineHeight = getLineHeight;
-exports.measureText = measureText;
-exports.parsePlainText = parsePlainText;
-exports.parseRichText = parseRichText;
-exports.makeFont = makeFont;
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Eventful = __webpack_require__(27);
-
-exports.Dispatcher = Eventful;
-
-var env = __webpack_require__(8);
-
-/**
- * 事件辅助类
- * @module zrender/core/event
- * @author Kener (@Kener-林峰, kener.linfeng@gmail.com)
- */
-var isDomLevel2 = typeof window !== 'undefined' && !!window.addEventListener;
-var MOUSE_EVENT_REG = /^(?:mouse|pointer|contextmenu|drag|drop)|click/;
-
-function getBoundingClientRect(el) {
-  // BlackBerry 5, iOS 3 (original iPhone) don't have getBoundingRect
-  return el.getBoundingClientRect ? el.getBoundingClientRect() : {
-    left: 0,
-    top: 0
-  };
-} // `calculate` is optional, default false
-
-
-function clientToLocal(el, e, out, calculate) {
-  out = out || {}; // According to the W3C Working Draft, offsetX and offsetY should be relative
-  // to the padding edge of the target element. The only browser using this convention
-  // is IE. Webkit uses the border edge, Opera uses the content edge, and FireFox does
-  // not support the properties.
-  // (see http://www.jacklmoore.com/notes/mouse-position/)
-  // In zr painter.dom, padding edge equals to border edge.
-  // FIXME
-  // When mousemove event triggered on ec tooltip, target is not zr painter.dom, and
-  // offsetX/Y is relative to e.target, where the calculation of zrX/Y via offsetX/Y
-  // is too complex. So css-transfrom dont support in this case temporarily.
-
-  if (calculate || !env.canvasSupported) {
-    defaultGetZrXY(el, e, out);
-  } // Caution: In FireFox, layerX/layerY Mouse position relative to the closest positioned
-  // ancestor element, so we should make sure el is positioned (e.g., not position:static).
-  // BTW1, Webkit don't return the same results as FF in non-simple cases (like add
-  // zoom-factor, overflow / opacity layers, transforms ...)
-  // BTW2, (ev.offsetY || ev.pageY - $(ev.target).offset().top) is not correct in preserve-3d.
-  // <https://bugs.jquery.com/ticket/8523#comment:14>
-  // BTW3, In ff, offsetX/offsetY is always 0.
-  else if (env.browser.firefox && e.layerX != null && e.layerX !== e.offsetX) {
-      out.zrX = e.layerX;
-      out.zrY = e.layerY;
-    } // For IE6+, chrome, safari, opera. (When will ff support offsetX?)
-    else if (e.offsetX != null) {
-        out.zrX = e.offsetX;
-        out.zrY = e.offsetY;
-      } // For some other device, e.g., IOS safari.
-      else {
-          defaultGetZrXY(el, e, out);
-        }
-
-  return out;
-}
-
-function defaultGetZrXY(el, e, out) {
-  // This well-known method below does not support css transform.
-  var box = getBoundingClientRect(el);
-  out.zrX = e.clientX - box.left;
-  out.zrY = e.clientY - box.top;
-}
-/**
- * 如果存在第三方嵌入的一些dom触发的事件，或touch事件，需要转换一下事件坐标.
- * `calculate` is optional, default false.
- */
-
-
-function normalizeEvent(el, e, calculate) {
-  e = e || window.event;
-
-  if (e.zrX != null) {
-    return e;
-  }
-
-  var eventType = e.type;
-  var isTouch = eventType && eventType.indexOf('touch') >= 0;
-
-  if (!isTouch) {
-    clientToLocal(el, e, e, calculate);
-    e.zrDelta = e.wheelDelta ? e.wheelDelta / 120 : -(e.detail || 0) / 3;
-  } else {
-    var touch = eventType != 'touchend' ? e.targetTouches[0] : e.changedTouches[0];
-    touch && clientToLocal(el, touch, e, calculate);
-  } // Add which for click: 1 === left; 2 === middle; 3 === right; otherwise: 0;
-  // See jQuery: https://github.com/jquery/jquery/blob/master/src/event.js
-  // If e.which has been defined, if may be readonly,
-  // see: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/which
-
-
-  var button = e.button;
-
-  if (e.which == null && button !== undefined && MOUSE_EVENT_REG.test(e.type)) {
-    e.which = button & 1 ? 1 : button & 2 ? 3 : button & 4 ? 2 : 0;
-  }
-
-  return e;
-}
-/**
- * @param {HTMLElement} el
- * @param {string} name
- * @param {Function} handler
- */
-
-
-function addEventListener(el, name, handler) {
-  if (isDomLevel2) {
-    // Reproduct the console warning:
-    // [Violation] Added non-passive event listener to a scroll-blocking <some> event.
-    // Consider marking event handler as 'passive' to make the page more responsive.
-    // Just set console log level: verbose in chrome dev tool.
-    // then the warning log will be printed when addEventListener called.
-    // See https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
-    // We have not yet found a neat way to using passive. Because in zrender the dom event
-    // listener delegate all of the upper events of element. Some of those events need
-    // to prevent default. For example, the feature `preventDefaultMouseMove` of echarts.
-    // Before passive can be adopted, these issues should be considered:
-    // (1) Whether and how a zrender user specifies an event listener passive. And by default,
-    // passive or not.
-    // (2) How to tread that some zrender event listener is passive, and some is not. If
-    // we use other way but not preventDefault of mousewheel and touchmove, browser
-    // compatibility should be handled.
-    // var opts = (env.passiveSupported && name === 'mousewheel')
-    //     ? {passive: true}
-    //     // By default, the third param of el.addEventListener is `capture: false`.
-    //     : void 0;
-    // el.addEventListener(name, handler /* , opts */);
-    el.addEventListener(name, handler);
-  } else {
-    el.attachEvent('on' + name, handler);
-  }
-}
-
-function removeEventListener(el, name, handler) {
-  if (isDomLevel2) {
-    el.removeEventListener(name, handler);
-  } else {
-    el.detachEvent('on' + name, handler);
-  }
-}
-/**
- * preventDefault and stopPropagation.
- * Notice: do not do that in zrender. Upper application
- * do that if necessary.
- *
- * @memberOf module:zrender/core/event
- * @method
- * @param {Event} e : event对象
- */
-
-
-var stop = isDomLevel2 ? function (e) {
-  e.preventDefault();
-  e.stopPropagation();
-  e.cancelBubble = true;
-} : function (e) {
-  e.returnValue = false;
-  e.cancelBubble = true;
-};
-
-function notLeftMouse(e) {
-  // If e.which is undefined, considered as left mouse event.
-  return e.which > 1;
-} // 做向上兼容
-
-
-exports.clientToLocal = clientToLocal;
-exports.normalizeEvent = normalizeEvent;
-exports.addEventListener = addEventListener;
-exports.removeEventListener = removeEventListener;
-exports.stop = stop;
-exports.notLeftMouse = notLeftMouse;
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var _config = __webpack_require__(6);
-
-var __DEV__ = _config.__DEV__;
-
-var zrUtil = __webpack_require__(0);
-
-var OrdinalScale = __webpack_require__(217);
-
-var IntervalScale = __webpack_require__(58);
-
-var Scale = __webpack_require__(44);
-
-var numberUtil = __webpack_require__(5);
-
-var _barGrid = __webpack_require__(218);
-
-var prepareLayoutBarSeries = _barGrid.prepareLayoutBarSeries;
-var makeColumnLayout = _barGrid.makeColumnLayout;
-var retrieveColumnLayout = _barGrid.retrieveColumnLayout;
-
-var BoundingRect = __webpack_require__(12);
-
-__webpack_require__(219);
-
-__webpack_require__(220);
-
-/*
-* Licensed to the Apache Software Foundation (ASF) under one
-* or more contributor license agreements.  See the NOTICE file
-* distributed with this work for additional information
-* regarding copyright ownership.  The ASF licenses this file
-* to you under the Apache License, Version 2.0 (the
-* "License"); you may not use this file except in compliance
-* with the License.  You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied.  See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
-
-/**
- * Get axis scale extent before niced.
- * Item of returned array can only be number (including Infinity and NaN).
- */
-function getScaleExtent(scale, model) {
-  var scaleType = scale.type;
-  var min = model.getMin();
-  var max = model.getMax();
-  var fixMin = min != null;
-  var fixMax = max != null;
-  var originalExtent = scale.getExtent();
-  var axisDataLen;
-  var boundaryGap;
-  var span;
-
-  if (scaleType === 'ordinal') {
-    axisDataLen = model.getCategories().length;
-  } else {
-    boundaryGap = model.get('boundaryGap');
-
-    if (!zrUtil.isArray(boundaryGap)) {
-      boundaryGap = [boundaryGap || 0, boundaryGap || 0];
-    }
-
-    if (typeof boundaryGap[0] === 'boolean') {
-      boundaryGap = [0, 0];
-    }
-
-    boundaryGap[0] = numberUtil.parsePercent(boundaryGap[0], 1);
-    boundaryGap[1] = numberUtil.parsePercent(boundaryGap[1], 1);
-    span = originalExtent[1] - originalExtent[0] || Math.abs(originalExtent[0]);
-  } // Notice: When min/max is not set (that is, when there are null/undefined,
-  // which is the most common case), these cases should be ensured:
-  // (1) For 'ordinal', show all axis.data.
-  // (2) For others:
-  //      + `boundaryGap` is applied (if min/max set, boundaryGap is
-  //      disabled).
-  //      + If `needCrossZero`, min/max should be zero, otherwise, min/max should
-  //      be the result that originalExtent enlarged by boundaryGap.
-  // (3) If no data, it should be ensured that `scale.setBlank` is set.
-  // FIXME
-  // (1) When min/max is 'dataMin' or 'dataMax', should boundaryGap be able to used?
-  // (2) When `needCrossZero` and all data is positive/negative, should it be ensured
-  // that the results processed by boundaryGap are positive/negative?
-
-
-  if (min == null) {
-    min = scaleType === 'ordinal' ? axisDataLen ? 0 : NaN : originalExtent[0] - boundaryGap[0] * span;
-  }
-
-  if (max == null) {
-    max = scaleType === 'ordinal' ? axisDataLen ? axisDataLen - 1 : NaN : originalExtent[1] + boundaryGap[1] * span;
-  }
-
-  if (min === 'dataMin') {
-    min = originalExtent[0];
-  } else if (typeof min === 'function') {
-    min = min({
-      min: originalExtent[0],
-      max: originalExtent[1]
-    });
-  }
-
-  if (max === 'dataMax') {
-    max = originalExtent[1];
-  } else if (typeof max === 'function') {
-    max = max({
-      min: originalExtent[0],
-      max: originalExtent[1]
-    });
-  }
-
-  (min == null || !isFinite(min)) && (min = NaN);
-  (max == null || !isFinite(max)) && (max = NaN);
-  scale.setBlank(zrUtil.eqNaN(min) || zrUtil.eqNaN(max) || scaleType === 'ordinal' && !scale.getOrdinalMeta().categories.length); // Evaluate if axis needs cross zero
-
-  if (model.getNeedCrossZero()) {
-    // Axis is over zero and min is not set
-    if (min > 0 && max > 0 && !fixMin) {
-      min = 0;
-    } // Axis is under zero and max is not set
-
-
-    if (min < 0 && max < 0 && !fixMax) {
-      max = 0;
-    }
-  } // If bars are placed on a base axis of type time or interval account for axis boundary overflow and current axis
-  // is base axis
-  // FIXME
-  // (1) Consider support value axis, where below zero and axis `onZero` should be handled properly.
-  // (2) Refactor the logic with `barGrid`. Is it not need to `makeBarWidthAndOffsetInfo` twice with different extent?
-  //     Should not depend on series type `bar`?
-  // (3) Fix that might overlap when using dataZoom.
-  // (4) Consider other chart types using `barGrid`?
-  // See #6728, #4862, `test/bar-overflow-time-plot.html`
-
-
-  var ecModel = model.ecModel;
-
-  if (ecModel && scaleType === 'time'
-  /*|| scaleType === 'interval' */
-  ) {
-    var barSeriesModels = prepareLayoutBarSeries('bar', ecModel);
-    var isBaseAxisAndHasBarSeries;
-    zrUtil.each(barSeriesModels, function (seriesModel) {
-      isBaseAxisAndHasBarSeries |= seriesModel.getBaseAxis() === model.axis;
-    });
-
-    if (isBaseAxisAndHasBarSeries) {
-      // Calculate placement of bars on axis
-      var barWidthAndOffset = makeColumnLayout(barSeriesModels); // Adjust axis min and max to account for overflow
-
-      var adjustedScale = adjustScaleForOverflow(min, max, model, barWidthAndOffset);
-      min = adjustedScale.min;
-      max = adjustedScale.max;
-    }
-  }
-
-  return [min, max];
-}
-
-function adjustScaleForOverflow(min, max, model, barWidthAndOffset) {
-  // Get Axis Length
-  var axisExtent = model.axis.getExtent();
-  var axisLength = axisExtent[1] - axisExtent[0]; // Get bars on current base axis and calculate min and max overflow
-
-  var barsOnCurrentAxis = retrieveColumnLayout(barWidthAndOffset, model.axis);
-
-  if (barsOnCurrentAxis === undefined) {
-    return {
-      min: min,
-      max: max
-    };
-  }
-
-  var minOverflow = Infinity;
-  zrUtil.each(barsOnCurrentAxis, function (item) {
-    minOverflow = Math.min(item.offset, minOverflow);
-  });
-  var maxOverflow = -Infinity;
-  zrUtil.each(barsOnCurrentAxis, function (item) {
-    maxOverflow = Math.max(item.offset + item.width, maxOverflow);
-  });
-  minOverflow = Math.abs(minOverflow);
-  maxOverflow = Math.abs(maxOverflow);
-  var totalOverFlow = minOverflow + maxOverflow; // Calulate required buffer based on old range and overflow
-
-  var oldRange = max - min;
-  var oldRangePercentOfNew = 1 - (minOverflow + maxOverflow) / axisLength;
-  var overflowBuffer = oldRange / oldRangePercentOfNew - oldRange;
-  max += overflowBuffer * (maxOverflow / totalOverFlow);
-  min -= overflowBuffer * (minOverflow / totalOverFlow);
-  return {
-    min: min,
-    max: max
-  };
-}
-
-function niceScaleExtent(scale, model) {
-  var extent = getScaleExtent(scale, model);
-  var fixMin = model.getMin() != null;
-  var fixMax = model.getMax() != null;
-  var splitNumber = model.get('splitNumber');
-
-  if (scale.type === 'log') {
-    scale.base = model.get('logBase');
-  }
-
-  var scaleType = scale.type;
-  scale.setExtent(extent[0], extent[1]);
-  scale.niceExtent({
-    splitNumber: splitNumber,
-    fixMin: fixMin,
-    fixMax: fixMax,
-    minInterval: scaleType === 'interval' || scaleType === 'time' ? model.get('minInterval') : null,
-    maxInterval: scaleType === 'interval' || scaleType === 'time' ? model.get('maxInterval') : null
-  }); // If some one specified the min, max. And the default calculated interval
-  // is not good enough. He can specify the interval. It is often appeared
-  // in angle axis with angle 0 - 360. Interval calculated in interval scale is hard
-  // to be 60.
-  // FIXME
-
-  var interval = model.get('interval');
-
-  if (interval != null) {
-    scale.setInterval && scale.setInterval(interval);
-  }
-}
-/**
- * @param {module:echarts/model/Model} model
- * @param {string} [axisType] Default retrieve from model.type
- * @return {module:echarts/scale/*}
- */
-
-
-function createScaleByModel(model, axisType) {
-  axisType = axisType || model.get('type');
-
-  if (axisType) {
-    switch (axisType) {
-      // Buildin scale
-      case 'category':
-        return new OrdinalScale(model.getOrdinalMeta ? model.getOrdinalMeta() : model.getCategories(), [Infinity, -Infinity]);
-
-      case 'value':
-        return new IntervalScale();
-      // Extended scale, like time and log
-
-      default:
-        return (Scale.getClass(axisType) || IntervalScale).create(model);
-    }
-  }
-}
-/**
- * Check if the axis corss 0
- */
-
-
-function ifAxisCrossZero(axis) {
-  var dataExtent = axis.scale.getExtent();
-  var min = dataExtent[0];
-  var max = dataExtent[1];
-  return !(min > 0 && max > 0 || min < 0 && max < 0);
-}
-/**
- * @param {module:echarts/coord/Axis} axis
- * @return {Function} Label formatter function.
- *         param: {number} tickValue,
- *         param: {number} idx, the index in all ticks.
- *                         If category axis, this param is not requied.
- *         return: {string} label string.
- */
-
-
-function makeLabelFormatter(axis) {
-  var labelFormatter = axis.getLabelModel().get('formatter');
-  var categoryTickStart = axis.type === 'category' ? axis.scale.getExtent()[0] : null;
-
-  if (typeof labelFormatter === 'string') {
-    labelFormatter = function (tpl) {
-      return function (val) {
-        return tpl.replace('{value}', val != null ? val : '');
-      };
-    }(labelFormatter); // Consider empty array
-
-
-    return labelFormatter;
-  } else if (typeof labelFormatter === 'function') {
-    return function (tickValue, idx) {
-      // The original intention of `idx` is "the index of the tick in all ticks".
-      // But the previous implementation of category axis do not consider the
-      // `axisLabel.interval`, which cause that, for example, the `interval` is
-      // `1`, then the ticks "name5", "name7", "name9" are displayed, where the
-      // corresponding `idx` are `0`, `2`, `4`, but not `0`, `1`, `2`. So we keep
-      // the definition here for back compatibility.
-      if (categoryTickStart != null) {
-        idx = tickValue - categoryTickStart;
-      }
-
-      return labelFormatter(getAxisRawValue(axis, tickValue), idx);
-    };
-  } else {
-    return function (tick) {
-      return axis.scale.getLabel(tick);
-    };
-  }
-}
-
-function getAxisRawValue(axis, value) {
-  // In category axis with data zoom, tick is not the original
-  // index of axis.data. So tick should not be exposed to user
-  // in category axis.
-  return axis.type === 'category' ? axis.scale.getLabel(value) : value;
-}
-/**
- * @param {module:echarts/coord/Axis} axis
- * @return {module:zrender/core/BoundingRect} Be null/undefined if no labels.
- */
-
-
-function estimateLabelUnionRect(axis) {
-  var axisModel = axis.model;
-  var scale = axis.scale;
-
-  if (!axisModel.get('axisLabel.show') || scale.isBlank()) {
-    return;
-  }
-
-  var isCategory = axis.type === 'category';
-  var realNumberScaleTicks;
-  var tickCount;
-  var categoryScaleExtent = scale.getExtent(); // Optimize for large category data, avoid call `getTicks()`.
-
-  if (isCategory) {
-    tickCount = scale.count();
-  } else {
-    realNumberScaleTicks = scale.getTicks();
-    tickCount = realNumberScaleTicks.length;
-  }
-
-  var axisLabelModel = axis.getLabelModel();
-  var labelFormatter = makeLabelFormatter(axis);
-  var rect;
-  var step = 1; // Simple optimization for large amount of labels
-
-  if (tickCount > 40) {
-    step = Math.ceil(tickCount / 40);
-  }
-
-  for (var i = 0; i < tickCount; i += step) {
-    var tickValue = realNumberScaleTicks ? realNumberScaleTicks[i] : categoryScaleExtent[0] + i;
-    var label = labelFormatter(tickValue);
-    var unrotatedSingleRect = axisLabelModel.getTextRect(label);
-    var singleRect = rotateTextRect(unrotatedSingleRect, axisLabelModel.get('rotate') || 0);
-    rect ? rect.union(singleRect) : rect = singleRect;
-  }
-
-  return rect;
-}
-
-function rotateTextRect(textRect, rotate) {
-  var rotateRadians = rotate * Math.PI / 180;
-  var boundingBox = textRect.plain();
-  var beforeWidth = boundingBox.width;
-  var beforeHeight = boundingBox.height;
-  var afterWidth = beforeWidth * Math.cos(rotateRadians) + beforeHeight * Math.sin(rotateRadians);
-  var afterHeight = beforeWidth * Math.sin(rotateRadians) + beforeHeight * Math.cos(rotateRadians);
-  var rotatedRect = new BoundingRect(boundingBox.x, boundingBox.y, afterWidth, afterHeight);
-  return rotatedRect;
-}
-
-exports.getScaleExtent = getScaleExtent;
-exports.niceScaleExtent = niceScaleExtent;
-exports.createScaleByModel = createScaleByModel;
-exports.ifAxisCrossZero = ifAxisCrossZero;
-exports.makeLabelFormatter = makeLabelFormatter;
-exports.getAxisRawValue = getAxisRawValue;
-exports.estimateLabelUnionRect = estimateLabelUnionRect;
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
 /* WEBPACK VAR INJECTION */(function(global, module) {/**
  * Lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -12939,6 +11045,1900 @@ function stubFalse() {
 module.exports = merge;
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(49), __webpack_require__(68)(module)))
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var LRU = __webpack_require__(76);
+
+var kCSSColorTable = {
+  'transparent': [0, 0, 0, 0],
+  'aliceblue': [240, 248, 255, 1],
+  'antiquewhite': [250, 235, 215, 1],
+  'aqua': [0, 255, 255, 1],
+  'aquamarine': [127, 255, 212, 1],
+  'azure': [240, 255, 255, 1],
+  'beige': [245, 245, 220, 1],
+  'bisque': [255, 228, 196, 1],
+  'black': [0, 0, 0, 1],
+  'blanchedalmond': [255, 235, 205, 1],
+  'blue': [0, 0, 255, 1],
+  'blueviolet': [138, 43, 226, 1],
+  'brown': [165, 42, 42, 1],
+  'burlywood': [222, 184, 135, 1],
+  'cadetblue': [95, 158, 160, 1],
+  'chartreuse': [127, 255, 0, 1],
+  'chocolate': [210, 105, 30, 1],
+  'coral': [255, 127, 80, 1],
+  'cornflowerblue': [100, 149, 237, 1],
+  'cornsilk': [255, 248, 220, 1],
+  'crimson': [220, 20, 60, 1],
+  'cyan': [0, 255, 255, 1],
+  'darkblue': [0, 0, 139, 1],
+  'darkcyan': [0, 139, 139, 1],
+  'darkgoldenrod': [184, 134, 11, 1],
+  'darkgray': [169, 169, 169, 1],
+  'darkgreen': [0, 100, 0, 1],
+  'darkgrey': [169, 169, 169, 1],
+  'darkkhaki': [189, 183, 107, 1],
+  'darkmagenta': [139, 0, 139, 1],
+  'darkolivegreen': [85, 107, 47, 1],
+  'darkorange': [255, 140, 0, 1],
+  'darkorchid': [153, 50, 204, 1],
+  'darkred': [139, 0, 0, 1],
+  'darksalmon': [233, 150, 122, 1],
+  'darkseagreen': [143, 188, 143, 1],
+  'darkslateblue': [72, 61, 139, 1],
+  'darkslategray': [47, 79, 79, 1],
+  'darkslategrey': [47, 79, 79, 1],
+  'darkturquoise': [0, 206, 209, 1],
+  'darkviolet': [148, 0, 211, 1],
+  'deeppink': [255, 20, 147, 1],
+  'deepskyblue': [0, 191, 255, 1],
+  'dimgray': [105, 105, 105, 1],
+  'dimgrey': [105, 105, 105, 1],
+  'dodgerblue': [30, 144, 255, 1],
+  'firebrick': [178, 34, 34, 1],
+  'floralwhite': [255, 250, 240, 1],
+  'forestgreen': [34, 139, 34, 1],
+  'fuchsia': [255, 0, 255, 1],
+  'gainsboro': [220, 220, 220, 1],
+  'ghostwhite': [248, 248, 255, 1],
+  'gold': [255, 215, 0, 1],
+  'goldenrod': [218, 165, 32, 1],
+  'gray': [128, 128, 128, 1],
+  'green': [0, 128, 0, 1],
+  'greenyellow': [173, 255, 47, 1],
+  'grey': [128, 128, 128, 1],
+  'honeydew': [240, 255, 240, 1],
+  'hotpink': [255, 105, 180, 1],
+  'indianred': [205, 92, 92, 1],
+  'indigo': [75, 0, 130, 1],
+  'ivory': [255, 255, 240, 1],
+  'khaki': [240, 230, 140, 1],
+  'lavender': [230, 230, 250, 1],
+  'lavenderblush': [255, 240, 245, 1],
+  'lawngreen': [124, 252, 0, 1],
+  'lemonchiffon': [255, 250, 205, 1],
+  'lightblue': [173, 216, 230, 1],
+  'lightcoral': [240, 128, 128, 1],
+  'lightcyan': [224, 255, 255, 1],
+  'lightgoldenrodyellow': [250, 250, 210, 1],
+  'lightgray': [211, 211, 211, 1],
+  'lightgreen': [144, 238, 144, 1],
+  'lightgrey': [211, 211, 211, 1],
+  'lightpink': [255, 182, 193, 1],
+  'lightsalmon': [255, 160, 122, 1],
+  'lightseagreen': [32, 178, 170, 1],
+  'lightskyblue': [135, 206, 250, 1],
+  'lightslategray': [119, 136, 153, 1],
+  'lightslategrey': [119, 136, 153, 1],
+  'lightsteelblue': [176, 196, 222, 1],
+  'lightyellow': [255, 255, 224, 1],
+  'lime': [0, 255, 0, 1],
+  'limegreen': [50, 205, 50, 1],
+  'linen': [250, 240, 230, 1],
+  'magenta': [255, 0, 255, 1],
+  'maroon': [128, 0, 0, 1],
+  'mediumaquamarine': [102, 205, 170, 1],
+  'mediumblue': [0, 0, 205, 1],
+  'mediumorchid': [186, 85, 211, 1],
+  'mediumpurple': [147, 112, 219, 1],
+  'mediumseagreen': [60, 179, 113, 1],
+  'mediumslateblue': [123, 104, 238, 1],
+  'mediumspringgreen': [0, 250, 154, 1],
+  'mediumturquoise': [72, 209, 204, 1],
+  'mediumvioletred': [199, 21, 133, 1],
+  'midnightblue': [25, 25, 112, 1],
+  'mintcream': [245, 255, 250, 1],
+  'mistyrose': [255, 228, 225, 1],
+  'moccasin': [255, 228, 181, 1],
+  'navajowhite': [255, 222, 173, 1],
+  'navy': [0, 0, 128, 1],
+  'oldlace': [253, 245, 230, 1],
+  'olive': [128, 128, 0, 1],
+  'olivedrab': [107, 142, 35, 1],
+  'orange': [255, 165, 0, 1],
+  'orangered': [255, 69, 0, 1],
+  'orchid': [218, 112, 214, 1],
+  'palegoldenrod': [238, 232, 170, 1],
+  'palegreen': [152, 251, 152, 1],
+  'paleturquoise': [175, 238, 238, 1],
+  'palevioletred': [219, 112, 147, 1],
+  'papayawhip': [255, 239, 213, 1],
+  'peachpuff': [255, 218, 185, 1],
+  'peru': [205, 133, 63, 1],
+  'pink': [255, 192, 203, 1],
+  'plum': [221, 160, 221, 1],
+  'powderblue': [176, 224, 230, 1],
+  'purple': [128, 0, 128, 1],
+  'red': [255, 0, 0, 1],
+  'rosybrown': [188, 143, 143, 1],
+  'royalblue': [65, 105, 225, 1],
+  'saddlebrown': [139, 69, 19, 1],
+  'salmon': [250, 128, 114, 1],
+  'sandybrown': [244, 164, 96, 1],
+  'seagreen': [46, 139, 87, 1],
+  'seashell': [255, 245, 238, 1],
+  'sienna': [160, 82, 45, 1],
+  'silver': [192, 192, 192, 1],
+  'skyblue': [135, 206, 235, 1],
+  'slateblue': [106, 90, 205, 1],
+  'slategray': [112, 128, 144, 1],
+  'slategrey': [112, 128, 144, 1],
+  'snow': [255, 250, 250, 1],
+  'springgreen': [0, 255, 127, 1],
+  'steelblue': [70, 130, 180, 1],
+  'tan': [210, 180, 140, 1],
+  'teal': [0, 128, 128, 1],
+  'thistle': [216, 191, 216, 1],
+  'tomato': [255, 99, 71, 1],
+  'turquoise': [64, 224, 208, 1],
+  'violet': [238, 130, 238, 1],
+  'wheat': [245, 222, 179, 1],
+  'white': [255, 255, 255, 1],
+  'whitesmoke': [245, 245, 245, 1],
+  'yellow': [255, 255, 0, 1],
+  'yellowgreen': [154, 205, 50, 1]
+};
+
+function clampCssByte(i) {
+  // Clamp to integer 0 .. 255.
+  i = Math.round(i); // Seems to be what Chrome does (vs truncation).
+
+  return i < 0 ? 0 : i > 255 ? 255 : i;
+}
+
+function clampCssAngle(i) {
+  // Clamp to integer 0 .. 360.
+  i = Math.round(i); // Seems to be what Chrome does (vs truncation).
+
+  return i < 0 ? 0 : i > 360 ? 360 : i;
+}
+
+function clampCssFloat(f) {
+  // Clamp to float 0.0 .. 1.0.
+  return f < 0 ? 0 : f > 1 ? 1 : f;
+}
+
+function parseCssInt(str) {
+  // int or percentage.
+  if (str.length && str.charAt(str.length - 1) === '%') {
+    return clampCssByte(parseFloat(str) / 100 * 255);
+  }
+
+  return clampCssByte(parseInt(str, 10));
+}
+
+function parseCssFloat(str) {
+  // float or percentage.
+  if (str.length && str.charAt(str.length - 1) === '%') {
+    return clampCssFloat(parseFloat(str) / 100);
+  }
+
+  return clampCssFloat(parseFloat(str));
+}
+
+function cssHueToRgb(m1, m2, h) {
+  if (h < 0) {
+    h += 1;
+  } else if (h > 1) {
+    h -= 1;
+  }
+
+  if (h * 6 < 1) {
+    return m1 + (m2 - m1) * h * 6;
+  }
+
+  if (h * 2 < 1) {
+    return m2;
+  }
+
+  if (h * 3 < 2) {
+    return m1 + (m2 - m1) * (2 / 3 - h) * 6;
+  }
+
+  return m1;
+}
+
+function lerpNumber(a, b, p) {
+  return a + (b - a) * p;
+}
+
+function setRgba(out, r, g, b, a) {
+  out[0] = r;
+  out[1] = g;
+  out[2] = b;
+  out[3] = a;
+  return out;
+}
+
+function copyRgba(out, a) {
+  out[0] = a[0];
+  out[1] = a[1];
+  out[2] = a[2];
+  out[3] = a[3];
+  return out;
+}
+
+var colorCache = new LRU(20);
+var lastRemovedArr = null;
+
+function putToCache(colorStr, rgbaArr) {
+  // Reuse removed array
+  if (lastRemovedArr) {
+    copyRgba(lastRemovedArr, rgbaArr);
+  }
+
+  lastRemovedArr = colorCache.put(colorStr, lastRemovedArr || rgbaArr.slice());
+}
+/**
+ * @param {string} colorStr
+ * @param {Array.<number>} out
+ * @return {Array.<number>}
+ * @memberOf module:zrender/util/color
+ */
+
+
+function parse(colorStr, rgbaArr) {
+  if (!colorStr) {
+    return;
+  }
+
+  rgbaArr = rgbaArr || [];
+  var cached = colorCache.get(colorStr);
+
+  if (cached) {
+    return copyRgba(rgbaArr, cached);
+  } // colorStr may be not string
+
+
+  colorStr = colorStr + ''; // Remove all whitespace, not compliant, but should just be more accepting.
+
+  var str = colorStr.replace(/ /g, '').toLowerCase(); // Color keywords (and transparent) lookup.
+
+  if (str in kCSSColorTable) {
+    copyRgba(rgbaArr, kCSSColorTable[str]);
+    putToCache(colorStr, rgbaArr);
+    return rgbaArr;
+  } // #abc and #abc123 syntax.
+
+
+  if (str.charAt(0) === '#') {
+    if (str.length === 4) {
+      var iv = parseInt(str.substr(1), 16); // TODO(deanm): Stricter parsing.
+
+      if (!(iv >= 0 && iv <= 0xfff)) {
+        setRgba(rgbaArr, 0, 0, 0, 1);
+        return; // Covers NaN.
+      }
+
+      setRgba(rgbaArr, (iv & 0xf00) >> 4 | (iv & 0xf00) >> 8, iv & 0xf0 | (iv & 0xf0) >> 4, iv & 0xf | (iv & 0xf) << 4, 1);
+      putToCache(colorStr, rgbaArr);
+      return rgbaArr;
+    } else if (str.length === 7) {
+      var iv = parseInt(str.substr(1), 16); // TODO(deanm): Stricter parsing.
+
+      if (!(iv >= 0 && iv <= 0xffffff)) {
+        setRgba(rgbaArr, 0, 0, 0, 1);
+        return; // Covers NaN.
+      }
+
+      setRgba(rgbaArr, (iv & 0xff0000) >> 16, (iv & 0xff00) >> 8, iv & 0xff, 1);
+      putToCache(colorStr, rgbaArr);
+      return rgbaArr;
+    }
+
+    return;
+  }
+
+  var op = str.indexOf('('),
+      ep = str.indexOf(')');
+
+  if (op !== -1 && ep + 1 === str.length) {
+    var fname = str.substr(0, op);
+    var params = str.substr(op + 1, ep - (op + 1)).split(',');
+    var alpha = 1; // To allow case fallthrough.
+
+    switch (fname) {
+      case 'rgba':
+        if (params.length !== 4) {
+          setRgba(rgbaArr, 0, 0, 0, 1);
+          return;
+        }
+
+        alpha = parseCssFloat(params.pop());
+      // jshint ignore:line
+      // Fall through.
+
+      case 'rgb':
+        if (params.length !== 3) {
+          setRgba(rgbaArr, 0, 0, 0, 1);
+          return;
+        }
+
+        setRgba(rgbaArr, parseCssInt(params[0]), parseCssInt(params[1]), parseCssInt(params[2]), alpha);
+        putToCache(colorStr, rgbaArr);
+        return rgbaArr;
+
+      case 'hsla':
+        if (params.length !== 4) {
+          setRgba(rgbaArr, 0, 0, 0, 1);
+          return;
+        }
+
+        params[3] = parseCssFloat(params[3]);
+        hsla2rgba(params, rgbaArr);
+        putToCache(colorStr, rgbaArr);
+        return rgbaArr;
+
+      case 'hsl':
+        if (params.length !== 3) {
+          setRgba(rgbaArr, 0, 0, 0, 1);
+          return;
+        }
+
+        hsla2rgba(params, rgbaArr);
+        putToCache(colorStr, rgbaArr);
+        return rgbaArr;
+
+      default:
+        return;
+    }
+  }
+
+  setRgba(rgbaArr, 0, 0, 0, 1);
+  return;
+}
+/**
+ * @param {Array.<number>} hsla
+ * @param {Array.<number>} rgba
+ * @return {Array.<number>} rgba
+ */
+
+
+function hsla2rgba(hsla, rgba) {
+  var h = (parseFloat(hsla[0]) % 360 + 360) % 360 / 360; // 0 .. 1
+  // NOTE(deanm): According to the CSS spec s/l should only be
+  // percentages, but we don't bother and let float or percentage.
+
+  var s = parseCssFloat(hsla[1]);
+  var l = parseCssFloat(hsla[2]);
+  var m2 = l <= 0.5 ? l * (s + 1) : l + s - l * s;
+  var m1 = l * 2 - m2;
+  rgba = rgba || [];
+  setRgba(rgba, clampCssByte(cssHueToRgb(m1, m2, h + 1 / 3) * 255), clampCssByte(cssHueToRgb(m1, m2, h) * 255), clampCssByte(cssHueToRgb(m1, m2, h - 1 / 3) * 255), 1);
+
+  if (hsla.length === 4) {
+    rgba[3] = hsla[3];
+  }
+
+  return rgba;
+}
+/**
+ * @param {Array.<number>} rgba
+ * @return {Array.<number>} hsla
+ */
+
+
+function rgba2hsla(rgba) {
+  if (!rgba) {
+    return;
+  } // RGB from 0 to 255
+
+
+  var R = rgba[0] / 255;
+  var G = rgba[1] / 255;
+  var B = rgba[2] / 255;
+  var vMin = Math.min(R, G, B); // Min. value of RGB
+
+  var vMax = Math.max(R, G, B); // Max. value of RGB
+
+  var delta = vMax - vMin; // Delta RGB value
+
+  var L = (vMax + vMin) / 2;
+  var H;
+  var S; // HSL results from 0 to 1
+
+  if (delta === 0) {
+    H = 0;
+    S = 0;
+  } else {
+    if (L < 0.5) {
+      S = delta / (vMax + vMin);
+    } else {
+      S = delta / (2 - vMax - vMin);
+    }
+
+    var deltaR = ((vMax - R) / 6 + delta / 2) / delta;
+    var deltaG = ((vMax - G) / 6 + delta / 2) / delta;
+    var deltaB = ((vMax - B) / 6 + delta / 2) / delta;
+
+    if (R === vMax) {
+      H = deltaB - deltaG;
+    } else if (G === vMax) {
+      H = 1 / 3 + deltaR - deltaB;
+    } else if (B === vMax) {
+      H = 2 / 3 + deltaG - deltaR;
+    }
+
+    if (H < 0) {
+      H += 1;
+    }
+
+    if (H > 1) {
+      H -= 1;
+    }
+  }
+
+  var hsla = [H * 360, S, L];
+
+  if (rgba[3] != null) {
+    hsla.push(rgba[3]);
+  }
+
+  return hsla;
+}
+/**
+ * @param {string} color
+ * @param {number} level
+ * @return {string}
+ * @memberOf module:zrender/util/color
+ */
+
+
+function lift(color, level) {
+  var colorArr = parse(color);
+
+  if (colorArr) {
+    for (var i = 0; i < 3; i++) {
+      if (level < 0) {
+        colorArr[i] = colorArr[i] * (1 - level) | 0;
+      } else {
+        colorArr[i] = (255 - colorArr[i]) * level + colorArr[i] | 0;
+      }
+
+      if (colorArr[i] > 255) {
+        colorArr[i] = 255;
+      } else if (color[i] < 0) {
+        colorArr[i] = 0;
+      }
+    }
+
+    return stringify(colorArr, colorArr.length === 4 ? 'rgba' : 'rgb');
+  }
+}
+/**
+ * @param {string} color
+ * @return {string}
+ * @memberOf module:zrender/util/color
+ */
+
+
+function toHex(color) {
+  var colorArr = parse(color);
+
+  if (colorArr) {
+    return ((1 << 24) + (colorArr[0] << 16) + (colorArr[1] << 8) + +colorArr[2]).toString(16).slice(1);
+  }
+}
+/**
+ * Map value to color. Faster than lerp methods because color is represented by rgba array.
+ * @param {number} normalizedValue A float between 0 and 1.
+ * @param {Array.<Array.<number>>} colors List of rgba color array
+ * @param {Array.<number>} [out] Mapped gba color array
+ * @return {Array.<number>} will be null/undefined if input illegal.
+ */
+
+
+function fastLerp(normalizedValue, colors, out) {
+  if (!(colors && colors.length) || !(normalizedValue >= 0 && normalizedValue <= 1)) {
+    return;
+  }
+
+  out = out || [];
+  var value = normalizedValue * (colors.length - 1);
+  var leftIndex = Math.floor(value);
+  var rightIndex = Math.ceil(value);
+  var leftColor = colors[leftIndex];
+  var rightColor = colors[rightIndex];
+  var dv = value - leftIndex;
+  out[0] = clampCssByte(lerpNumber(leftColor[0], rightColor[0], dv));
+  out[1] = clampCssByte(lerpNumber(leftColor[1], rightColor[1], dv));
+  out[2] = clampCssByte(lerpNumber(leftColor[2], rightColor[2], dv));
+  out[3] = clampCssFloat(lerpNumber(leftColor[3], rightColor[3], dv));
+  return out;
+}
+/**
+ * @deprecated
+ */
+
+
+var fastMapToColor = fastLerp;
+/**
+ * @param {number} normalizedValue A float between 0 and 1.
+ * @param {Array.<string>} colors Color list.
+ * @param {boolean=} fullOutput Default false.
+ * @return {(string|Object)} Result color. If fullOutput,
+ *                           return {color: ..., leftIndex: ..., rightIndex: ..., value: ...},
+ * @memberOf module:zrender/util/color
+ */
+
+function lerp(normalizedValue, colors, fullOutput) {
+  if (!(colors && colors.length) || !(normalizedValue >= 0 && normalizedValue <= 1)) {
+    return;
+  }
+
+  var value = normalizedValue * (colors.length - 1);
+  var leftIndex = Math.floor(value);
+  var rightIndex = Math.ceil(value);
+  var leftColor = parse(colors[leftIndex]);
+  var rightColor = parse(colors[rightIndex]);
+  var dv = value - leftIndex;
+  var color = stringify([clampCssByte(lerpNumber(leftColor[0], rightColor[0], dv)), clampCssByte(lerpNumber(leftColor[1], rightColor[1], dv)), clampCssByte(lerpNumber(leftColor[2], rightColor[2], dv)), clampCssFloat(lerpNumber(leftColor[3], rightColor[3], dv))], 'rgba');
+  return fullOutput ? {
+    color: color,
+    leftIndex: leftIndex,
+    rightIndex: rightIndex,
+    value: value
+  } : color;
+}
+/**
+ * @deprecated
+ */
+
+
+var mapToColor = lerp;
+/**
+ * @param {string} color
+ * @param {number=} h 0 ~ 360, ignore when null.
+ * @param {number=} s 0 ~ 1, ignore when null.
+ * @param {number=} l 0 ~ 1, ignore when null.
+ * @return {string} Color string in rgba format.
+ * @memberOf module:zrender/util/color
+ */
+
+function modifyHSL(color, h, s, l) {
+  color = parse(color);
+
+  if (color) {
+    color = rgba2hsla(color);
+    h != null && (color[0] = clampCssAngle(h));
+    s != null && (color[1] = parseCssFloat(s));
+    l != null && (color[2] = parseCssFloat(l));
+    return stringify(hsla2rgba(color), 'rgba');
+  }
+}
+/**
+ * @param {string} color
+ * @param {number=} alpha 0 ~ 1
+ * @return {string} Color string in rgba format.
+ * @memberOf module:zrender/util/color
+ */
+
+
+function modifyAlpha(color, alpha) {
+  color = parse(color);
+
+  if (color && alpha != null) {
+    color[3] = clampCssFloat(alpha);
+    return stringify(color, 'rgba');
+  }
+}
+/**
+ * @param {Array.<number>} arrColor like [12,33,44,0.4]
+ * @param {string} type 'rgba', 'hsva', ...
+ * @return {string} Result color. (If input illegal, return undefined).
+ */
+
+
+function stringify(arrColor, type) {
+  if (!arrColor || !arrColor.length) {
+    return;
+  }
+
+  var colorStr = arrColor[0] + ',' + arrColor[1] + ',' + arrColor[2];
+
+  if (type === 'rgba' || type === 'hsva' || type === 'hsla') {
+    colorStr += ',' + arrColor[3];
+  }
+
+  return type + '(' + colorStr + ')';
+}
+
+exports.parse = parse;
+exports.lift = lift;
+exports.toHex = toHex;
+exports.fastLerp = fastLerp;
+exports.fastMapToColor = fastMapToColor;
+exports.lerp = lerp;
+exports.mapToColor = mapToColor;
+exports.modifyHSL = modifyHSL;
+exports.modifyAlpha = modifyAlpha;
+exports.stringify = stringify;
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var BoundingRect = __webpack_require__(12);
+
+var imageHelper = __webpack_require__(51);
+
+var _util = __webpack_require__(0);
+
+var getContext = _util.getContext;
+var extend = _util.extend;
+var retrieve2 = _util.retrieve2;
+var retrieve3 = _util.retrieve3;
+var trim = _util.trim;
+var textWidthCache = {};
+var textWidthCacheCounter = 0;
+var TEXT_CACHE_MAX = 5000;
+var STYLE_REG = /\{([a-zA-Z0-9_]+)\|([^}]*)\}/g;
+var DEFAULT_FONT = '12px sans-serif'; // Avoid assign to an exported variable, for transforming to cjs.
+
+var methods = {};
+
+function $override(name, fn) {
+  methods[name] = fn;
+}
+/**
+ * @public
+ * @param {string} text
+ * @param {string} font
+ * @return {number} width
+ */
+
+
+function getWidth(text, font) {
+  font = font || DEFAULT_FONT;
+  var key = text + ':' + font;
+
+  if (textWidthCache[key]) {
+    return textWidthCache[key];
+  }
+
+  var textLines = (text + '').split('\n');
+  var width = 0;
+
+  for (var i = 0, l = textLines.length; i < l; i++) {
+    // textContain.measureText may be overrided in SVG or VML
+    width = Math.max(measureText(textLines[i], font).width, width);
+  }
+
+  if (textWidthCacheCounter > TEXT_CACHE_MAX) {
+    textWidthCacheCounter = 0;
+    textWidthCache = {};
+  }
+
+  textWidthCacheCounter++;
+  textWidthCache[key] = width;
+  return width;
+}
+/**
+ * @public
+ * @param {string} text
+ * @param {string} font
+ * @param {string} [textAlign='left']
+ * @param {string} [textVerticalAlign='top']
+ * @param {Array.<number>} [textPadding]
+ * @param {Object} [rich]
+ * @param {Object} [truncate]
+ * @return {Object} {x, y, width, height, lineHeight}
+ */
+
+
+function getBoundingRect(text, font, textAlign, textVerticalAlign, textPadding, rich, truncate) {
+  return rich ? getRichTextRect(text, font, textAlign, textVerticalAlign, textPadding, rich, truncate) : getPlainTextRect(text, font, textAlign, textVerticalAlign, textPadding, truncate);
+}
+
+function getPlainTextRect(text, font, textAlign, textVerticalAlign, textPadding, truncate) {
+  var contentBlock = parsePlainText(text, font, textPadding, truncate);
+  var outerWidth = getWidth(text, font);
+
+  if (textPadding) {
+    outerWidth += textPadding[1] + textPadding[3];
+  }
+
+  var outerHeight = contentBlock.outerHeight;
+  var x = adjustTextX(0, outerWidth, textAlign);
+  var y = adjustTextY(0, outerHeight, textVerticalAlign);
+  var rect = new BoundingRect(x, y, outerWidth, outerHeight);
+  rect.lineHeight = contentBlock.lineHeight;
+  return rect;
+}
+
+function getRichTextRect(text, font, textAlign, textVerticalAlign, textPadding, rich, truncate) {
+  var contentBlock = parseRichText(text, {
+    rich: rich,
+    truncate: truncate,
+    font: font,
+    textAlign: textAlign,
+    textPadding: textPadding
+  });
+  var outerWidth = contentBlock.outerWidth;
+  var outerHeight = contentBlock.outerHeight;
+  var x = adjustTextX(0, outerWidth, textAlign);
+  var y = adjustTextY(0, outerHeight, textVerticalAlign);
+  return new BoundingRect(x, y, outerWidth, outerHeight);
+}
+/**
+ * @public
+ * @param {number} x
+ * @param {number} width
+ * @param {string} [textAlign='left']
+ * @return {number} Adjusted x.
+ */
+
+
+function adjustTextX(x, width, textAlign) {
+  // FIXME Right to left language
+  if (textAlign === 'right') {
+    x -= width;
+  } else if (textAlign === 'center') {
+    x -= width / 2;
+  }
+
+  return x;
+}
+/**
+ * @public
+ * @param {number} y
+ * @param {number} height
+ * @param {string} [textVerticalAlign='top']
+ * @return {number} Adjusted y.
+ */
+
+
+function adjustTextY(y, height, textVerticalAlign) {
+  if (textVerticalAlign === 'middle') {
+    y -= height / 2;
+  } else if (textVerticalAlign === 'bottom') {
+    y -= height;
+  }
+
+  return y;
+}
+/**
+ * @public
+ * @param {stirng} textPosition
+ * @param {Object} rect {x, y, width, height}
+ * @param {number} distance
+ * @return {Object} {x, y, textAlign, textVerticalAlign}
+ */
+
+
+function adjustTextPositionOnRect(textPosition, rect, distance) {
+  var x = rect.x;
+  var y = rect.y;
+  var height = rect.height;
+  var width = rect.width;
+  var halfHeight = height / 2;
+  var textAlign = 'left';
+  var textVerticalAlign = 'top';
+
+  switch (textPosition) {
+    case 'left':
+      x -= distance;
+      y += halfHeight;
+      textAlign = 'right';
+      textVerticalAlign = 'middle';
+      break;
+
+    case 'right':
+      x += distance + width;
+      y += halfHeight;
+      textVerticalAlign = 'middle';
+      break;
+
+    case 'top':
+      x += width / 2;
+      y -= distance;
+      textAlign = 'center';
+      textVerticalAlign = 'bottom';
+      break;
+
+    case 'bottom':
+      x += width / 2;
+      y += height + distance;
+      textAlign = 'center';
+      break;
+
+    case 'inside':
+      x += width / 2;
+      y += halfHeight;
+      textAlign = 'center';
+      textVerticalAlign = 'middle';
+      break;
+
+    case 'insideLeft':
+      x += distance;
+      y += halfHeight;
+      textVerticalAlign = 'middle';
+      break;
+
+    case 'insideRight':
+      x += width - distance;
+      y += halfHeight;
+      textAlign = 'right';
+      textVerticalAlign = 'middle';
+      break;
+
+    case 'insideTop':
+      x += width / 2;
+      y += distance;
+      textAlign = 'center';
+      break;
+
+    case 'insideBottom':
+      x += width / 2;
+      y += height - distance;
+      textAlign = 'center';
+      textVerticalAlign = 'bottom';
+      break;
+
+    case 'insideTopLeft':
+      x += distance;
+      y += distance;
+      break;
+
+    case 'insideTopRight':
+      x += width - distance;
+      y += distance;
+      textAlign = 'right';
+      break;
+
+    case 'insideBottomLeft':
+      x += distance;
+      y += height - distance;
+      textVerticalAlign = 'bottom';
+      break;
+
+    case 'insideBottomRight':
+      x += width - distance;
+      y += height - distance;
+      textAlign = 'right';
+      textVerticalAlign = 'bottom';
+      break;
+  }
+
+  return {
+    x: x,
+    y: y,
+    textAlign: textAlign,
+    textVerticalAlign: textVerticalAlign
+  };
+}
+/**
+ * Show ellipsis if overflow.
+ *
+ * @public
+ * @param  {string} text
+ * @param  {string} containerWidth
+ * @param  {string} font
+ * @param  {number} [ellipsis='...']
+ * @param  {Object} [options]
+ * @param  {number} [options.maxIterations=3]
+ * @param  {number} [options.minChar=0] If truncate result are less
+ *                  then minChar, ellipsis will not show, which is
+ *                  better for user hint in some cases.
+ * @param  {number} [options.placeholder=''] When all truncated, use the placeholder.
+ * @return {string}
+ */
+
+
+function truncateText(text, containerWidth, font, ellipsis, options) {
+  if (!containerWidth) {
+    return '';
+  }
+
+  var textLines = (text + '').split('\n');
+  options = prepareTruncateOptions(containerWidth, font, ellipsis, options); // FIXME
+  // It is not appropriate that every line has '...' when truncate multiple lines.
+
+  for (var i = 0, len = textLines.length; i < len; i++) {
+    textLines[i] = truncateSingleLine(textLines[i], options);
+  }
+
+  return textLines.join('\n');
+}
+
+function prepareTruncateOptions(containerWidth, font, ellipsis, options) {
+  options = extend({}, options);
+  options.font = font;
+  var ellipsis = retrieve2(ellipsis, '...');
+  options.maxIterations = retrieve2(options.maxIterations, 2);
+  var minChar = options.minChar = retrieve2(options.minChar, 0); // FIXME
+  // Other languages?
+
+  options.cnCharWidth = getWidth('国', font); // FIXME
+  // Consider proportional font?
+
+  var ascCharWidth = options.ascCharWidth = getWidth('a', font);
+  options.placeholder = retrieve2(options.placeholder, ''); // Example 1: minChar: 3, text: 'asdfzxcv', truncate result: 'asdf', but not: 'a...'.
+  // Example 2: minChar: 3, text: '维度', truncate result: '维', but not: '...'.
+
+  var contentWidth = containerWidth = Math.max(0, containerWidth - 1); // Reserve some gap.
+
+  for (var i = 0; i < minChar && contentWidth >= ascCharWidth; i++) {
+    contentWidth -= ascCharWidth;
+  }
+
+  var ellipsisWidth = getWidth(ellipsis);
+
+  if (ellipsisWidth > contentWidth) {
+    ellipsis = '';
+    ellipsisWidth = 0;
+  }
+
+  contentWidth = containerWidth - ellipsisWidth;
+  options.ellipsis = ellipsis;
+  options.ellipsisWidth = ellipsisWidth;
+  options.contentWidth = contentWidth;
+  options.containerWidth = containerWidth;
+  return options;
+}
+
+function truncateSingleLine(textLine, options) {
+  var containerWidth = options.containerWidth;
+  var font = options.font;
+  var contentWidth = options.contentWidth;
+
+  if (!containerWidth) {
+    return '';
+  }
+
+  var lineWidth = getWidth(textLine, font);
+
+  if (lineWidth <= containerWidth) {
+    return textLine;
+  }
+
+  for (var j = 0;; j++) {
+    if (lineWidth <= contentWidth || j >= options.maxIterations) {
+      textLine += options.ellipsis;
+      break;
+    }
+
+    var subLength = j === 0 ? estimateLength(textLine, contentWidth, options.ascCharWidth, options.cnCharWidth) : lineWidth > 0 ? Math.floor(textLine.length * contentWidth / lineWidth) : 0;
+    textLine = textLine.substr(0, subLength);
+    lineWidth = getWidth(textLine, font);
+  }
+
+  if (textLine === '') {
+    textLine = options.placeholder;
+  }
+
+  return textLine;
+}
+
+function estimateLength(text, contentWidth, ascCharWidth, cnCharWidth) {
+  var width = 0;
+  var i = 0;
+
+  for (var len = text.length; i < len && width < contentWidth; i++) {
+    var charCode = text.charCodeAt(i);
+    width += 0 <= charCode && charCode <= 127 ? ascCharWidth : cnCharWidth;
+  }
+
+  return i;
+}
+/**
+ * @public
+ * @param {string} font
+ * @return {number} line height
+ */
+
+
+function getLineHeight(font) {
+  // FIXME A rough approach.
+  return getWidth('国', font);
+}
+/**
+ * @public
+ * @param {string} text
+ * @param {string} font
+ * @return {Object} width
+ */
+
+
+function measureText(text, font) {
+  return methods.measureText(text, font);
+} // Avoid assign to an exported variable, for transforming to cjs.
+
+
+methods.measureText = function (text, font) {
+  var ctx = getContext();
+  ctx.font = font || DEFAULT_FONT;
+  return ctx.measureText(text);
+};
+/**
+ * @public
+ * @param {string} text
+ * @param {string} font
+ * @param {Object} [truncate]
+ * @return {Object} block: {lineHeight, lines, height, outerHeight}
+ *  Notice: for performance, do not calculate outerWidth util needed.
+ */
+
+
+function parsePlainText(text, font, padding, truncate) {
+  text != null && (text += '');
+  var lineHeight = getLineHeight(font);
+  var lines = text ? text.split('\n') : [];
+  var height = lines.length * lineHeight;
+  var outerHeight = height;
+
+  if (padding) {
+    outerHeight += padding[0] + padding[2];
+  }
+
+  if (text && truncate) {
+    var truncOuterHeight = truncate.outerHeight;
+    var truncOuterWidth = truncate.outerWidth;
+
+    if (truncOuterHeight != null && outerHeight > truncOuterHeight) {
+      text = '';
+      lines = [];
+    } else if (truncOuterWidth != null) {
+      var options = prepareTruncateOptions(truncOuterWidth - (padding ? padding[1] + padding[3] : 0), font, truncate.ellipsis, {
+        minChar: truncate.minChar,
+        placeholder: truncate.placeholder
+      }); // FIXME
+      // It is not appropriate that every line has '...' when truncate multiple lines.
+
+      for (var i = 0, len = lines.length; i < len; i++) {
+        lines[i] = truncateSingleLine(lines[i], options);
+      }
+    }
+  }
+
+  return {
+    lines: lines,
+    height: height,
+    outerHeight: outerHeight,
+    lineHeight: lineHeight
+  };
+}
+/**
+ * For example: 'some text {a|some text}other text{b|some text}xxx{c|}xxx'
+ * Also consider 'bbbb{a|xxx\nzzz}xxxx\naaaa'.
+ *
+ * @public
+ * @param {string} text
+ * @param {Object} style
+ * @return {Object} block
+ * {
+ *      width,
+ *      height,
+ *      lines: [{
+ *          lineHeight,
+ *          width,
+ *          tokens: [[{
+ *              styleName,
+ *              text,
+ *              width,      // include textPadding
+ *              height,     // include textPadding
+ *              textWidth, // pure text width
+ *              textHeight, // pure text height
+ *              lineHeihgt,
+ *              font,
+ *              textAlign,
+ *              textVerticalAlign
+ *          }], [...], ...]
+ *      }, ...]
+ * }
+ * If styleName is undefined, it is plain text.
+ */
+
+
+function parseRichText(text, style) {
+  var contentBlock = {
+    lines: [],
+    width: 0,
+    height: 0
+  };
+  text != null && (text += '');
+
+  if (!text) {
+    return contentBlock;
+  }
+
+  var lastIndex = STYLE_REG.lastIndex = 0;
+  var result;
+
+  while ((result = STYLE_REG.exec(text)) != null) {
+    var matchedIndex = result.index;
+
+    if (matchedIndex > lastIndex) {
+      pushTokens(contentBlock, text.substring(lastIndex, matchedIndex));
+    }
+
+    pushTokens(contentBlock, result[2], result[1]);
+    lastIndex = STYLE_REG.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    pushTokens(contentBlock, text.substring(lastIndex, text.length));
+  }
+
+  var lines = contentBlock.lines;
+  var contentHeight = 0;
+  var contentWidth = 0; // For `textWidth: 100%`
+
+  var pendingList = [];
+  var stlPadding = style.textPadding;
+  var truncate = style.truncate;
+  var truncateWidth = truncate && truncate.outerWidth;
+  var truncateHeight = truncate && truncate.outerHeight;
+
+  if (stlPadding) {
+    truncateWidth != null && (truncateWidth -= stlPadding[1] + stlPadding[3]);
+    truncateHeight != null && (truncateHeight -= stlPadding[0] + stlPadding[2]);
+  } // Calculate layout info of tokens.
+
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+    var lineHeight = 0;
+    var lineWidth = 0;
+
+    for (var j = 0; j < line.tokens.length; j++) {
+      var token = line.tokens[j];
+      var tokenStyle = token.styleName && style.rich[token.styleName] || {}; // textPadding should not inherit from style.
+
+      var textPadding = token.textPadding = tokenStyle.textPadding; // textFont has been asigned to font by `normalizeStyle`.
+
+      var font = token.font = tokenStyle.font || style.font; // textHeight can be used when textVerticalAlign is specified in token.
+
+      var tokenHeight = token.textHeight = retrieve2( // textHeight should not be inherited, consider it can be specified
+      // as box height of the block.
+      tokenStyle.textHeight, getLineHeight(font));
+      textPadding && (tokenHeight += textPadding[0] + textPadding[2]);
+      token.height = tokenHeight;
+      token.lineHeight = retrieve3(tokenStyle.textLineHeight, style.textLineHeight, tokenHeight);
+      token.textAlign = tokenStyle && tokenStyle.textAlign || style.textAlign;
+      token.textVerticalAlign = tokenStyle && tokenStyle.textVerticalAlign || 'middle';
+
+      if (truncateHeight != null && contentHeight + token.lineHeight > truncateHeight) {
+        return {
+          lines: [],
+          width: 0,
+          height: 0
+        };
+      }
+
+      token.textWidth = getWidth(token.text, font);
+      var tokenWidth = tokenStyle.textWidth;
+      var tokenWidthNotSpecified = tokenWidth == null || tokenWidth === 'auto'; // Percent width, can be `100%`, can be used in drawing separate
+      // line when box width is needed to be auto.
+
+      if (typeof tokenWidth === 'string' && tokenWidth.charAt(tokenWidth.length - 1) === '%') {
+        token.percentWidth = tokenWidth;
+        pendingList.push(token);
+        tokenWidth = 0; // Do not truncate in this case, because there is no user case
+        // and it is too complicated.
+      } else {
+        if (tokenWidthNotSpecified) {
+          tokenWidth = token.textWidth; // FIXME: If image is not loaded and textWidth is not specified, calling
+          // `getBoundingRect()` will not get correct result.
+
+          var textBackgroundColor = tokenStyle.textBackgroundColor;
+          var bgImg = textBackgroundColor && textBackgroundColor.image; // Use cases:
+          // (1) If image is not loaded, it will be loaded at render phase and call
+          // `dirty()` and `textBackgroundColor.image` will be replaced with the loaded
+          // image, and then the right size will be calculated here at the next tick.
+          // See `graphic/helper/text.js`.
+          // (2) If image loaded, and `textBackgroundColor.image` is image src string,
+          // use `imageHelper.findExistImage` to find cached image.
+          // `imageHelper.findExistImage` will always be called here before
+          // `imageHelper.createOrUpdateImage` in `graphic/helper/text.js#renderRichText`
+          // which ensures that image will not be rendered before correct size calcualted.
+
+          if (bgImg) {
+            bgImg = imageHelper.findExistImage(bgImg);
+
+            if (imageHelper.isImageReady(bgImg)) {
+              tokenWidth = Math.max(tokenWidth, bgImg.width * tokenHeight / bgImg.height);
+            }
+          }
+        }
+
+        var paddingW = textPadding ? textPadding[1] + textPadding[3] : 0;
+        tokenWidth += paddingW;
+        var remianTruncWidth = truncateWidth != null ? truncateWidth - lineWidth : null;
+
+        if (remianTruncWidth != null && remianTruncWidth < tokenWidth) {
+          if (!tokenWidthNotSpecified || remianTruncWidth < paddingW) {
+            token.text = '';
+            token.textWidth = tokenWidth = 0;
+          } else {
+            token.text = truncateText(token.text, remianTruncWidth - paddingW, font, truncate.ellipsis, {
+              minChar: truncate.minChar
+            });
+            token.textWidth = getWidth(token.text, font);
+            tokenWidth = token.textWidth + paddingW;
+          }
+        }
+      }
+
+      lineWidth += token.width = tokenWidth;
+      tokenStyle && (lineHeight = Math.max(lineHeight, token.lineHeight));
+    }
+
+    line.width = lineWidth;
+    line.lineHeight = lineHeight;
+    contentHeight += lineHeight;
+    contentWidth = Math.max(contentWidth, lineWidth);
+  }
+
+  contentBlock.outerWidth = contentBlock.width = retrieve2(style.textWidth, contentWidth);
+  contentBlock.outerHeight = contentBlock.height = retrieve2(style.textHeight, contentHeight);
+
+  if (stlPadding) {
+    contentBlock.outerWidth += stlPadding[1] + stlPadding[3];
+    contentBlock.outerHeight += stlPadding[0] + stlPadding[2];
+  }
+
+  for (var i = 0; i < pendingList.length; i++) {
+    var token = pendingList[i];
+    var percentWidth = token.percentWidth; // Should not base on outerWidth, because token can not be placed out of padding.
+
+    token.width = parseInt(percentWidth, 10) / 100 * contentWidth;
+  }
+
+  return contentBlock;
+}
+
+function pushTokens(block, str, styleName) {
+  var isEmptyStr = str === '';
+  var strs = str.split('\n');
+  var lines = block.lines;
+
+  for (var i = 0; i < strs.length; i++) {
+    var text = strs[i];
+    var token = {
+      styleName: styleName,
+      text: text,
+      isLineHolder: !text && !isEmptyStr
+    }; // The first token should be appended to the last line.
+
+    if (!i) {
+      var tokens = (lines[lines.length - 1] || (lines[0] = {
+        tokens: []
+      })).tokens; // Consider cases:
+      // (1) ''.split('\n') => ['', '\n', ''], the '' at the first item
+      // (which is a placeholder) should be replaced by new token.
+      // (2) A image backage, where token likes {a|}.
+      // (3) A redundant '' will affect textAlign in line.
+      // (4) tokens with the same tplName should not be merged, because
+      // they should be displayed in different box (with border and padding).
+
+      var tokensLen = tokens.length;
+      tokensLen === 1 && tokens[0].isLineHolder ? tokens[0] = token : // Consider text is '', only insert when it is the "lineHolder" or
+      // "emptyStr". Otherwise a redundant '' will affect textAlign in line.
+      (text || !tokensLen || isEmptyStr) && tokens.push(token);
+    } // Other tokens always start a new line.
+    else {
+        // If there is '', insert it as a placeholder.
+        lines.push({
+          tokens: [token]
+        });
+      }
+  }
+}
+
+function makeFont(style) {
+  // FIXME in node-canvas fontWeight is before fontStyle
+  // Use `fontSize` `fontFamily` to check whether font properties are defined.
+  var font = (style.fontSize || style.fontFamily) && [style.fontStyle, style.fontWeight, (style.fontSize || 12) + 'px', // If font properties are defined, `fontFamily` should not be ignored.
+  style.fontFamily || 'sans-serif'].join(' ');
+  return font && trim(font) || style.textFont || style.font;
+}
+
+exports.DEFAULT_FONT = DEFAULT_FONT;
+exports.$override = $override;
+exports.getWidth = getWidth;
+exports.getBoundingRect = getBoundingRect;
+exports.adjustTextX = adjustTextX;
+exports.adjustTextY = adjustTextY;
+exports.adjustTextPositionOnRect = adjustTextPositionOnRect;
+exports.truncateText = truncateText;
+exports.getLineHeight = getLineHeight;
+exports.measureText = measureText;
+exports.parsePlainText = parsePlainText;
+exports.parseRichText = parseRichText;
+exports.makeFont = makeFont;
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Eventful = __webpack_require__(27);
+
+exports.Dispatcher = Eventful;
+
+var env = __webpack_require__(8);
+
+/**
+ * 事件辅助类
+ * @module zrender/core/event
+ * @author Kener (@Kener-林峰, kener.linfeng@gmail.com)
+ */
+var isDomLevel2 = typeof window !== 'undefined' && !!window.addEventListener;
+var MOUSE_EVENT_REG = /^(?:mouse|pointer|contextmenu|drag|drop)|click/;
+
+function getBoundingClientRect(el) {
+  // BlackBerry 5, iOS 3 (original iPhone) don't have getBoundingRect
+  return el.getBoundingClientRect ? el.getBoundingClientRect() : {
+    left: 0,
+    top: 0
+  };
+} // `calculate` is optional, default false
+
+
+function clientToLocal(el, e, out, calculate) {
+  out = out || {}; // According to the W3C Working Draft, offsetX and offsetY should be relative
+  // to the padding edge of the target element. The only browser using this convention
+  // is IE. Webkit uses the border edge, Opera uses the content edge, and FireFox does
+  // not support the properties.
+  // (see http://www.jacklmoore.com/notes/mouse-position/)
+  // In zr painter.dom, padding edge equals to border edge.
+  // FIXME
+  // When mousemove event triggered on ec tooltip, target is not zr painter.dom, and
+  // offsetX/Y is relative to e.target, where the calculation of zrX/Y via offsetX/Y
+  // is too complex. So css-transfrom dont support in this case temporarily.
+
+  if (calculate || !env.canvasSupported) {
+    defaultGetZrXY(el, e, out);
+  } // Caution: In FireFox, layerX/layerY Mouse position relative to the closest positioned
+  // ancestor element, so we should make sure el is positioned (e.g., not position:static).
+  // BTW1, Webkit don't return the same results as FF in non-simple cases (like add
+  // zoom-factor, overflow / opacity layers, transforms ...)
+  // BTW2, (ev.offsetY || ev.pageY - $(ev.target).offset().top) is not correct in preserve-3d.
+  // <https://bugs.jquery.com/ticket/8523#comment:14>
+  // BTW3, In ff, offsetX/offsetY is always 0.
+  else if (env.browser.firefox && e.layerX != null && e.layerX !== e.offsetX) {
+      out.zrX = e.layerX;
+      out.zrY = e.layerY;
+    } // For IE6+, chrome, safari, opera. (When will ff support offsetX?)
+    else if (e.offsetX != null) {
+        out.zrX = e.offsetX;
+        out.zrY = e.offsetY;
+      } // For some other device, e.g., IOS safari.
+      else {
+          defaultGetZrXY(el, e, out);
+        }
+
+  return out;
+}
+
+function defaultGetZrXY(el, e, out) {
+  // This well-known method below does not support css transform.
+  var box = getBoundingClientRect(el);
+  out.zrX = e.clientX - box.left;
+  out.zrY = e.clientY - box.top;
+}
+/**
+ * 如果存在第三方嵌入的一些dom触发的事件，或touch事件，需要转换一下事件坐标.
+ * `calculate` is optional, default false.
+ */
+
+
+function normalizeEvent(el, e, calculate) {
+  e = e || window.event;
+
+  if (e.zrX != null) {
+    return e;
+  }
+
+  var eventType = e.type;
+  var isTouch = eventType && eventType.indexOf('touch') >= 0;
+
+  if (!isTouch) {
+    clientToLocal(el, e, e, calculate);
+    e.zrDelta = e.wheelDelta ? e.wheelDelta / 120 : -(e.detail || 0) / 3;
+  } else {
+    var touch = eventType != 'touchend' ? e.targetTouches[0] : e.changedTouches[0];
+    touch && clientToLocal(el, touch, e, calculate);
+  } // Add which for click: 1 === left; 2 === middle; 3 === right; otherwise: 0;
+  // See jQuery: https://github.com/jquery/jquery/blob/master/src/event.js
+  // If e.which has been defined, if may be readonly,
+  // see: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/which
+
+
+  var button = e.button;
+
+  if (e.which == null && button !== undefined && MOUSE_EVENT_REG.test(e.type)) {
+    e.which = button & 1 ? 1 : button & 2 ? 3 : button & 4 ? 2 : 0;
+  }
+
+  return e;
+}
+/**
+ * @param {HTMLElement} el
+ * @param {string} name
+ * @param {Function} handler
+ */
+
+
+function addEventListener(el, name, handler) {
+  if (isDomLevel2) {
+    // Reproduct the console warning:
+    // [Violation] Added non-passive event listener to a scroll-blocking <some> event.
+    // Consider marking event handler as 'passive' to make the page more responsive.
+    // Just set console log level: verbose in chrome dev tool.
+    // then the warning log will be printed when addEventListener called.
+    // See https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
+    // We have not yet found a neat way to using passive. Because in zrender the dom event
+    // listener delegate all of the upper events of element. Some of those events need
+    // to prevent default. For example, the feature `preventDefaultMouseMove` of echarts.
+    // Before passive can be adopted, these issues should be considered:
+    // (1) Whether and how a zrender user specifies an event listener passive. And by default,
+    // passive or not.
+    // (2) How to tread that some zrender event listener is passive, and some is not. If
+    // we use other way but not preventDefault of mousewheel and touchmove, browser
+    // compatibility should be handled.
+    // var opts = (env.passiveSupported && name === 'mousewheel')
+    //     ? {passive: true}
+    //     // By default, the third param of el.addEventListener is `capture: false`.
+    //     : void 0;
+    // el.addEventListener(name, handler /* , opts */);
+    el.addEventListener(name, handler);
+  } else {
+    el.attachEvent('on' + name, handler);
+  }
+}
+
+function removeEventListener(el, name, handler) {
+  if (isDomLevel2) {
+    el.removeEventListener(name, handler);
+  } else {
+    el.detachEvent('on' + name, handler);
+  }
+}
+/**
+ * preventDefault and stopPropagation.
+ * Notice: do not do that in zrender. Upper application
+ * do that if necessary.
+ *
+ * @memberOf module:zrender/core/event
+ * @method
+ * @param {Event} e : event对象
+ */
+
+
+var stop = isDomLevel2 ? function (e) {
+  e.preventDefault();
+  e.stopPropagation();
+  e.cancelBubble = true;
+} : function (e) {
+  e.returnValue = false;
+  e.cancelBubble = true;
+};
+
+function notLeftMouse(e) {
+  // If e.which is undefined, considered as left mouse event.
+  return e.which > 1;
+} // 做向上兼容
+
+
+exports.clientToLocal = clientToLocal;
+exports.normalizeEvent = normalizeEvent;
+exports.addEventListener = addEventListener;
+exports.removeEventListener = removeEventListener;
+exports.stop = stop;
+exports.notLeftMouse = notLeftMouse;
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _config = __webpack_require__(6);
+
+var __DEV__ = _config.__DEV__;
+
+var zrUtil = __webpack_require__(0);
+
+var OrdinalScale = __webpack_require__(217);
+
+var IntervalScale = __webpack_require__(58);
+
+var Scale = __webpack_require__(44);
+
+var numberUtil = __webpack_require__(5);
+
+var _barGrid = __webpack_require__(218);
+
+var prepareLayoutBarSeries = _barGrid.prepareLayoutBarSeries;
+var makeColumnLayout = _barGrid.makeColumnLayout;
+var retrieveColumnLayout = _barGrid.retrieveColumnLayout;
+
+var BoundingRect = __webpack_require__(12);
+
+__webpack_require__(219);
+
+__webpack_require__(220);
+
+/*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
+/**
+ * Get axis scale extent before niced.
+ * Item of returned array can only be number (including Infinity and NaN).
+ */
+function getScaleExtent(scale, model) {
+  var scaleType = scale.type;
+  var min = model.getMin();
+  var max = model.getMax();
+  var fixMin = min != null;
+  var fixMax = max != null;
+  var originalExtent = scale.getExtent();
+  var axisDataLen;
+  var boundaryGap;
+  var span;
+
+  if (scaleType === 'ordinal') {
+    axisDataLen = model.getCategories().length;
+  } else {
+    boundaryGap = model.get('boundaryGap');
+
+    if (!zrUtil.isArray(boundaryGap)) {
+      boundaryGap = [boundaryGap || 0, boundaryGap || 0];
+    }
+
+    if (typeof boundaryGap[0] === 'boolean') {
+      boundaryGap = [0, 0];
+    }
+
+    boundaryGap[0] = numberUtil.parsePercent(boundaryGap[0], 1);
+    boundaryGap[1] = numberUtil.parsePercent(boundaryGap[1], 1);
+    span = originalExtent[1] - originalExtent[0] || Math.abs(originalExtent[0]);
+  } // Notice: When min/max is not set (that is, when there are null/undefined,
+  // which is the most common case), these cases should be ensured:
+  // (1) For 'ordinal', show all axis.data.
+  // (2) For others:
+  //      + `boundaryGap` is applied (if min/max set, boundaryGap is
+  //      disabled).
+  //      + If `needCrossZero`, min/max should be zero, otherwise, min/max should
+  //      be the result that originalExtent enlarged by boundaryGap.
+  // (3) If no data, it should be ensured that `scale.setBlank` is set.
+  // FIXME
+  // (1) When min/max is 'dataMin' or 'dataMax', should boundaryGap be able to used?
+  // (2) When `needCrossZero` and all data is positive/negative, should it be ensured
+  // that the results processed by boundaryGap are positive/negative?
+
+
+  if (min == null) {
+    min = scaleType === 'ordinal' ? axisDataLen ? 0 : NaN : originalExtent[0] - boundaryGap[0] * span;
+  }
+
+  if (max == null) {
+    max = scaleType === 'ordinal' ? axisDataLen ? axisDataLen - 1 : NaN : originalExtent[1] + boundaryGap[1] * span;
+  }
+
+  if (min === 'dataMin') {
+    min = originalExtent[0];
+  } else if (typeof min === 'function') {
+    min = min({
+      min: originalExtent[0],
+      max: originalExtent[1]
+    });
+  }
+
+  if (max === 'dataMax') {
+    max = originalExtent[1];
+  } else if (typeof max === 'function') {
+    max = max({
+      min: originalExtent[0],
+      max: originalExtent[1]
+    });
+  }
+
+  (min == null || !isFinite(min)) && (min = NaN);
+  (max == null || !isFinite(max)) && (max = NaN);
+  scale.setBlank(zrUtil.eqNaN(min) || zrUtil.eqNaN(max) || scaleType === 'ordinal' && !scale.getOrdinalMeta().categories.length); // Evaluate if axis needs cross zero
+
+  if (model.getNeedCrossZero()) {
+    // Axis is over zero and min is not set
+    if (min > 0 && max > 0 && !fixMin) {
+      min = 0;
+    } // Axis is under zero and max is not set
+
+
+    if (min < 0 && max < 0 && !fixMax) {
+      max = 0;
+    }
+  } // If bars are placed on a base axis of type time or interval account for axis boundary overflow and current axis
+  // is base axis
+  // FIXME
+  // (1) Consider support value axis, where below zero and axis `onZero` should be handled properly.
+  // (2) Refactor the logic with `barGrid`. Is it not need to `makeBarWidthAndOffsetInfo` twice with different extent?
+  //     Should not depend on series type `bar`?
+  // (3) Fix that might overlap when using dataZoom.
+  // (4) Consider other chart types using `barGrid`?
+  // See #6728, #4862, `test/bar-overflow-time-plot.html`
+
+
+  var ecModel = model.ecModel;
+
+  if (ecModel && scaleType === 'time'
+  /*|| scaleType === 'interval' */
+  ) {
+    var barSeriesModels = prepareLayoutBarSeries('bar', ecModel);
+    var isBaseAxisAndHasBarSeries;
+    zrUtil.each(barSeriesModels, function (seriesModel) {
+      isBaseAxisAndHasBarSeries |= seriesModel.getBaseAxis() === model.axis;
+    });
+
+    if (isBaseAxisAndHasBarSeries) {
+      // Calculate placement of bars on axis
+      var barWidthAndOffset = makeColumnLayout(barSeriesModels); // Adjust axis min and max to account for overflow
+
+      var adjustedScale = adjustScaleForOverflow(min, max, model, barWidthAndOffset);
+      min = adjustedScale.min;
+      max = adjustedScale.max;
+    }
+  }
+
+  return [min, max];
+}
+
+function adjustScaleForOverflow(min, max, model, barWidthAndOffset) {
+  // Get Axis Length
+  var axisExtent = model.axis.getExtent();
+  var axisLength = axisExtent[1] - axisExtent[0]; // Get bars on current base axis and calculate min and max overflow
+
+  var barsOnCurrentAxis = retrieveColumnLayout(barWidthAndOffset, model.axis);
+
+  if (barsOnCurrentAxis === undefined) {
+    return {
+      min: min,
+      max: max
+    };
+  }
+
+  var minOverflow = Infinity;
+  zrUtil.each(barsOnCurrentAxis, function (item) {
+    minOverflow = Math.min(item.offset, minOverflow);
+  });
+  var maxOverflow = -Infinity;
+  zrUtil.each(barsOnCurrentAxis, function (item) {
+    maxOverflow = Math.max(item.offset + item.width, maxOverflow);
+  });
+  minOverflow = Math.abs(minOverflow);
+  maxOverflow = Math.abs(maxOverflow);
+  var totalOverFlow = minOverflow + maxOverflow; // Calulate required buffer based on old range and overflow
+
+  var oldRange = max - min;
+  var oldRangePercentOfNew = 1 - (minOverflow + maxOverflow) / axisLength;
+  var overflowBuffer = oldRange / oldRangePercentOfNew - oldRange;
+  max += overflowBuffer * (maxOverflow / totalOverFlow);
+  min -= overflowBuffer * (minOverflow / totalOverFlow);
+  return {
+    min: min,
+    max: max
+  };
+}
+
+function niceScaleExtent(scale, model) {
+  var extent = getScaleExtent(scale, model);
+  var fixMin = model.getMin() != null;
+  var fixMax = model.getMax() != null;
+  var splitNumber = model.get('splitNumber');
+
+  if (scale.type === 'log') {
+    scale.base = model.get('logBase');
+  }
+
+  var scaleType = scale.type;
+  scale.setExtent(extent[0], extent[1]);
+  scale.niceExtent({
+    splitNumber: splitNumber,
+    fixMin: fixMin,
+    fixMax: fixMax,
+    minInterval: scaleType === 'interval' || scaleType === 'time' ? model.get('minInterval') : null,
+    maxInterval: scaleType === 'interval' || scaleType === 'time' ? model.get('maxInterval') : null
+  }); // If some one specified the min, max. And the default calculated interval
+  // is not good enough. He can specify the interval. It is often appeared
+  // in angle axis with angle 0 - 360. Interval calculated in interval scale is hard
+  // to be 60.
+  // FIXME
+
+  var interval = model.get('interval');
+
+  if (interval != null) {
+    scale.setInterval && scale.setInterval(interval);
+  }
+}
+/**
+ * @param {module:echarts/model/Model} model
+ * @param {string} [axisType] Default retrieve from model.type
+ * @return {module:echarts/scale/*}
+ */
+
+
+function createScaleByModel(model, axisType) {
+  axisType = axisType || model.get('type');
+
+  if (axisType) {
+    switch (axisType) {
+      // Buildin scale
+      case 'category':
+        return new OrdinalScale(model.getOrdinalMeta ? model.getOrdinalMeta() : model.getCategories(), [Infinity, -Infinity]);
+
+      case 'value':
+        return new IntervalScale();
+      // Extended scale, like time and log
+
+      default:
+        return (Scale.getClass(axisType) || IntervalScale).create(model);
+    }
+  }
+}
+/**
+ * Check if the axis corss 0
+ */
+
+
+function ifAxisCrossZero(axis) {
+  var dataExtent = axis.scale.getExtent();
+  var min = dataExtent[0];
+  var max = dataExtent[1];
+  return !(min > 0 && max > 0 || min < 0 && max < 0);
+}
+/**
+ * @param {module:echarts/coord/Axis} axis
+ * @return {Function} Label formatter function.
+ *         param: {number} tickValue,
+ *         param: {number} idx, the index in all ticks.
+ *                         If category axis, this param is not requied.
+ *         return: {string} label string.
+ */
+
+
+function makeLabelFormatter(axis) {
+  var labelFormatter = axis.getLabelModel().get('formatter');
+  var categoryTickStart = axis.type === 'category' ? axis.scale.getExtent()[0] : null;
+
+  if (typeof labelFormatter === 'string') {
+    labelFormatter = function (tpl) {
+      return function (val) {
+        return tpl.replace('{value}', val != null ? val : '');
+      };
+    }(labelFormatter); // Consider empty array
+
+
+    return labelFormatter;
+  } else if (typeof labelFormatter === 'function') {
+    return function (tickValue, idx) {
+      // The original intention of `idx` is "the index of the tick in all ticks".
+      // But the previous implementation of category axis do not consider the
+      // `axisLabel.interval`, which cause that, for example, the `interval` is
+      // `1`, then the ticks "name5", "name7", "name9" are displayed, where the
+      // corresponding `idx` are `0`, `2`, `4`, but not `0`, `1`, `2`. So we keep
+      // the definition here for back compatibility.
+      if (categoryTickStart != null) {
+        idx = tickValue - categoryTickStart;
+      }
+
+      return labelFormatter(getAxisRawValue(axis, tickValue), idx);
+    };
+  } else {
+    return function (tick) {
+      return axis.scale.getLabel(tick);
+    };
+  }
+}
+
+function getAxisRawValue(axis, value) {
+  // In category axis with data zoom, tick is not the original
+  // index of axis.data. So tick should not be exposed to user
+  // in category axis.
+  return axis.type === 'category' ? axis.scale.getLabel(value) : value;
+}
+/**
+ * @param {module:echarts/coord/Axis} axis
+ * @return {module:zrender/core/BoundingRect} Be null/undefined if no labels.
+ */
+
+
+function estimateLabelUnionRect(axis) {
+  var axisModel = axis.model;
+  var scale = axis.scale;
+
+  if (!axisModel.get('axisLabel.show') || scale.isBlank()) {
+    return;
+  }
+
+  var isCategory = axis.type === 'category';
+  var realNumberScaleTicks;
+  var tickCount;
+  var categoryScaleExtent = scale.getExtent(); // Optimize for large category data, avoid call `getTicks()`.
+
+  if (isCategory) {
+    tickCount = scale.count();
+  } else {
+    realNumberScaleTicks = scale.getTicks();
+    tickCount = realNumberScaleTicks.length;
+  }
+
+  var axisLabelModel = axis.getLabelModel();
+  var labelFormatter = makeLabelFormatter(axis);
+  var rect;
+  var step = 1; // Simple optimization for large amount of labels
+
+  if (tickCount > 40) {
+    step = Math.ceil(tickCount / 40);
+  }
+
+  for (var i = 0; i < tickCount; i += step) {
+    var tickValue = realNumberScaleTicks ? realNumberScaleTicks[i] : categoryScaleExtent[0] + i;
+    var label = labelFormatter(tickValue);
+    var unrotatedSingleRect = axisLabelModel.getTextRect(label);
+    var singleRect = rotateTextRect(unrotatedSingleRect, axisLabelModel.get('rotate') || 0);
+    rect ? rect.union(singleRect) : rect = singleRect;
+  }
+
+  return rect;
+}
+
+function rotateTextRect(textRect, rotate) {
+  var rotateRadians = rotate * Math.PI / 180;
+  var boundingBox = textRect.plain();
+  var beforeWidth = boundingBox.width;
+  var beforeHeight = boundingBox.height;
+  var afterWidth = beforeWidth * Math.cos(rotateRadians) + beforeHeight * Math.sin(rotateRadians);
+  var afterHeight = beforeWidth * Math.sin(rotateRadians) + beforeHeight * Math.cos(rotateRadians);
+  var rotatedRect = new BoundingRect(boundingBox.x, boundingBox.y, afterWidth, afterHeight);
+  return rotatedRect;
+}
+
+exports.getScaleExtent = getScaleExtent;
+exports.niceScaleExtent = niceScaleExtent;
+exports.createScaleByModel = createScaleByModel;
+exports.ifAxisCrossZero = ifAxisCrossZero;
+exports.makeLabelFormatter = makeLabelFormatter;
+exports.getAxisRawValue = getAxisRawValue;
+exports.estimateLabelUnionRect = estimateLabelUnionRect;
 
 /***/ }),
 /* 27 */
@@ -16447,7 +16447,7 @@ module.exports = _default;
 
 var zrUtil = __webpack_require__(0);
 
-var zrColor = __webpack_require__(22);
+var zrColor = __webpack_require__(23);
 
 var _number = __webpack_require__(5);
 
@@ -24444,7 +24444,7 @@ module.exports = _default;
 /* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var zrUtil = __webpack_require__(0);
 
@@ -26272,7 +26272,7 @@ module.exports = _default;
 
 var Clip = __webpack_require__(169);
 
-var color = __webpack_require__(22);
+var color = __webpack_require__(23);
 
 var _util = __webpack_require__(0);
 
@@ -27775,7 +27775,7 @@ var normalizeCssArray = _util.normalizeCssArray;
 var isString = _util.isString;
 var isObject = _util.isObject;
 
-var textContain = __webpack_require__(23);
+var textContain = __webpack_require__(24);
 
 var roundRectHelper = __webpack_require__(84);
 
@@ -30833,7 +30833,7 @@ exports.intervalScaleGetTicks = intervalScaleGetTicks;
 
 var zrUtil = __webpack_require__(0);
 
-var axisHelper = __webpack_require__(25);
+var axisHelper = __webpack_require__(26);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -32105,7 +32105,7 @@ var _config = __webpack_require__(6);
 
 var __DEV__ = _config.__DEV__;
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var axisPointerModelHelper = __webpack_require__(46);
 
@@ -33031,13 +33031,13 @@ var zrUtil = __webpack_require__(0);
 
 var graphic = __webpack_require__(3);
 
-var textContain = __webpack_require__(23);
+var textContain = __webpack_require__(24);
 
 var formatUtil = __webpack_require__(9);
 
 var matrix = __webpack_require__(18);
 
-var axisHelper = __webpack_require__(25);
+var axisHelper = __webpack_require__(26);
 
 var AxisBuilder = __webpack_require__(108);
 
@@ -33272,7 +33272,7 @@ exports.makeSectorShape = makeSectorShape;
 /* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var zrUtil = __webpack_require__(0);
 
@@ -33658,7 +33658,7 @@ Component.registerSubTypeDefaulter('visualMap', function (option) {
 /* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var zrUtil = __webpack_require__(0);
 
@@ -33981,7 +33981,7 @@ exports.incrementalApplyVisual = incrementalApplyVisual;
 /* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var zrUtil = __webpack_require__(0);
 
@@ -34583,7 +34583,7 @@ module.exports = _default;
 /* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var zrUtil = __webpack_require__(0);
 
@@ -34841,7 +34841,7 @@ exports.convertDataIndex = convertDataIndex;
 /* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -34884,7 +34884,7 @@ var _config = __webpack_require__(6);
 
 var __DEV__ = _config.__DEV__;
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var zrUtil = __webpack_require__(0);
 
@@ -35266,7 +35266,7 @@ exports.numCalculate = numCalculate;
 /* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var zrUtil = __webpack_require__(0);
 
@@ -35358,7 +35358,7 @@ var _react = __webpack_require__(21);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(2);
+var _propTypes = __webpack_require__(1);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -39956,7 +39956,7 @@ module.exports = _default;
 
 var util = __webpack_require__(0);
 
-var _event = __webpack_require__(24);
+var _event = __webpack_require__(25);
 
 var Dispatcher = _event.Dispatcher;
 
@@ -40206,7 +40206,7 @@ module.exports = _default;
 /* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _event = __webpack_require__(24);
+var _event = __webpack_require__(25);
 
 var addEventListener = _event.addEventListener;
 var removeEventListener = _event.removeEventListener;
@@ -40544,7 +40544,7 @@ module.exports = _default;
 /* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var eventUtil = __webpack_require__(24);
+var eventUtil = __webpack_require__(25);
 
 /**
  * Only implements needed gestures for mobile.
@@ -40725,7 +40725,7 @@ module.exports = _default;
 /* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var textContain = __webpack_require__(23);
+var textContain = __webpack_require__(24);
 
 var graphicUtil = __webpack_require__(3);
 
@@ -41807,7 +41807,7 @@ var Displayable = __webpack_require__(37);
 
 var zrUtil = __webpack_require__(0);
 
-var textContain = __webpack_require__(23);
+var textContain = __webpack_require__(24);
 
 var textHelper = __webpack_require__(83);
 
@@ -45004,7 +45004,7 @@ exports.vector = vector;
 
 var zrUtil = __webpack_require__(0);
 
-var colorTool = __webpack_require__(22);
+var colorTool = __webpack_require__(23);
 
 exports.color = colorTool;
 
@@ -45087,7 +45087,7 @@ var zrUtil = __webpack_require__(0);
 
 var createListFromArray = __webpack_require__(43);
 
-var axisHelper = __webpack_require__(25);
+var axisHelper = __webpack_require__(26);
 
 var axisModelCommonMixin = __webpack_require__(104);
 
@@ -46684,13 +46684,13 @@ exports.contain = contain;
 
 var zrUtil = __webpack_require__(0);
 
-var textContain = __webpack_require__(23);
+var textContain = __webpack_require__(24);
 
 var _model = __webpack_require__(4);
 
 var makeInner = _model.makeInner;
 
-var _axisHelper = __webpack_require__(25);
+var _axisHelper = __webpack_require__(26);
 
 var makeLabelFormatter = _axisHelper.makeLabelFormatter;
 
@@ -47037,7 +47037,7 @@ exports.calculateCategoryInterval = calculateCategoryInterval;
 /* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 __webpack_require__(226);
 
@@ -48646,7 +48646,7 @@ var _layout = __webpack_require__(13);
 
 var getLayoutRect = _layout.getLayoutRect;
 
-var _axisHelper = __webpack_require__(25);
+var _axisHelper = __webpack_require__(26);
 
 var createScaleByModel = _axisHelper.createScaleByModel;
 var ifAxisCrossZero = _axisHelper.ifAxisCrossZero;
@@ -50187,7 +50187,7 @@ CartesianAxisView.extend({
 /* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 __webpack_require__(242);
 
@@ -50540,7 +50540,7 @@ var _config = __webpack_require__(6);
 
 var __DEV__ = _config.__DEV__;
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var LineDraw = __webpack_require__(111);
 
@@ -51228,7 +51228,7 @@ module.exports = _default;
 /* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 __webpack_require__(249);
 
@@ -51376,7 +51376,7 @@ module.exports = _default;
 /* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var SymbolDraw = __webpack_require__(45);
 
@@ -51746,7 +51746,7 @@ module.exports = _default;
 /* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 __webpack_require__(253);
 
@@ -51853,7 +51853,7 @@ module.exports = _default;
 /* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var SymbolDraw = __webpack_require__(45);
 
@@ -52192,7 +52192,7 @@ var graphic = __webpack_require__(3);
 
 var axisPointerModelHelper = __webpack_require__(46);
 
-var eventTool = __webpack_require__(24);
+var eventTool = __webpack_require__(25);
 
 var throttleUtil = __webpack_require__(56);
 
@@ -53112,7 +53112,7 @@ module.exports = _default;
 /* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -53221,7 +53221,7 @@ module.exports = _default;
 /* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var globalListener = __webpack_require__(119);
 
@@ -53286,7 +53286,7 @@ module.exports = _default;
 /* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 __webpack_require__(262);
 
@@ -53328,7 +53328,7 @@ Component.registerSubTypeDefaulter('legend', function () {
 /* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var zrUtil = __webpack_require__(0);
 
@@ -53568,7 +53568,7 @@ module.exports = _default;
 /* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var zrUtil = __webpack_require__(0);
 
@@ -53666,7 +53666,7 @@ var _config = __webpack_require__(6);
 
 var __DEV__ = _config.__DEV__;
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var zrUtil = __webpack_require__(0);
 
@@ -54109,7 +54109,7 @@ module.exports = _default;
 /* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 __webpack_require__(117);
 
@@ -54162,7 +54162,7 @@ function () {});
 /* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 /*
 * Licensed to the Apache Software Foundation (ASF) under one
@@ -54263,7 +54263,7 @@ module.exports = _default;
 /* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var zrUtil = __webpack_require__(0);
 
@@ -54285,7 +54285,7 @@ var Model = __webpack_require__(15);
 
 var globalListener = __webpack_require__(119);
 
-var axisHelper = __webpack_require__(25);
+var axisHelper = __webpack_require__(26);
 
 var axisPointerViewHelper = __webpack_require__(116);
 
@@ -55004,9 +55004,9 @@ module.exports = _default;
 
 var zrUtil = __webpack_require__(0);
 
-var zrColor = __webpack_require__(22);
+var zrColor = __webpack_require__(23);
 
-var eventUtil = __webpack_require__(24);
+var eventUtil = __webpack_require__(25);
 
 var env = __webpack_require__(8);
 
@@ -55257,7 +55257,7 @@ module.exports = _default;
 /* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var graphic = __webpack_require__(3);
 
@@ -55480,7 +55480,7 @@ __webpack_require__(277);
 /* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var preprocessor = __webpack_require__(120);
 
@@ -55785,7 +55785,7 @@ var zrUtil = __webpack_require__(0);
 
 var LinearGradient = __webpack_require__(93);
 
-var eventTool = __webpack_require__(24);
+var eventTool = __webpack_require__(25);
 
 var VisualMapView = __webpack_require__(126);
 
@@ -56667,7 +56667,7 @@ module.exports = _default;
 /* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 var preprocessor = __webpack_require__(120);
 
@@ -57461,7 +57461,7 @@ module.exports = _default;
 /* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 __webpack_require__(281);
 
@@ -57716,7 +57716,7 @@ module.exports = _default;
 /* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 
 __webpack_require__(284);
 
@@ -58163,7 +58163,7 @@ var external_root_React_commonjs2_react_commonjs_react_amd_react_ = __webpack_re
 var external_root_React_commonjs2_react_commonjs_react_amd_react_default = /*#__PURE__*/__webpack_require__.n(external_root_React_commonjs2_react_commonjs_react_amd_react_);
 
 // EXTERNAL MODULE: ./node_modules/prop-types/index.js
-var prop_types = __webpack_require__(2);
+var prop_types = __webpack_require__(1);
 var prop_types_default = /*#__PURE__*/__webpack_require__.n(prop_types);
 
 // EXTERNAL MODULE: ./node_modules/axios/index.js
@@ -58299,7 +58299,7 @@ var getScatterplotData = function getScatterplotData() {
   });
 };
 // EXTERNAL MODULE: ./node_modules/lodash.merge/index.js
-var lodash_merge = __webpack_require__(26);
+var lodash_merge = __webpack_require__(22);
 
 // CONCATENATED MODULE: ./src/style.js
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -63864,7 +63864,7 @@ var core = __webpack_require__(134);
 var core_default = /*#__PURE__*/__webpack_require__.n(core);
 
 // EXTERNAL MODULE: ./node_modules/echarts/lib/echarts.js
-var echarts = __webpack_require__(1);
+var echarts = __webpack_require__(2);
 var echarts_default = /*#__PURE__*/__webpack_require__.n(echarts);
 
 // EXTERNAL MODULE: ./node_modules/echarts/lib/chart/line.js
@@ -63901,6 +63901,8 @@ var markPoint = __webpack_require__(280);
 var markLine = __webpack_require__(283);
 
 // CONCATENATED MODULE: ./src/Scatterplot.js
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var Scatterplot_extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _class, _temp;
@@ -63983,6 +63985,10 @@ var getDataSeries = function getDataSeries(id) {
   }) : null;
 };
 
+var makeId = function makeId() {
+  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+};
+
 var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
   _inherits(Scatterplot, _Component);
 
@@ -64008,7 +64014,19 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
   }
 
   Scatterplot.prototype.componentDidMount = function componentDidMount() {
+    var theme = this.props.theme;
+
     this.updateOptions();
+    if (theme) {
+      if (typeof theme === 'string') {
+        this.setState({ themeId: theme });
+      }
+      if ((typeof theme === 'undefined' ? 'undefined' : _typeof(theme)) === 'object') {
+        var themeId = makeId();
+        this.setState({ themeId: themeId });
+        echarts_default.a.registerTheme(themeId, this.props.theme);
+      }
+    }
   };
 
   /**
@@ -64039,43 +64057,43 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
   };
 
   /**
-   * Gets an `markPoint.data` array for the selected items
+   * Gets a data series with selected items
    */
 
 
-  Scatterplot.prototype._getSelectedPoints = function _getSelectedPoints(scatterData, sizeScale) {
+  Scatterplot.prototype._getSelectedSeries = function _getSelectedSeries(scatterData, sizeScale) {
     var _props2 = this.props,
         selected = _props2.selected,
-        selectedColors = _props2.selectedColors;
+        selectedColors = _props2.selectedColors,
+        options = _props2.options;
 
     if (!selected || !selected.length) {
-      return [];
+      return {};
     }
-    return selected.map(function (id, i) {
-      var point = scatterData.find(function (d) {
+    var overrides = options ? getDataSeries('selected', options.series) : {};
+    var data = selected.map(function (id, i) {
+      return scatterData.find(function (d) {
         return d[3] === id;
       });
-      if (!point) {
-        return false;
-      }
-      return {
-        name: id,
-        coord: [point[0], point[1]],
-        value: point,
-        symbol: 'circle',
-        symbolSize: sizeScale(point[2]),
-        label: { show: false },
-        itemStyle: {
-          borderColor: selectedColors[i % selectedColors.length],
-          borderWidth: 2,
-          color: 'rgba(0,0,0,0)',
-          shadowColor: '#fff',
-          shadowBlur: 2
-        }
-      };
     }).filter(function (d) {
       return Boolean(d);
     });
+    return lodash_merge({
+      id: 'selected',
+      type: 'scatter',
+      data: data,
+      symbolSize: function symbolSize(value) {
+        return sizeScale(value[2]);
+      },
+      itemStyle: {
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,1)',
+        color: function color(_ref2) {
+          var dataIndex = _ref2.dataIndex;
+          return selectedColors[dataIndex % selectedColors.length];
+        }
+      }
+    }, overrides ? overrides : {});
   };
 
   /** 
@@ -64083,28 +64101,19 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
    */
 
 
-  Scatterplot.prototype._getBaseSeries = function _getBaseSeries() {
-    var _props3 = this.props,
-        data = _props3.data,
-        xVar = _props3.xVar,
-        yVar = _props3.yVar,
-        zVar = _props3.zVar,
-        options = _props3.options;
+  Scatterplot.prototype._getBaseSeries = function _getBaseSeries(scatterData, sizeScale) {
+    var options = this.props.options;
 
-    var sizeScale = Scatterplot_getDataScale(data[zVar], { range: [6, 48] });
-    var scatterData = getScatterplotData(data[xVar], data[yVar], data[zVar]);
     var overrides = options ? getDataSeries('base', options.series) : {};
-    return lodash_merge({
+    var series = lodash_merge({
       id: 'base',
       type: 'scatter',
       data: scatterData,
       symbolSize: function symbolSize(value) {
         return sizeScale(value[2]);
-      },
-      markPoint: {
-        data: this._getSelectedPoints(scatterData, sizeScale)
       }
     }, overrides ? overrides : {});
+    return series;
   };
 
   /**
@@ -64114,18 +64123,25 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
 
 
   Scatterplot.prototype._getScatterplotSeries = function _getScatterplotSeries() {
-    var _props4 = this.props,
-        data = _props4.data,
-        xVar = _props4.xVar,
-        yVar = _props4.yVar,
-        zVar = _props4.zVar,
-        options = _props4.options;
+    var _props3 = this.props,
+        data = _props3.data,
+        xVar = _props3.xVar,
+        yVar = _props3.yVar,
+        zVar = _props3.zVar,
+        options = _props3.options;
 
     var otherSeries = options && options.series ? options.series.filter(function (s) {
       return s.id !== 'base';
     }) : [];
     if (data && data[xVar] && data[yVar] && data[zVar]) {
-      return [this._getBaseSeries()].concat(otherSeries);
+      var sizeScale = Scatterplot_getDataScale(data[zVar], { range: [6, 48] });
+      var scatterData = getScatterplotData(data[xVar], data[yVar], data[zVar]);
+      var series = [this._getBaseSeries(scatterData, sizeScale)].concat(otherSeries);
+      var selected = this._getSelectedSeries(scatterData, sizeScale);
+      if (Object.keys(selected).length > 0) {
+        series.push(selected);
+      }
+      return series;
     }
     return [];
   };
@@ -64157,7 +64173,8 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
       onChartReady: this._onChartReady.bind(this),
       style: Scatterplot_extends({ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }, this.props.style),
       option: this.state.options,
-      notMerge: this.props.notMerge
+      notMerge: this.props.notMerge,
+      theme: this.state.themeId
     });
   };
 
@@ -64175,7 +64192,8 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
   onClick: prop_types_default.a.func,
   onReady: prop_types_default.a.func,
   onMouseMove: prop_types_default.a.func,
-  notMerge: prop_types_default.a.bool
+  notMerge: prop_types_default.a.bool,
+  theme: prop_types_default.a.object
 }, _temp);
 
 /* harmony default export */ var src_Scatterplot = (Scatterplot_Scatterplot);
@@ -64453,6 +64471,7 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
       return data;
     }).catch(function (err) {
       _this4.echart && _this4.echart.hideLoading();
+      _this4.props.onError && _this4.props.onError(err);
       _this4.setState({
         errorMessage: err.message ? err.message : err,
         loading: false
@@ -64524,7 +64543,8 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
       selected: this.props.selected,
       selectedColors: this.props.selectedColors,
       options: this.props.options,
-      notMerge: this.props.notMerge
+      notMerge: this.props.notMerge,
+      theme: this.props.theme
     });
   };
 
@@ -64535,6 +64555,7 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
   yVar: prop_types_default.a.string,
   zVar: prop_types_default.a.string,
   initialData: prop_types_default.a.object,
+  theme: prop_types_default.a.object,
   prefix: prop_types_default.a.string,
   options: prop_types_default.a.object,
   hovered: prop_types_default.a.string,
@@ -64544,7 +64565,8 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
   onClick: prop_types_default.a.func,
   onReady: prop_types_default.a.func,
   onMouseMove: prop_types_default.a.func,
-  onDataLoaded: prop_types_default.a.func
+  onDataLoaded: prop_types_default.a.func,
+  onError: prop_types_default.a.func
 }, SedaScatterplot_temp);
 
 /* harmony default export */ var src_SedaScatterplot = (SedaScatterplot_SedaScatterplot);

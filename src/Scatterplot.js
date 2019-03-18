@@ -67,6 +67,10 @@ const getDataSeries = (id, series = []) =>
     series.find(s => s.id === id) :
     null;
 
+const makeId = () =>
+  Math.random().toString(36).substring(2, 15) + 
+  Math.random().toString(36).substring(2, 15);
+
 export class Scatterplot extends Component {
   static propTypes = {
     options: PropTypes.object,
@@ -81,7 +85,8 @@ export class Scatterplot extends Component {
     onClick: PropTypes.func,
     onReady: PropTypes.func,
     onMouseMove: PropTypes.func,
-    notMerge: PropTypes.bool
+    notMerge: PropTypes.bool,
+    theme: PropTypes.object
   }
 
   constructor(props) {
@@ -92,7 +97,18 @@ export class Scatterplot extends Component {
   }
 
   componentDidMount() {
+    const { theme } = this.props;
     this.updateOptions();
+    if (theme) {
+      if (typeof theme === 'string') {
+        this.setState({ themeId: theme })
+      }
+      if (typeof theme === 'object') {
+        const themeId = makeId();
+        this.setState({ themeId })
+        echarts.registerTheme(themeId, this.props.theme);
+      }
+    }
   }
 
   /**
@@ -126,51 +142,44 @@ export class Scatterplot extends Component {
   }
 
   /**
-   * Gets an `markPoint.data` array for the selected items
+   * Gets a data series with selected items
    */
-  _getSelectedPoints(scatterData, sizeScale) {
-    const { selected, selectedColors } = this.props;
-    if (!selected || !selected.length) { return [] }
-    return selected.map((id, i) => {
-      const point = scatterData.find(d => d[3] === id);
-      if (!point) { return false; }
-      return {
-        name: id,
-        coord: [point[0], point[1]],
-        value: point,
-        symbol: 'circle',
-        symbolSize: sizeScale(point[2]),
-        label: { show: false },
-        itemStyle: {
-          borderColor: selectedColors[i % selectedColors.length],
-          borderWidth: 2,
-          color: 'rgba(0,0,0,0)',
-          shadowColor: '#fff',
-          shadowBlur: 2
-        }
+  _getSelectedSeries(scatterData, sizeScale) {
+    const { selected, selectedColors, options } = this.props;
+    if (!selected || !selected.length) { return {} }
+    const overrides = options ? 
+      getDataSeries('selected', options.series) : {};
+    const data = selected
+      .map((id, i) => scatterData.find(d => d[3] === id))
+      .filter(d => Boolean(d))
+    return merge({
+      id: 'selected',
+      type: 'scatter',
+      data: data,
+      symbolSize: (value) => sizeScale(value[2]),
+      itemStyle: {
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,1)',
+        color: ({dataIndex}) => 
+          selectedColors[dataIndex % selectedColors.length]
       }
-    }).filter(d => Boolean(d))
+    }, overrides ? overrides : {})
   }
 
   /** 
    * Get series with default styles and selected highlights 
    */
-  _getBaseSeries() {
-    const { data, xVar, yVar, zVar, options } = this.props;
-    const sizeScale = 
-      getDataScale(data[zVar], { range: [ 6, 48 ] });
-    const scatterData = 
-      getScatterplotData(data[xVar], data[yVar], data[zVar]);
-    const overrides = options ? getDataSeries('base', options.series) : {};
-    return merge({
+  _getBaseSeries(scatterData, sizeScale) {
+    const { options } = this.props;
+    const overrides = options ?
+      getDataSeries('base', options.series) : {};
+    const series = merge({
       id: 'base',
       type: 'scatter',
       data: scatterData,
       symbolSize: (value) => sizeScale(value[2]),
-      markPoint: {
-        data: this._getSelectedPoints(scatterData, sizeScale)
-      }
     }, overrides ? overrides : {})
+    return series;
   }
 
   /**
@@ -182,10 +191,19 @@ export class Scatterplot extends Component {
     const otherSeries = options && options.series ?
       options.series.filter(s => s.id !== 'base') : []
     if (data && data[xVar] && data[yVar] && data[zVar]) {
-      return [ 
-        this._getBaseSeries(),
+      const sizeScale = 
+        getDataScale(data[zVar], { range: [ 6, 48 ] });
+      const scatterData = 
+        getScatterplotData(data[xVar], data[yVar], data[zVar]);
+      const series = [ 
+        this._getBaseSeries(scatterData, sizeScale),
         ...otherSeries
       ];
+      const selected = this._getSelectedSeries(scatterData, sizeScale)
+      if (Object.keys(selected).length > 0) {
+        series.push(selected);
+      }
+      return series;
     }
     return [];
   }
@@ -232,6 +250,7 @@ export class Scatterplot extends Component {
           style={{ position: 'absolute', top:0, left:0, width: '100%', height: '100%', ...this.props.style }}
           option={this.state.options}
           notMerge={this.props.notMerge}
+          theme={this.state.themeId}
         />
     )
   }
