@@ -28,6 +28,7 @@ The following props can be passed to the scatterplot component:
   - **yVar**: `string` variable name to use for y axis
   - **zVar**: `string` variable name to use for z axis (circle size)
   - **prefix**: `string` prefix for fetching files (corresponds to region)
+  - **baseVars**: `object` a map of `{ [prefix]: ['var1', 'var2', 'var3', ... ]}` to indicate which variables are available in the `{prefix}-base.csv` file.
   - **options**: `object` option overrides
   - **hovered**: `string` identifier for item to highlight
   - **highlighted**: `array` list of highlighted dot identifiers

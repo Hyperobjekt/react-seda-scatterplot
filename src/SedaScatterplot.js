@@ -192,7 +192,6 @@ export class SedaScatterplot extends Component {
     const defaultBase = {
       'counties': ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz' ],
       'districts': ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz' ],
-      'schools': ['id', 'name', 'lat', 'lon', 'all_avg', 'frl_pct', 'sz' ]
     }
     // get base collection variables if any
     const collectionVars = (baseVars && baseVars[prefix]) || defaultBase[prefix] || [];

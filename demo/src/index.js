@@ -179,6 +179,14 @@ const baseOptions = {
     left: 24,
     right: 24,
   },
+  yAxis: {
+    min: -6,
+    max: 6
+  },
+  xAxis: {
+    min: 0,
+    max: 1
+  },
   tooltip: {
     trigger: 'item'
   },
@@ -193,15 +201,17 @@ class Demo extends Component {
       }} 
     >
       <SedaScatterplot
-        xVar = 'all_ses'
+        xVar = 'frl_pct'
         yVar = 'all_avg'
-        zVar = 'sz'
         endpoint = 'https://d2fypeb6f974r1.cloudfront.net/dev/scatterplot/'
-        prefix = 'districts'
+        prefix = 'schools'
         options = {baseOptions}
         onReady = {(e) => console.log(e.getOption())}
         onHover = {(e) => console.log(e)}
         theme = {theme}
+        baseVars = {{
+          'schools': ['id', 'name', 'lat', 'lon', 'all_avg', 'frl_pct', 'sz' ]
+        }}
       /> 
     </div>
   }
