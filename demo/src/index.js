@@ -115,7 +115,11 @@ var theme = {
   },
   scatter: {
     symbol: 'circle',
-    symbolSize: 4
+    symbolSize: 4,
+    itemStyle: {
+      borderWidth: 1,
+      borderColor: 'rgba(0,0,0,0.15)'
+    }
   },
   map: {
     label: {
@@ -177,7 +181,7 @@ const baseOptions = {
   },
   tooltip: {
     trigger: 'item'
-  }
+  },
 }
 
 class Demo extends Component {
@@ -194,18 +198,10 @@ class Demo extends Component {
         zVar = 'sz'
         endpoint = 'https://d2fypeb6f974r1.cloudfront.net/dev/scatterplot/'
         prefix = 'districts'
-        highlighted = {["1709930", "2612000"]}
-        selectedColors = {['#f00', '#0f0']}
         options = {baseOptions}
-        onReady = {
-          (e) => console.log(e.getOption())
-        }
-        onHover = {
-          (e) => console.log(e)
-        }
-        theme = {
-          theme
-        }
+        onReady = {(e) => console.log(e.getOption())}
+        onHover = {(e) => console.log(e)}
+        theme = {theme}
       /> 
     </div>
   }

@@ -58177,9 +58177,6 @@ var papaparse_min = __webpack_require__(133);
 
 
 
-/** variables that are part of the base scatterplot file */
-var baseVars = ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz'];
-
 /**
  * Takes multiple data sets with identifiers and merges them
  * into one for use with echarts scatterplot. Filters out 
@@ -58214,7 +58211,8 @@ var mergeDatasets = function mergeDatasets() {
  * @param {*} data 
  * @returns {object}
  */
-var createVariableCollection = function createVariableCollection(varNames, data) {
+var createVariableCollection = function createVariableCollection(varNames, data, baseVars) {
+  console.log('create collection', varNames, data, baseVars);
   return varNames.reduce(function (acc, curr, i) {
     if (curr === 'base') {
       // extract variables from the "base" file
@@ -58248,7 +58246,8 @@ var utils_parseCsvData = function parseCsvData(data, varName) {
     }
   });
   if (parsed.errors.length) {
-    throw new Error(parsed.errors[0]);
+    console.error(parsed.errors);
+    throw new Error('Error parsing csv');
   }
   // reduce array of data into an object
   // e.g. { '0100001': 2.44, ... }
@@ -58269,6 +58268,7 @@ var utils_fetchScatterplotVars = function fetchScatterplotVars() {
   var vars = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var prefix = arguments[1];
   var endpoint = arguments[2];
+  var baseVars = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
 
   var fetchVars = vars.map(function (v) {
     return baseVars.indexOf(v) > -1 ? 'base' : v;
@@ -58280,7 +58280,7 @@ var utils_fetchScatterplotVars = function fetchScatterplotVars() {
       return utils_parseCsvData(res.data, v);
     });
   })).then(function (data) {
-    return createVariableCollection(fetchVars, data);
+    return createVariableCollection(fetchVars, data, baseVars);
   });
 };
 
@@ -64057,18 +64057,29 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
     this.setState({ options: options });
   };
 
+  /**
+   * Gets an echart series for all of the data corresponding to IDs
+   * in `props.highlighted`
+   * @param {array} scatterData data from the base series
+   * @param {function} sizeScale a function that returns circle size based on zVar
+   */
+
+
   Scatterplot.prototype._getHighlightedSeries = function _getHighlightedSeries(scatterData, sizeScale) {
     var _props2 = this.props,
         _props2$highlighted = _props2.highlighted,
         highlighted = _props2$highlighted === undefined ? [] : _props2$highlighted,
-        options = _props2.options;
+        options = _props2.options,
+        zVar = _props2.zVar;
+    // data index for the id property
 
+    var idDim = zVar ? 3 : 2;
     var baseSeries = {
       id: 'highlighted',
       type: 'scatter',
-      symbolSize: function symbolSize(value) {
+      symbolSize: zVar ? function (value) {
         return sizeScale(value[2]);
-      },
+      } : 10,
       itemStyle: {
         borderWidth: 1,
         borderColor: 'rgba(0,0,0,1)',
@@ -64079,7 +64090,7 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
     var overrides = options ? getDataSeries('highlighted', options.series) : {};
     var data = highlighted.map(function (id, i) {
       return scatterData.find(function (d) {
-        return d[3] === id;
+        return d[idDim] === id;
       });
     }).filter(function (d) {
       return Boolean(d);
@@ -64097,8 +64108,11 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
         _props3$selected = _props3.selected,
         selected = _props3$selected === undefined ? [] : _props3$selected,
         selectedColors = _props3.selectedColors,
-        options = _props3.options;
+        options = _props3.options,
+        zVar = _props3.zVar;
+    // data index for the id property
 
+    var idDim = zVar ? 3 : 2;
     var baseSeries = {
       id: 'selected',
       type: 'scatter',
@@ -64118,7 +64132,7 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
     var overrides = options ? getDataSeries('selected', options.series) : {};
     var data = selected.map(function (id, i) {
       return scatterData.find(function (d) {
-        return d[3] === id;
+        return d[idDim] === id;
       });
     }).filter(function (d) {
       return Boolean(d);
@@ -64164,9 +64178,11 @@ var Scatterplot_Scatterplot = (_temp = _class = function (_Component) {
     var otherSeries = options && options.series ? options.series.filter(function (s) {
       return s.id !== 'base';
     }) : [];
-    if (data && data[xVar] && data[yVar] && data[zVar]) {
-      var sizeScale = Scatterplot_getDataScale(data[zVar], { range: [6, 48] });
-      var scatterData = getScatterplotData(data[xVar], data[yVar], data[zVar]);
+    if (data && data[xVar] && data[yVar] && (zVar && data[zVar] || !zVar)) {
+      var sizeScale = zVar ? Scatterplot_getDataScale(data[zVar], { range: [6, 48] }) : function () {
+        return 10;
+      };
+      var scatterData = zVar ? getScatterplotData(data[xVar], data[yVar], data[zVar]) : getScatterplotData(data[xVar], data[yVar]);
       var series = [this._getBaseSeries(scatterData, sizeScale), this._getSelectedSeries(scatterData, sizeScale), this._getHighlightedSeries(scatterData, sizeScale)].concat(otherSeries);
       return series;
     }
@@ -64486,7 +64502,8 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
         xVar = _props3.xVar,
         yVar = _props3.yVar,
         zVar = _props3.zVar,
-        endpoint = _props3.endpoint;
+        endpoint = _props3.endpoint,
+        baseVars = _props3.baseVars;
     var data = this.state.data;
 
     var vars = [];
@@ -64499,12 +64516,21 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
     if (vars.length === 0) {
       return;
     }
+    // variables that are part of the base scatterplot file
+    var defaultBase = {
+      'counties': ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz'],
+      'districts': ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz'],
+      'schools': ['id', 'name', 'lat', 'lon', 'all_avg', 'frl_pct', 'sz']
+      // get base collection variables if any
+    };var collectionVars = baseVars && baseVars[prefix] || defaultBase[prefix] || [];
     this._setLoadingState(true);
-    utils_fetchScatterplotVars(vars, prefix, endpoint).then(function (data) {
+    utils_fetchScatterplotVars(vars, prefix, endpoint, collectionVars).then(function (data) {
+      console.log('success', data);
       _this4._setData(data, prefix);
       _this4._setLoadingState(false);
       return data;
     }).catch(function (err) {
+      console.error(err);
       _this4.setState({
         errorMessage: err.message ? err.message : err
       });
@@ -64602,7 +64628,8 @@ var SedaScatterplot_SedaScatterplot = (SedaScatterplot_temp = SedaScatterplot_cl
   onMouseMove: prop_types_default.a.func,
   onDataLoaded: prop_types_default.a.func,
   onError: prop_types_default.a.func,
-  onLoading: prop_types_default.a.func
+  onLoading: prop_types_default.a.func,
+  baseVars: prop_types_default.a.object
 }, SedaScatterplot_temp);
 
 /* harmony default export */ var src_SedaScatterplot = (SedaScatterplot_SedaScatterplot);

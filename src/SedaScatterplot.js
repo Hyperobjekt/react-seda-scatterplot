@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import Scatterplot from './Scatterplot';
 import { fetchScatterplotVars } from './utils';
 
+
+
 /**
  * Gets the scatterplot data for a given ID
  * @param {*} id 
@@ -47,6 +49,7 @@ export class SedaScatterplot extends Component {
     onDataLoaded: PropTypes.func,
     onError: PropTypes.func,
     onLoading: PropTypes.func,
+    baseVars: PropTypes.object,
   }
 
   state = {
@@ -175,7 +178,7 @@ export class SedaScatterplot extends Component {
    * Loads variables for a region if they do not exist in the data
    */
   _loadScatterplotData() {
-    const { prefix, xVar, yVar, zVar, endpoint } = this.props;
+    const { prefix, xVar, yVar, zVar, endpoint, baseVars } = this.props;
     const { data } = this.state;
     const vars = [];
     if (!endpoint) { 
@@ -185,14 +188,24 @@ export class SedaScatterplot extends Component {
     xVar && (!data || !data[xVar]) && vars.push(xVar);
     yVar && (!data || !data[yVar]) && vars.push(yVar);
     if (vars.length === 0) { return; }
+    // variables that are part of the base scatterplot file
+    const defaultBase = {
+      'counties': ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz' ],
+      'districts': ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz' ],
+      'schools': ['id', 'name', 'lat', 'lon', 'all_avg', 'frl_pct', 'sz' ]
+    }
+    // get base collection variables if any
+    const collectionVars = (baseVars && baseVars[prefix]) || defaultBase[prefix] || [];
     this._setLoadingState(true);
-    fetchScatterplotVars(vars, prefix, endpoint)
+    fetchScatterplotVars(vars, prefix, endpoint, collectionVars)
       .then(data => {
+        console.log('success', data)
         this._setData(data, prefix);
         this._setLoadingState(false);
         return data;        
       })
       .catch(err => {
+        console.error(err)
         this.setState({
           errorMessage: err.message ? err.message : err
         })
