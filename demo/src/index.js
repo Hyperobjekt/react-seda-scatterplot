@@ -115,7 +115,11 @@ var theme = {
   },
   scatter: {
     symbol: 'circle',
-    symbolSize: 4
+    symbolSize: 4,
+    itemStyle: {
+      borderWidth: 1,
+      borderColor: 'rgba(0,0,0,0.15)'
+    }
   },
   map: {
     label: {
@@ -175,9 +179,17 @@ const baseOptions = {
     left: 24,
     right: 24,
   },
+  yAxis: {
+    min: -6,
+    max: 6
+  },
+  xAxis: {
+    min: 0,
+    max: 1
+  },
   tooltip: {
     trigger: 'item'
-  }
+  },
 }
 
 class Demo extends Component {
@@ -189,23 +201,17 @@ class Demo extends Component {
       }} 
     >
       <SedaScatterplot
-        xVar = 'all_ses'
+        xVar = 'frl_pct'
         yVar = 'all_avg'
-        zVar = 'sz'
         endpoint = 'https://d2fypeb6f974r1.cloudfront.net/dev/scatterplot/'
-        prefix = 'districts'
-        highlighted = {["1709930", "2612000"]}
-        selectedColors = {['#f00', '#0f0']}
+        prefix = 'schools'
         options = {baseOptions}
-        onReady = {
-          (e) => console.log(e.getOption())
-        }
-        onHover = {
-          (e) => console.log(e)
-        }
-        theme = {
-          theme
-        }
+        onReady = {(e) => console.log(e.getOption())}
+        onHover = {(e) => console.log(e)}
+        theme = {theme}
+        baseVars = {{
+          'schools': ['id', 'name', 'lat', 'lon', 'all_avg', 'frl_pct', 'sz' ]
+        }}
       /> 
     </div>
   }

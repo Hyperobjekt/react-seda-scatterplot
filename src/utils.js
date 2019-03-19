@@ -1,9 +1,6 @@
 import axios from 'axios';
 import { parse } from 'papaparse';
 
-/** variables that are part of the base scatterplot file */ 
-const baseVars = ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz' ];
-
 /**
  * Takes multiple data sets with identifiers and merges them
  * into one for use with echarts scatterplot. Filters out 
@@ -42,7 +39,8 @@ const mergeDatasets = (...sets) => {
  * @param {*} data 
  * @returns {object}
  */
-const createVariableCollection = (varNames, data) => {
+const createVariableCollection = (varNames, data, baseVars) => {
+  console.log('create collection', varNames, data, baseVars)
   return varNames.reduce((acc, curr, i) => {
     if (curr === 'base') {
       // extract variables from the "base" file
@@ -83,7 +81,8 @@ const parseCsvData = (data, varName) => {
     }
   });
   if (parsed.errors.length) {
-    throw new Error(parsed.errors[0])
+    console.error(parsed.errors)
+    throw new Error('Error parsing csv')
   }
   // reduce array of data into an object
   // e.g. { '0100001': 2.44, ... }
@@ -100,21 +99,22 @@ const parseCsvData = (data, varName) => {
  * @param {string} prefix prefix to the varname to fetch (e.g. 'districts')
  * @returns {Promise<object>}
  */
-export const fetchScatterplotVars = (vars = [], prefix, endpoint) => {
-  const fetchVars = vars
-    .map(v => baseVars.indexOf(v) > -1 ? 'base' : v)
-    .filter((value, index, self) => self.indexOf(value) === index)
-  return Promise.all(
-    fetchVars
-      .map(v => axios
-        .get(`${endpoint}${prefix ? prefix + '-' : ''}${v}.csv`)
-        .then((res) => {
-          return parseCsvData(res.data, v);
-        })
-      )
-  )
-  .then(data => createVariableCollection(fetchVars, data))
-}
+export const fetchScatterplotVars = 
+  (vars = [], prefix, endpoint, baseVars = []) => {
+    const fetchVars = vars
+      .map(v => baseVars.indexOf(v) > -1 ? 'base' : v)
+      .filter((value, index, self) => self.indexOf(value) === index)
+    return Promise.all(
+      fetchVars
+        .map(v => axios
+          .get(`${endpoint}${prefix ? prefix + '-' : ''}${v}.csv`)
+          .then((res) => {
+            return parseCsvData(res.data, v);
+          })
+        )
+    )
+    .then(data => createVariableCollection(fetchVars, data, baseVars))
+  }
 
 /**
  * Returns provided datasets merged into an array that

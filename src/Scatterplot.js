@@ -142,12 +142,20 @@ export class Scatterplot extends Component {
     this.setState({ options });
   }
 
+  /**
+   * Gets an echart series for all of the data corresponding to IDs
+   * in `props.highlighted`
+   * @param {array} scatterData data from the base series
+   * @param {function} sizeScale a function that returns circle size based on zVar
+   */
   _getHighlightedSeries(scatterData, sizeScale) {
-    const { highlighted = [], options } = this.props;
+    const { highlighted = [], options, zVar } = this.props;
+    // data index for the id property
+    const idDim = zVar ? 3 : 2;
     const baseSeries = {
       id: 'highlighted',
       type: 'scatter',
-      symbolSize: (value) => sizeScale(value[2]),
+      symbolSize: zVar ? ((value) => sizeScale(value[2])) : 10,
       itemStyle: {
         borderWidth: 1,
         borderColor: 'rgba(0,0,0,1)',
@@ -158,7 +166,7 @@ export class Scatterplot extends Component {
     const overrides = options ? 
       getDataSeries('highlighted', options.series) : {};
     const data = highlighted
-      .map((id, i) => scatterData.find(d => d[3] === id))
+      .map((id, i) => scatterData.find(d => d[idDim] === id))
       .filter(d => Boolean(d))
     return merge(
       { ...baseSeries, data: data }, 
@@ -170,7 +178,9 @@ export class Scatterplot extends Component {
    * Gets a data series with selected items
    */
   _getSelectedSeries(scatterData, sizeScale) {
-    const { selected = [], selectedColors, options } = this.props;
+    const { selected = [], selectedColors, options, zVar } = this.props;
+    // data index for the id property
+    const idDim = zVar ? 3 : 2;
     const baseSeries = {
       id: 'selected',
       type: 'scatter',
@@ -186,7 +196,7 @@ export class Scatterplot extends Component {
     const overrides = options ? 
       getDataSeries('selected', options.series) : {};
     const data = selected
-      .map((id, i) => scatterData.find(d => d[3] === id))
+      .map((id, i) => scatterData.find(d => d[idDim] === id))
       .filter(d => Boolean(d))
     return merge(
       { ...baseSeries, data: data }, 
@@ -219,11 +229,16 @@ export class Scatterplot extends Component {
     const { data, xVar, yVar, zVar, options } = this.props;
     const otherSeries = options && options.series ?
       options.series.filter(s => s.id !== 'base') : []
-    if (data && data[xVar] && data[yVar] && data[zVar]) {
-      const sizeScale = 
-        getDataScale(data[zVar], { range: [ 6, 48 ] });
-      const scatterData = 
-        getScatterplotData(data[xVar], data[yVar], data[zVar]);
+    if (
+      (data && data[xVar] && data[yVar]) && 
+      ((zVar && data[zVar]) || !zVar)
+    ) {
+      const sizeScale = zVar ? 
+        getDataScale(data[zVar], { range: [ 6, 48 ] }) :
+        (() => 10);
+      const scatterData = zVar ?
+        getScatterplotData(data[xVar], data[yVar], data[zVar]) :
+        getScatterplotData(data[xVar], data[yVar])
       const series = [ 
         this._getBaseSeries(scatterData, sizeScale),
         this._getSelectedSeries(scatterData, sizeScale),
