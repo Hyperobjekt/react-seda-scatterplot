@@ -174,18 +174,10 @@ var theme = {
 
 const baseOptions = {
   grid: {
-    top: 24,
-    bottom: 24,
-    left: 24,
-    right: 24,
-  },
-  yAxis: {
-    min: -6,
-    max: 6
-  },
-  xAxis: {
-    min: 0,
-    max: 1
+    top: 48,
+    bottom: 64,
+    left: 64,
+    right: 48,
   },
   tooltip: {
     trigger: 'item'
@@ -193,23 +185,46 @@ const baseOptions = {
 }
 
 class Demo extends Component {
+
+  state = {
+    xVar: 'all_ses'
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({
+        xVar: 'b_sses'
+      })
+    }, 8000)
+    setTimeout(() => {
+      this.setState({
+        xVar: 'b_ses'
+      })
+    }, 16000)
+
+  }
+
   render() {
     return <div style = {{
-        width: 640,
-        height: 480,
-        position: 'relative'
+        width: '100%',
+        height: '100%',
+        position: 'absolute'
       }} 
     >
       <SedaScatterplot
-        xVar = 'frl_pct'
+        xVar = {this.state.xVar}
         yVar = 'all_avg'
+        zVar = 'sz'
         endpoint = 'https://d2fypeb6f974r1.cloudfront.net/dev/scatterplot/'
-        prefix = 'schools'
+        prefix = 'districts'
         options = {baseOptions}
         onReady = {(e) => console.log(e.getOption())}
         onHover = {(e) => console.log(e)}
         theme = {theme}
+        classes = {{error: 'demo-scatterplot-error'}}
         baseVars = {{
+          'counties': ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz' ],
+          'districts': ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz' ],
           'schools': ['id', 'name', 'lat', 'lon', 'all_avg', 'frl_pct', 'sz' ]
         }}
       /> 

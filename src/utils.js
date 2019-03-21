@@ -40,7 +40,6 @@ const mergeDatasets = (...sets) => {
  * @returns {object}
  */
 const createVariableCollection = (varNames, data, baseVars) => {
-  console.log('create collection', varNames, data, baseVars)
   return varNames.reduce((acc, curr, i) => {
     if (curr === 'base') {
       // extract variables from the "base" file
@@ -81,8 +80,10 @@ const parseCsvData = (data, varName) => {
     }
   });
   if (parsed.errors.length) {
-    console.error(parsed.errors)
-    throw new Error('Error parsing csv')
+    const errorMessage = parsed.errors[0].type + ':'
+      + parsed.errors[0].code + ' on row '
+      + parsed.errors[0].row
+    throw new Error(errorMessage)
   }
   // reduce array of data into an object
   // e.g. { '0100001': 2.44, ... }
@@ -110,6 +111,9 @@ export const fetchScatterplotVars =
           .get(`${endpoint}${prefix ? prefix + '-' : ''}${v}.csv`)
           .then((res) => {
             return parseCsvData(res.data, v);
+          }, (err) => {
+            console.error(err);
+            throw new Error(`Could not get ${prefix ? prefix + '-' : ''}${v}.csv`)
           })
         )
     )
@@ -129,3 +133,21 @@ export const getScatterplotData = (...sets) => {
   return Object.keys(merged).map(k => merged[k])
 }
 
+/** Checks if _arr1 is equal to _arr2 */
+export const arraysEqual = (_arr1, _arr2) => {
+  if (!Array.isArray(_arr1) || 
+      !Array.isArray(_arr2) || 
+      _arr1.length !== _arr2.length
+  ) { return false; }
+  const arr1 = _arr1.concat().sort();
+  const arr2 = _arr2.concat().sort();
+  return arr1.reduce(
+    (isEqual, curr, i) => isEqual && arr2[i] === curr, 
+    true
+  )  
+}
+
+/** Checks if _arr1 contains _arr2 */
+export const arrayContains = (_arr1, _arr2) => {
+  return _arr1.every(elem => _arr2.indexOf(elem) > -1);
+}
