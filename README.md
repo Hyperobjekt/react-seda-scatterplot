@@ -34,8 +34,9 @@ The following props can be passed to the scatterplot component:
   - **highlighted**: `array` list of highlighted dot identifiers
   - **selected**: `array` list of selected dot identifiers
   - **selectedColors**: `array` list of colors to use for selected dots
-  - **initialData**: `object` data to pass to the scatterplot, if no data is passed it will load from the endpoint
+  - **data**: `object` data to pass to the scatterplot, if no data is passed it will load from the endpoint
   - **theme**: `object|string` theme object or string for echart
+  - **classes**: `object` allows passing of classes to child elements (e.g. `{ 'error': 'scatterplot-errror' }`)
   - **onHover**: `func` event handler for when dot is hovered
   - **onClick**: `func` event handler for when dot is clicked
   - **onReady**: `func` event handler for when chart is ready

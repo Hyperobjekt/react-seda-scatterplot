@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import Scatterplot from './Scatterplot';
-import { fetchScatterplotVars } from './utils';
-
-
+import { fetchScatterplotVars, arrayEqual, arrayContains } from './utils';
 
 /**
  * Gets the scatterplot data for a given ID
@@ -18,7 +16,6 @@ const getDataForId = (id, data) => {
     return acc;
   }, {})
 }
-
 
 /**
  * Gets the data index for the given ID in scatterplot data
@@ -35,7 +32,7 @@ export class SedaScatterplot extends Component {
     xVar: PropTypes.string,
     yVar: PropTypes.string,
     zVar: PropTypes.string,
-    initialData: PropTypes.object,
+    data: PropTypes.object,
     theme: PropTypes.object,
     prefix: PropTypes.string,
     options: PropTypes.object,
@@ -50,10 +47,11 @@ export class SedaScatterplot extends Component {
     onError: PropTypes.func,
     onLoading: PropTypes.func,
     baseVars: PropTypes.object,
+    classes: PropTypes.object
   }
 
   state = {
-    data: {},
+    data: this.props.data || {},
     ready: false,
     loading: true,
     errorMessage: null
@@ -70,9 +68,6 @@ export class SedaScatterplot extends Component {
    */
   componentDidMount() {
     const { prefix, initialData } = this.props;
-    if (initialData) {
-      this._setData(initialData, prefix, true);
-    }
     this._loadScatterplotData();
   }
 
@@ -81,7 +76,19 @@ export class SedaScatterplot extends Component {
    * Toggle highlights on the hovered ID if needed
    */
   componentDidUpdate(prevProps) {
-    const { prefix, xVar, yVar, zVar, hovered } = this.props;    
+    const { prefix, xVar, yVar, zVar, hovered, data } = this.props;
+    // set data if received new data
+    if (
+      data && (
+        !prevProps.data ||
+        !arrayContains(
+          Object.keys(this.state.data[prefix]), 
+          Object.keys(data)
+        )
+      )
+    ) {
+      this._setData(data, prefix, true);
+    }
     // load data if needed
     if (
       prevProps.prefix !== prefix ||
@@ -131,9 +138,17 @@ export class SedaScatterplot extends Component {
     return this.echart && this.echart(...args);
   }
 
+  /** Gets the option overrides for the scatterplot */
   getOptionOverrides() { 
     return this.scatterplot && 
       this.scatterplot.getOptionOverrides() 
+  }
+
+  /** returns true if all data to render the scatterplot is available */
+  isDataReady() {
+    const { xVar, yVar, zVar } = this.props;
+    const { data } = this.state;
+    return data[xVar] && data[yVar] && (!zVar || data[zVar]);
   }
 
   /** Sets ready state of this component and fires callback */
@@ -168,37 +183,46 @@ export class SedaScatterplot extends Component {
 
   /** Sets the loading state for the scatterplot */
   _setLoadingState(loading) {
-    this.setState({loading});
-    this.echart && loading && this.echart.showLoading(); 
-    this.echart && !loading && this.echart.hideLoading();
-    this.props.onLoading && this.props.onLoading(loading)
+    try {
+      this.echart && loading && this.echart.showLoading(); 
+      this.echart && !loading && this.echart.hideLoading();
+    } catch (e) {
+      // unable to update loading status
+    } finally {
+      // all data is here, clear any errors
+      if (!loading && this.state.errorMessage) {
+        this.setState({errorMessage: ''})
+      }
+      this.props.onLoading && this.props.onLoading(loading)
+    }
   }
 
   /**
    * Loads variables for a region if they do not exist in the data
    */
   _loadScatterplotData() {
-    const { prefix, xVar, yVar, zVar, endpoint, baseVars } = this.props;
+    const { xVar, yVar, zVar } = this.props;
     const { data } = this.state;
     const vars = [];
-    if (!endpoint) { 
-      throw new Error('no endpoint specified for scatterplot') 
-    }
     zVar && (!data || !data[zVar]) && vars.push(zVar);
     xVar && (!data || !data[xVar]) && vars.push(xVar);
     yVar && (!data || !data[yVar]) && vars.push(yVar);
-    if (vars.length === 0) { return; }
-    // variables that are part of the base scatterplot file
-    const defaultBase = {
-      'counties': ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz' ],
-      'districts': ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz' ],
+    if (vars.length === 0) {
+      return; 
+    }
+    return this._fetchVariables(vars);
+  }
+
+  _fetchVariables(vars) {
+    const { prefix, endpoint, baseVars } = this.props;
+    if (!endpoint) { 
+      throw new Error('No endpoint specified for scatterplot') 
     }
     // get base collection variables if any
-    const collectionVars = (baseVars && baseVars[prefix]) || defaultBase[prefix] || [];
+    const collectionVars = (baseVars && baseVars[prefix]) || [];
     this._setLoadingState(true);
-    fetchScatterplotVars(vars, prefix, endpoint, collectionVars)
+    return fetchScatterplotVars(vars, prefix, endpoint, collectionVars)
       .then(data => {
-        console.log('success', data)
         this._setData(data, prefix);
         this._setLoadingState(false);
         return data;        
@@ -208,7 +232,6 @@ export class SedaScatterplot extends Component {
         this.setState({
           errorMessage: err.message ? err.message : err
         })
-        this._setLoadingState(false);
         this.props.onError && this.props.onError(err);
       })
   }
@@ -250,6 +273,7 @@ export class SedaScatterplot extends Component {
    */
   _onReady = (echart) => {
     this.echart = echart;
+    this.echart.showLoading(); 
     if (!this.props.onReady) { return; }
     if (!this.state.ready && !this.state.loading) {
       this._setReady()
@@ -264,14 +288,16 @@ export class SedaScatterplot extends Component {
     if (!this.props.onHover) { return; }
     const prefix = this.props.prefix || 'unprefixed';
     const { data } = this.state;
+    // index of the id property in the scatterplot data
+    const idIndex = this.props.zVar ? 3 : 2;
     // get the data array for the hovered location
     const hoverData = 
       e && e.data && e.data.hasOwnProperty('value') ?
         e.data['value']: e.data;
     // get the data from the state for the location
     const locationData = hoverData && e.type === 'mouseover' ? ({
-      id: hoverData[3],
-      ...getDataForId(hoverData[3], data[prefix])
+      id: hoverData[idIndex],
+      ...getDataForId(hoverData[idIndex], data[prefix])
     }) : null;
     // if there is a location then call onHover immediately
     if (locationData) {
@@ -299,23 +325,43 @@ export class SedaScatterplot extends Component {
 
   render() {
     return (
-      <Scatterplot 
-        ref={(ref) => this.scatterplot = ref}
-        onReady={this._onReady}
-        onHover={this._onHover}
-        onMouseMove={this._onMouseMove}
-        onClick={this._onClick}
-        data={this.state.data[this.props.prefix ? this.props.prefix : 'unprefixed']}
-        xVar={this.props.xVar}
-        yVar={this.props.yVar}
-        zVar={this.props.zVar}
-        selected={this.props.selected}
-        highlighted={this.props.highlighted}
-        selectedColors={this.props.selectedColors}
-        options={this.props.options}
-        notMerge={this.props.notMerge}
-        theme={this.props.theme}
-      />  
+      <div>
+        { this.state.errorMessage &&
+          <div 
+            className={this.props.classes && this.props.classes.error}
+            style={!this.props.classes ? { 
+              position: 'relative',
+              zIndex: 2,
+              padding: 8,
+              background: '#fee',
+              color: '#c00',
+              border: '1px solid #f99',
+              margin:'16px auto',
+              width: 264,
+              textAlign: 'center'
+            }: undefined}
+          >
+            {this.state.errorMessage}
+          </div>
+        }
+        <Scatterplot 
+          ref={(ref) => this.scatterplot = ref}
+          onReady={this._onReady}
+          onHover={this._onHover}
+          onMouseMove={this._onMouseMove}
+          onClick={this._onClick}
+          data={this.state.data[this.props.prefix ? this.props.prefix : 'unprefixed']}
+          xVar={this.props.xVar}
+          yVar={this.props.yVar}
+          zVar={this.props.zVar}
+          selected={this.props.selected}
+          highlighted={this.props.highlighted}
+          selectedColors={this.props.selectedColors}
+          options={this.props.options}
+          notMerge={this.props.notMerge}
+          theme={this.props.theme}
+        />  
+      </div>
     )
   }
 }

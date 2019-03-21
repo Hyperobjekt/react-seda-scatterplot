@@ -120,19 +120,27 @@ export class Scatterplot extends Component {
   componentDidUpdate(prevProps) {
     const { data, xVar, yVar, zVar, selected, highlighted, options } = this.props;
     if (
-      !_isEqual(
-        Object.keys(prevProps.data || {}), 
-        Object.keys(data || {})
-      ) ||
-      prevProps.xVar !== xVar ||
-      prevProps.zVar !== zVar ||
-      prevProps.yVar !== yVar ||
-      !_isEqual(prevProps.highlighted, highlighted) ||
-      !_isEqual(prevProps.selected, selected) ||
-      !_isEqual(prevProps.options, options)
+      this.isDataReady() && (
+        !_isEqual(
+          Object.keys(prevProps.data || {}), 
+          Object.keys(data || {})
+        ) ||
+        prevProps.xVar !== xVar ||
+        prevProps.zVar !== zVar ||
+        prevProps.yVar !== yVar ||
+        !_isEqual(prevProps.highlighted, highlighted) ||
+        !_isEqual(prevProps.selected, selected) ||
+        !_isEqual(prevProps.options, options)
+      )
     ) {
       this.updateOptions();
     }
+  }
+
+  /** returns true if all data to render the scatterplot is available */
+  isDataReady() {
+    const { xVar, yVar, zVar, data } = this.props;
+    return data && data[xVar] && data[yVar] && (!zVar || data[zVar]);
   }
 
   updateOptions() {
