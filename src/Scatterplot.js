@@ -236,7 +236,9 @@ export class Scatterplot extends Component {
   _getScatterplotSeries() { 
     const { data, xVar, yVar, zVar, options } = this.props;
     const otherSeries = options && options.series ?
-      options.series.filter(s => s.id !== 'base') : []
+      options.series.filter(
+        s => ['base', 'selected', 'highlighted'].indexOf(s.id) === -1
+      ) : []
     if (
       (data && data[xVar] && data[yVar]) && 
       ((zVar && data[zVar]) || !zVar)
