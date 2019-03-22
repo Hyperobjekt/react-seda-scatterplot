@@ -149,5 +149,5 @@ export const arraysEqual = (_arr1, _arr2) => {
 
 /** Checks if _arr1 contains _arr2 */
 export const arrayContains = (_arr1, _arr2) => {
-  return _arr1.every(elem => _arr2.indexOf(elem) > -1);
+  return _arr2.every(elem => _arr1.indexOf(elem) > -1);
 }
