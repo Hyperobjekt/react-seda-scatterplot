@@ -51,7 +51,8 @@ export class SedaScatterplot extends Component {
   }
 
   state = {
-    data: this.props.data || {},
+    data: this.props.data ? 
+      { [this.props.prefix]: this.props.data } : {},
     ready: false,
     loading: true,
     errorMessage: null
@@ -67,7 +68,6 @@ export class SedaScatterplot extends Component {
    * call load to load any missing data 
    */
   componentDidMount() {
-    const { prefix, initialData } = this.props;
     this._loadScatterplotData();
   }
 
@@ -79,7 +79,7 @@ export class SedaScatterplot extends Component {
     const { prefix, xVar, yVar, zVar, hovered, data } = this.props;
     // set data if received new data
     if (
-      data && (
+      data && !this.state.data || (
         !prevProps.data ||
         !arrayContains(
           Object.keys(this.state.data[prefix]), 
