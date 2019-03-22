@@ -79,7 +79,7 @@ export class SedaScatterplot extends Component {
     const { prefix, xVar, yVar, zVar, hovered, data } = this.props;
     // set data if received new data
     if (
-      data && !this.state.data || (
+      data && (
         !prevProps.data ||
         !arrayContains(
           Object.keys(this.state.data[prefix]), 
