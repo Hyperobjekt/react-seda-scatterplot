@@ -201,8 +201,9 @@ export class SedaScatterplot extends Component {
    * Loads variables for a region if they do not exist in the data
    */
   _loadScatterplotData() {
-    const { xVar, yVar, zVar } = this.props;
-    const { data } = this.state;
+    const { xVar, yVar, zVar, prefix } = this.props;
+    const data = this.state.data && this.state.data[prefix] ?
+      this.state.data[prefix] : {};
     const vars = [];
     zVar && (!data || !data[zVar]) && vars.push(zVar);
     xVar && (!data || !data[xVar]) && vars.push(xVar);
