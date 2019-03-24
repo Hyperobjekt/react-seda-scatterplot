@@ -43,7 +43,7 @@ export class SedaScatterplot extends Component {
     onClick: PropTypes.func,
     onReady: PropTypes.func,
     onMouseMove: PropTypes.func,
-    onDataLoaded: PropTypes.func,
+    onData: PropTypes.func,
     onError: PropTypes.func,
     onLoading: PropTypes.func,
     baseVars: PropTypes.object,
@@ -60,6 +60,7 @@ export class SedaScatterplot extends Component {
   
   constructor(props) {
     super(props);
+    this.loaded = false;
     this.hoverTimeout = null;
   }
 
@@ -77,6 +78,16 @@ export class SedaScatterplot extends Component {
    */
   componentDidUpdate(prevProps) {
     const { prefix, xVar, yVar, zVar, hovered, data } = this.props;
+    if(this.isDataReady()) {
+      if (!this.loaded) {
+        this.loaded = true;
+        this.props.onLoaded && this.props.onLoaded(this)
+      }
+    } else {
+      if (this.loaded) {
+        this.loaded = false;
+      }
+    }
     // set data if received new data
     if (
       data && (
@@ -146,8 +157,9 @@ export class SedaScatterplot extends Component {
 
   /** returns true if all data to render the scatterplot is available */
   isDataReady() {
-    const { xVar, yVar, zVar } = this.props;
-    const { data } = this.state;
+    const { xVar, yVar, zVar, prefix } = this.props;
+    const data = this.state.data && this.state.data[prefix] ? 
+      this.state.data[prefix] : {};
     return data[xVar] && data[yVar] && (!zVar || data[zVar]);
   }
 
@@ -171,8 +183,8 @@ export class SedaScatterplot extends Component {
       }
     }, () => {
       if (!silent) {
-        this.props.onDataLoaded && 
-          this.props.onDataLoaded(this.state.data)
+        this.props.onData && 
+          this.props.onData(this.state.data)
       }
       if (!this.state.ready && this.echart) {
         this._setReady()
