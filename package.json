@@ -42,7 +42,7 @@
     "travis-deploy-once": "^5.0.11"
   },
   "author": "Lane Olson",
-  "homepage": "http://laneolson.ca",
+  "homepage": "https://github.com/Hyperobjekt/react-seda-scatterplot",
   "license": "MIT",
   "repository": {
     "type": "git",
