@@ -1,6 +1,6 @@
 {
   "name": "react-seda-scatterplot",
-  "version": "1.0.19",
+  "version": "1.0.18",
   "description": "react-seda-scatterplot React component",
   "main": "lib/index.js",
   "module": "es/index.js",
