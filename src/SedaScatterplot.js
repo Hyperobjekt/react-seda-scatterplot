@@ -38,24 +38,15 @@ export class SedaScatterplot extends Component {
     options: PropTypes.object,
     hovered: PropTypes.string,
     selected: PropTypes.array,
-    selectedColors: PropTypes.array,
     onHover: PropTypes.func,
     onClick: PropTypes.func,
-    onReady: PropTypes.func,
     onMouseMove: PropTypes.func,
+    onReady: PropTypes.func,
     onData: PropTypes.func,
     onError: PropTypes.func,
     onLoading: PropTypes.func,
     baseVars: PropTypes.object,
     classes: PropTypes.object
-  }
-
-  state = {
-    data: this.props.data ? 
-      { [this.props.prefix]: this.props.data } : {},
-    ready: false,
-    loading: true,
-    errorMessage: null
   }
   
   constructor(props) {
@@ -77,28 +68,19 @@ export class SedaScatterplot extends Component {
    * Toggle highlights on the hovered ID if needed
    */
   componentDidUpdate(prevProps) {
-    const { prefix, xVar, yVar, zVar, hovered, data } = this.props;
+    const { prefix, xVar, yVar, zVar, hovered } = this.props;
     if(this.isDataReady()) {
+      if (this.echart && !this.ready) {
+        this.ready = true;
+        this.props.onReady && this.props.onReady(this.echart);
+      }
       if (!this.loaded) {
-        this.loaded = true;
-        this.props.onLoaded && this.props.onLoaded(this)
+        this._setLoaded(true)        
       }
     } else {
       if (this.loaded) {
-        this.loaded = false;
+        this._setLoaded(false)
       }
-    }
-    // set data if received new data
-    if (
-      data && (
-        !prevProps.data ||
-        !arrayContains(
-          Object.keys(this.state.data[prefix]), 
-          Object.keys(data)
-        )
-      )
-    ) {
-      this._setData(data, prefix, true);
     }
     // load data if needed
     if (
@@ -122,9 +104,9 @@ export class SedaScatterplot extends Component {
    * Gets the state data for the scatterplot
    */
   getData() { 
-    return this.state.data && 
-      this.state.data[this.props.prefix] ?
-        this.state.data[this.props.prefix] : {}
+    return this.props.data && 
+      this.props.data[this.props.prefix] ?
+        this.props.data[this.props.prefix] : {}
   }
 
   /** 
@@ -158,55 +140,22 @@ export class SedaScatterplot extends Component {
   /** returns true if all data to render the scatterplot is available */
   isDataReady() {
     const { xVar, yVar, zVar, prefix } = this.props;
-    const data = this.state.data && this.state.data[prefix] ? 
-      this.state.data[prefix] : {};
-    return data[xVar] && data[yVar] && (!zVar || data[zVar]);
-  }
-
-  /** Sets ready state of this component and fires callback */
-  _setReady() {
-    this.setState({ready: true}, () => {
-      this.props.onReady && this.props.onReady(this.echart);
-    });
+    const data = this.props.data[prefix] || {};
+    return Boolean(data[xVar]) && Boolean(data[yVar]) && 
+      Boolean(!zVar || data[zVar]);
   }
 
   /** Sets data for the given data category */
-  _setData(data, prefix, silent = false) {
+  _setData(data, prefix) {
     prefix = prefix ? prefix : 'unprefixed';
-    this.setState({
-      data: { 
-        ...this.state.data, 
-        [prefix] : {
-          ...this.state.data[prefix],
-          ...data
-        }
-      }
-    }, () => {
-      if (!silent) {
-        this.props.onData && 
-          this.props.onData(this.state.data)
-      }
-      if (!this.state.ready && this.echart) {
-        this._setReady()
-      }
-    })
-
+    this.props.onData && 
+          this.props.onData(data, prefix)
   }
 
   /** Sets the loading state for the scatterplot */
-  _setLoadingState(loading) {
-    try {
-      this.echart && loading && this.echart.showLoading(); 
-      this.echart && !loading && this.echart.hideLoading();
-    } catch (e) {
-      // unable to update loading status
-    } finally {
-      // all data is here, clear any errors
-      if (!loading && this.state.errorMessage) {
-        this.setState({errorMessage: ''})
-      }
-      this.props.onLoading && this.props.onLoading(loading)
-    }
+  _setLoaded(loaded) {
+    this.loaded = loaded
+    this.props.onLoading && this.props.onLoading(!loaded)
   }
 
   /**
@@ -214,8 +163,7 @@ export class SedaScatterplot extends Component {
    */
   _loadScatterplotData() {
     const { xVar, yVar, zVar, prefix } = this.props;
-    const data = this.state.data && this.state.data[prefix] ?
-      this.state.data[prefix] : {};
+    const data = this.props.data[prefix] || {};
     const vars = [];
     zVar && (!data || !data[zVar]) && vars.push(zVar);
     xVar && (!data || !data[xVar]) && vars.push(xVar);
@@ -233,18 +181,13 @@ export class SedaScatterplot extends Component {
     }
     // get base collection variables if any
     const collectionVars = (baseVars && baseVars[prefix]) || [];
-    this._setLoadingState(true);
     return fetchScatterplotVars(vars, prefix, endpoint, collectionVars)
       .then(data => {
         this._setData(data, prefix);
-        this._setLoadingState(false);
         return data;        
       })
       .catch(err => {
         console.error(err)
-        this.setState({
-          errorMessage: err.message ? err.message : err
-        })
         this.props.onError && this.props.onError(err);
       })
   }
@@ -272,7 +215,7 @@ export class SedaScatterplot extends Component {
   _onClick = (e) => {
     if (!this.props.onClick) { return; }
     const prefix = this.props.prefix || 'unprefixed';
-    const { data } = this.state;
+    const { data } = this.props;
     const locationData = {
       id: e.data[3],
       ...getDataForId(e.data[3], data[prefix])
@@ -286,11 +229,6 @@ export class SedaScatterplot extends Component {
    */
   _onReady = (echart) => {
     this.echart = echart;
-    this.echart.showLoading(); 
-    if (!this.props.onReady) { return; }
-    if (!this.state.ready && !this.state.loading) {
-      this._setReady()
-    }
   }
 
   /**
@@ -300,7 +238,7 @@ export class SedaScatterplot extends Component {
   _onHover = (e) => {
     if (!this.props.onHover) { return; }
     const prefix = this.props.prefix || 'unprefixed';
-    const { data } = this.state;
+    const { data } = this.props;
     // index of the id property in the scatterplot data
     const idIndex = this.props.zVar ? 3 : 2;
     // get the data array for the hovered location
@@ -337,44 +275,27 @@ export class SedaScatterplot extends Component {
   }
 
   render() {
+    const data = this.isDataReady() ?
+      this.props.data[this.props.prefix ? this.props.prefix : 'unprefixed'] :
+      null
     return (
-      <div>
-        { this.state.errorMessage &&
-          <div 
-            className={this.props.classes && this.props.classes.error}
-            style={!this.props.classes ? { 
-              position: 'relative',
-              zIndex: 2,
-              padding: 8,
-              background: '#fee',
-              color: '#c00',
-              border: '1px solid #f99',
-              margin:'16px auto',
-              width: 264,
-              textAlign: 'center'
-            }: undefined}
-          >
-            {this.state.errorMessage}
-          </div>
-        }
-        <Scatterplot 
-          ref={(ref) => this.scatterplot = ref}
-          onReady={this._onReady}
-          onHover={this._onHover}
-          onMouseMove={this._onMouseMove}
-          onClick={this._onClick}
-          data={this.state.data[this.props.prefix ? this.props.prefix : 'unprefixed']}
-          xVar={this.props.xVar}
-          yVar={this.props.yVar}
-          zVar={this.props.zVar}
-          selected={this.props.selected}
-          highlighted={this.props.highlighted}
-          selectedColors={this.props.selectedColors}
-          options={this.props.options}
-          notMerge={this.props.notMerge}
-          theme={this.props.theme}
-        />  
-      </div>
+      <Scatterplot 
+        ref={(ref) => this.scatterplot = ref}
+        onReady={this._onReady}
+        onHover={this._onHover}
+        onMouseMove={this._onMouseMove}
+        onClick={this._onClick}
+        data={data}
+        xVar={this.props.xVar}
+        yVar={this.props.yVar}
+        zVar={this.props.zVar}
+        selected={this.props.selected}
+        highlighted={this.props.highlighted}
+        options={this.props.options}
+        notMerge={this.props.notMerge}
+        theme={this.props.theme}
+        loading={!this.isDataReady()}
+      />  
     )
   }
 }

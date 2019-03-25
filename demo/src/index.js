@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { render } from 'react-dom'
 import SedaScatterplot from '../../src'
+import * as merge from 'lodash.merge'
 
 var colorPalette = [
   '#2ec7c9', '#b6a2de', '#5ab1ef', '#ffb980', '#d87a80',
@@ -187,7 +188,8 @@ const baseOptions = {
 class Demo extends Component {
 
   state = {
-    xVar: 'all_ses'
+    xVar: 'all_ses',
+    data: {}
   }
 
   componentDidMount() {
@@ -204,6 +206,13 @@ class Demo extends Component {
 
   }
 
+  receiveData = (data, region) => {
+    const newData = merge(
+      this.state.data, { [region]: data }
+    );
+    this.setState({ data: newData })
+  }
+
   render() {
     return <div style = {{
         width: '100%',
@@ -212,14 +221,13 @@ class Demo extends Component {
       }} 
     >
       <SedaScatterplot
+        data = {this.state.data}
         xVar = {this.state.xVar}
         yVar = 'all_avg'
         zVar = 'sz'
         endpoint = 'https://d2fypeb6f974r1.cloudfront.net/dev/scatterplot/'
         prefix = 'districts'
         options = {baseOptions}
-        onReady = {(e) => console.log(e.getOption())}
-        onHover = {(e) => console.log(e)}
         theme = {theme}
         classes = {{error: 'demo-scatterplot-error'}}
         baseVars = {{
@@ -227,6 +235,9 @@ class Demo extends Component {
           'districts': ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz' ],
           'schools': ['id', 'name', 'lat', 'lon', 'all_avg', 'frl_pct', 'sz' ]
         }}
+        onReady = {(e) => console.log(e.getOption())}
+        onHover = {(e) => console.log(e)}
+        onData = {this.receiveData}
       /> 
     </div>
   }

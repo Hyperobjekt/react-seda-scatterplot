@@ -20,10 +20,11 @@ import 'echarts/lib/component/grid';
 import 'echarts/lib/component/legend';
 import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/title';
+import 'echarts/lib/component/dataZoom';
 import 'echarts/lib/component/visualMap';
 import 'echarts/lib/component/markPoint';
 import 'echarts/lib/component/markLine';
-// import 'echarts/lib/component/markArea';
+import 'echarts/lib/component/markArea';
 // import 'zrender/lib/vml/vml';
 
 
@@ -80,7 +81,7 @@ export class Scatterplot extends Component {
     zVar: PropTypes.string,
     data: PropTypes.object,
     selected: PropTypes.array,
-    selectedColors: PropTypes.array,
+    highlighted: PropTypes.array,
     onHover: PropTypes.func,
     onClick: PropTypes.func,
     onReady: PropTypes.func,
@@ -114,17 +115,15 @@ export class Scatterplot extends Component {
   /**
    * update the scatterplot options when any of the following happen:
    * - one of the x,y,z vars change
-   * - data keys change (new data loaded)
+   * - data boolean changes
    * - selected ids change
    */
   componentDidUpdate(prevProps) {
-    const { data, xVar, yVar, zVar, selected, highlighted, options } = this.props;
+    const { loading, data, xVar, yVar, zVar, selected, highlighted, options } = this.props;
+    if (loading) { return; }
     if (
-      this.isDataReady() && (
-        !_isEqual(
-          Object.keys(prevProps.data || {}), 
-          Object.keys(data || {})
-        ) ||
+      (
+        Boolean(prevProps.data) !== Boolean(data) ||
         prevProps.xVar !== xVar ||
         prevProps.zVar !== zVar ||
         prevProps.yVar !== yVar ||
@@ -135,12 +134,6 @@ export class Scatterplot extends Component {
     ) {
       this.updateOptions();
     }
-  }
-
-  /** returns true if all data to render the scatterplot is available */
-  isDataReady() {
-    const { xVar, yVar, zVar, data } = this.props;
-    return data && data[xVar] && data[yVar] && (!zVar || data[zVar]);
   }
 
   updateOptions() {
@@ -164,11 +157,6 @@ export class Scatterplot extends Component {
       id: 'highlighted',
       type: 'scatter',
       symbolSize: zVar ? ((value) => sizeScale(value[2])) : 10,
-      itemStyle: {
-        borderWidth: 1,
-        borderColor: 'rgba(0,0,0,1)',
-        color: '#ffc'
-      },
       z:3
     }
     const overrides = options ? 
@@ -186,19 +174,13 @@ export class Scatterplot extends Component {
    * Gets a data series with selected items
    */
   _getSelectedSeries(scatterData, sizeScale) {
-    const { selected = [], selectedColors, options, zVar } = this.props;
+    const { selected = [], options, zVar } = this.props;
     // data index for the id property
     const idDim = zVar ? 3 : 2;
     const baseSeries = {
       id: 'selected',
       type: 'scatter',
       symbolSize: (value) => sizeScale(value[2]),
-      itemStyle: {
-        borderWidth: 1,
-        borderColor: 'rgba(0,0,0,1)',
-        color: ({dataIndex}) => 
-          selectedColors[dataIndex % selectedColors.length]
-      },
       z:4
     }
     const overrides = options ? 
@@ -303,6 +285,7 @@ export class Scatterplot extends Component {
           option={this.state.options}
           notMerge={this.props.notMerge}
           theme={this.state.themeId}
+          showLoading={this.props.loading}
         />
     )
   }
