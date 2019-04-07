@@ -215,9 +215,9 @@ class Demo extends Component {
 
   render() {
     return <div style = {{
-        width: '100%',
-        height: '100%',
-        position: 'absolute'
+        width: '66%',
+        height: '66%',
+        position: 'absolute',
       }} 
     >
       <SedaScatterplot

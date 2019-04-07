@@ -269,6 +269,10 @@ export class Scatterplot extends Component {
       e.on('mousemove', this.props.onMouseMove)
     this.props.onClick && 
       e.on('click', this.props.onClick)
+    this.props.onMouseOver &&
+      e.getDom().addEventListener('mouseover', this.props.onMouseEnter)
+    this.props.onMouseOut && 
+      e.getDom().addEventListener('mouseout', this.props.onMouseLeave)
     this.echart = e;
     this.props.onReady && this.props.onReady(e)
   }
