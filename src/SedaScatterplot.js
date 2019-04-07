@@ -193,18 +193,39 @@ export class SedaScatterplot extends Component {
   }
 
   /**
+   * Gets the series and data index for a given ID 
+   * @param {string} id 
+   * @returns {object} { seriesIndex, dataIndex }
+   */
+  _getIndiciesForId(id) {
+    const { series } = this.echart.getOption();
+    // check in reverse order to get the top-most level
+    for(let i = series.length-1; i > -1; i--) {
+      if (series[i] && series[i].data) {
+        const dataIndex = getDataIndex(id, series[i].data);
+        if (dataIndex > -1) {
+          return { seriesIndex: i, dataIndex }
+        }
+      }
+    }
+    // no id found, return -1
+    return { seriesIndex: -1, dataIndex: -1 }
+  }
+
+  /**
    * Toggle highlighted state for items in the scatterplot
    */
   _toggleHighlight(hoveredId, { show = true }) {
     const { series } = this.echart.getOption();
-    if (series[0] && series[0].data) {
+    const { seriesIndex, dataIndex } = this._getIndiciesForId(hoveredId);
+    if (seriesIndex && dataIndex) {
       this.echart && this.echart.dispatchAction({
         type: show ? 'highlight' : 'downplay',
-        seriesIndex: 0,
-        dataIndex: getDataIndex(hoveredId, series[0].data)
+        seriesIndex: seriesIndex,
+        dataIndex: dataIndex
       })
     } else {
-      console.warn('no series to toggle highlight', series, this.echart.getOption());
+      console.warn('no id to toggle highlight', hoveredId);
     }
   }
 
