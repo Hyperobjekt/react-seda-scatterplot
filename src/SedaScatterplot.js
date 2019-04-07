@@ -53,6 +53,7 @@ export class SedaScatterplot extends Component {
     super(props);
     this.loaded = false;
     this.hoverTimeout = null;
+    this.state = { hovered: false };
   }
 
   /** 
@@ -92,11 +93,11 @@ export class SedaScatterplot extends Component {
       this._loadScatterplotData();
     }
     // update highlighted dots when hovered changes
-    if (prevProps.hovered !== hovered) {
+    if (prevProps.hovered !== hovered && prevProps.hovered) {
       this._toggleHighlight(prevProps.hovered, { show: false })
-      if (hovered) {
-        this._toggleHighlight(hovered, { show: true });
-      }
+    }
+    if (prevProps.hovered !== hovered && hovered && !this.state.hovered) {
+      this._toggleHighlight(hovered, { show: true });
     }
   }
 
@@ -216,9 +217,8 @@ export class SedaScatterplot extends Component {
    * Toggle highlighted state for items in the scatterplot
    */
   _toggleHighlight(hoveredId, { show = true }) {
-    const { series } = this.echart.getOption();
     const { seriesIndex, dataIndex } = this._getIndiciesForId(hoveredId);
-    if (seriesIndex && dataIndex) {
+    if (seriesIndex > -1 && dataIndex > -1) {
       this.echart && this.echart.dispatchAction({
         type: show ? 'highlight' : 'downplay',
         seriesIndex: seriesIndex,
@@ -256,7 +256,7 @@ export class SedaScatterplot extends Component {
    * Get the data for the hovered feature and call the
    * handler if it exists
    */
-  _onHover = (e) => {
+  _onHover = (e) => {      
     if (!this.props.onHover) { return; }
     const prefix = this.props.prefix || 'unprefixed';
     const { data } = this.props;
@@ -304,6 +304,8 @@ export class SedaScatterplot extends Component {
         ref={(ref) => this.scatterplot = ref}
         onReady={this._onReady}
         onHover={this._onHover}
+        onMouseEnter={() => { this.setState({ hovered: true }) }}
+        onMouseLeave={() => { this.setState({ hovered: false }) }}
         onMouseMove={this._onMouseMove}
         onClick={this._onClick}
         data={data}
