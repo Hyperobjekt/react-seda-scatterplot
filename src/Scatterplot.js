@@ -16,6 +16,7 @@ import 'echarts/lib/chart/line';
 import 'echarts/lib/chart/lines';
 import 'echarts/lib/chart/scatter';
 import 'echarts/lib/chart/effectScatter';
+import 'echarts/lib/chart/custom';
 import 'echarts/lib/component/grid';
 import 'echarts/lib/component/legend';
 import 'echarts/lib/component/tooltip';
