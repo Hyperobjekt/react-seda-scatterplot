@@ -189,24 +189,35 @@ class Demo extends Component {
 
   state = {
     xVar: 'all_ses',
-    data: {}
+    data: {},
+    freeze: false
   }
 
   componentDidMount() {
     setTimeout(() => {
+      console.log('freeze!')
       this.setState({
-        xVar: 'b_sses'
+        freeze: true
       })
-    }, 8000)
+    }, 5000)
     setTimeout(() => {
+      console.log('load data');
       this.setState({
         xVar: 'b_ses'
       })
-    }, 16000)
+    }, 10000)
+
+    setTimeout(() => {
+      console.log('unfreeze!')
+      this.setState({
+        freeze: false
+      })
+    }, 15000)
 
   }
 
   receiveData = (data, region) => {
+    console.log('received data', data, region)
     const newData = merge(
       this.state.data, { [region]: data }
     );
@@ -238,6 +249,7 @@ class Demo extends Component {
         onReady = {(e) => console.log(e.getOption())}
         onHover = {(e) => console.log(e)}
         onData = {this.receiveData}
+        freeze = {this.state.freeze}
       /> 
     </div>
   }

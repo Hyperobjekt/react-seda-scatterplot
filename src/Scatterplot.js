@@ -88,7 +88,8 @@ export class Scatterplot extends Component {
     onReady: PropTypes.func,
     onMouseMove: PropTypes.func,
     notMerge: PropTypes.bool,
-    theme: PropTypes.object
+    theme: PropTypes.object,
+    freeze: PropTypes.bool,
   }
 
   constructor(props) {
@@ -96,6 +97,11 @@ export class Scatterplot extends Component {
     this.state = {
       options: false
     }
+  }
+
+  /** Do not render updates if component is frozen */
+  shouldComponentUpdate(nextProps) {
+    return !nextProps.freeze
   }
 
   componentDidMount() {
@@ -120,7 +126,7 @@ export class Scatterplot extends Component {
    * - selected ids change
    */
   componentDidUpdate(prevProps) {
-    const { loading, data, xVar, yVar, zVar, selected, highlighted, options } = this.props;
+    const { loading, data, xVar, yVar, zVar, selected, highlighted, options, freeze } = this.props;
     if (loading) { return; }
     if (
       (
@@ -128,9 +134,10 @@ export class Scatterplot extends Component {
         prevProps.xVar !== xVar ||
         prevProps.zVar !== zVar ||
         prevProps.yVar !== yVar ||
-        !_isEqual(prevProps.highlighted, highlighted) ||
-        !_isEqual(prevProps.selected, selected) ||
-        !_isEqual(prevProps.options, options)
+        !_isEqual(prevProps.highlighted, highlighted) || // highlighted dots changed
+        !_isEqual(prevProps.selected, selected) || // selected dots changed
+        !_isEqual(prevProps.options, options) || // new options
+        (prevProps.freeze && !freeze) // unfreeze
       )
     ) {
       this.updateOptions();
