@@ -92,6 +92,10 @@ export class SedaScatterplot extends Component {
     ) {
       this._loadScatterplotData();
     }
+    /** No updating rendered props if freeze */
+    if (this.props.freeze) {
+      return;
+    }
     // update highlighted dots when hovered changes
     if (prevProps.hovered !== hovered && prevProps.hovered) {
       this._toggleHighlight(prevProps.hovered, { show: false })
@@ -318,6 +322,7 @@ export class SedaScatterplot extends Component {
         notMerge={this.props.notMerge}
         theme={this.props.theme}
         loading={!this.isDataReady()}
+        freeze={this.props.freeze}
       />  
     )
   }
