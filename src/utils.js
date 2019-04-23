@@ -197,22 +197,3 @@ export const getScatterplotData = (...sets) => {
   const merged = mergeDatasets(...sets);
   return Object.keys(merged).map(k => merged[k])
 }
-
-/** Checks if _arr1 is equal to _arr2 */
-export const arraysEqual = (_arr1, _arr2) => {
-  if (!Array.isArray(_arr1) || 
-      !Array.isArray(_arr2) || 
-      _arr1.length !== _arr2.length
-  ) { return false; }
-  const arr1 = _arr1.concat().sort();
-  const arr2 = _arr2.concat().sort();
-  return arr1.reduce(
-    (isEqual, curr, i) => isEqual && arr2[i] === curr, 
-    true
-  )  
-}
-
-/** Checks if _arr1 contains _arr2 */
-export const arrayContains = (_arr1, _arr2) => {
-  return _arr2.every(elem => _arr1.indexOf(elem) > -1);
-}
