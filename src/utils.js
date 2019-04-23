@@ -9,7 +9,7 @@ import { parse } from 'papaparse';
  * @param {object} sets a variable amount of data sets - e.g. { "01001": 3.45, ... }
  * @returns {object} e.g. { "01001": [ 3.45, 5.10, 01001 ], ... }
  */
-const mergeDatasets = (...sets) => {
+export const mergeDatasets = (...sets) => {
   // filter out IDs that are not common to all sets
   const ids = Object.keys(sets[0]).filter(id =>
     sets.reduce((acc, curr) =>
