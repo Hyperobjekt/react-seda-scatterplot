@@ -8,7 +8,7 @@ var state1 = function(scatterplot) {
   scatterplot.setProps({
     xVar: 'w_avg',
     yVar: 'b_avg',
-    zVar: 'sz',
+    zVar: 'all_sz',
   });
   // get current echart options
   const options = scatterplot.component.getOption();
@@ -145,7 +145,7 @@ var state4 = function(scatterplot) {
   scatterplot.setProps({
     xVar: 'wb_ses',
     yVar: 'wb_avg',
-    zVar: 'sz',
+    zVar: 'all_sz',
   });
   // get current echart options
   const options = scatterplot.component.getOption();

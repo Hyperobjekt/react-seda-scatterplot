@@ -14,7 +14,7 @@ Pass x, y, and optional z variable for sizing dots. Provide a prefix to specify 
   endpoint='https://d2fypeb6f974r1.cloudfront.net/dev/scatterplot/'
   xVar='all_ses'
   yVar='all_avg'
-  zVar='sz'
+  zVar='all_sz'
   prefix='counties'
 />
 ```
@@ -78,6 +78,7 @@ The following variables can be passed as `xVar`, `yVar`, or `zVar` and will be f
   - **coh**: trend over years
   - **ses**: socioeconomic status (counties and districts only)
   - **seg**: segregation measure (counties and districts only)
+  - **pct**: percent of paired demographic (e.g. w_pct = percent of white students)
 
 ### Demographics
 
@@ -91,17 +92,19 @@ The following variables can be passed as `xVar`, `yVar`, or `zVar` and will be f
   - **f**: female students
   - **p**: poor students
   - **np**: non-poor students
+  - **frl**: students qualifying for free or reduced lunch program (schools only)
   - **wb**: white/black gap
   - **wh**: white/hispanic gap
   - **wa**: white/asian gap
   - **pn**: poor/non-poor gap
   - **mf**: male/female gap
 
+
 ### General Variables
 
 In addition to the metric/demographic variables, the following variables exist and apply to all demographics:
 
-  - **sz**: number of students for the region (county, districts, schools)
+  - **all_sz**: number of students for the region (county, districts, schools)
 
 ## Custom Endpoints
 

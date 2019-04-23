@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import Scatterplot from './Scatterplot';
-import { fetchScatterplotVars, arrayEqual, arrayContains } from './utils';
+import { fetchScatterplotVars, fetchReducedPair } from './utils';
 
 /**
  * Gets the scatterplot data for a given ID
@@ -45,7 +45,7 @@ export class SedaScatterplot extends Component {
     onData: PropTypes.func,
     onError: PropTypes.func,
     onLoading: PropTypes.func,
-    baseVars: PropTypes.object,
+    metaVars: PropTypes.object,
     classes: PropTypes.object
   }
   
@@ -85,6 +85,13 @@ export class SedaScatterplot extends Component {
     }
     // load data if needed
     if (
+      prefix === 'schools' && (
+      prevProps.xVar !== xVar ||
+      prevProps.yVar !== yVar
+      )
+    ) {
+      this._loadScatterplotData();
+    } else if (
       prevProps.prefix !== prefix ||
       prevProps.xVar !== xVar ||
       prevProps.zVar !== zVar ||
@@ -119,7 +126,7 @@ export class SedaScatterplot extends Component {
    * 
    * @returns {object} echart options for series https://ecomfe.github.io/echarts-doc/public/en/option.html#series-scatter.type
    */
-  getDataSeries(id = 'base') {
+  getDataSeries(id = 'meta') {
     const options = this.getOption();
     return options.series && options.series.length ?
       options.series.find(s => s.id === id) :
@@ -163,33 +170,58 @@ export class SedaScatterplot extends Component {
     this.props.onLoading && this.props.onLoading(!loaded)
   }
 
+
   /**
    * Loads variables for a region if they do not exist in the data
    */
   _loadScatterplotData() {
     const { xVar, yVar, zVar, prefix } = this.props;
+    // always need to fetch schools
+    if (prefix === 'schools') {
+      return this._fetchSchoolPair(xVar, yVar)
+    }
     const data = this.props.data[prefix] || {};
     const vars = [];
     zVar && (!data || !data[zVar]) && vars.push(zVar);
     xVar && (!data || !data[xVar]) && vars.push(xVar);
     yVar && (!data || !data[yVar]) && vars.push(yVar);
-    if (vars.length === 0) {
+    // no need to fetch if vars are loaded
+    if (vars.length === 0 && prefix !== 'schools') {
       return; 
     }
     return this._fetchVariables(vars);
   }
 
   _fetchVariables(vars) {
-    const { prefix, endpoint, baseVars } = this.props;
+    const { prefix, endpoint, metaVars } = this.props;
     if (!endpoint) { 
       throw new Error('No endpoint specified for scatterplot') 
     }
-    // get base collection variables if any
-    const collectionVars = (baseVars && baseVars[prefix]) || [];
+    // get meta collection variables if any
+    const collectionVars = (metaVars && metaVars[prefix]) || [];
     return fetchScatterplotVars(vars, prefix, endpoint, collectionVars)
       .then(data => {
         this._setData(data, prefix);
-        return data;        
+        return data;
+      })
+      .catch(err => {
+        console.error(err)
+        this.props.onError && this.props.onError(err);
+      })
+  }
+
+  _fetchSchoolPair(xVar, yVar) {
+    console.log('fetching pair', xVar,yVar)
+    const { endpoint } = this.props;
+    if (!endpoint) { 
+      throw new Error('No endpoint specified for scatterplot') 
+    }
+    return fetchReducedPair(endpoint, xVar, yVar)
+      .then(data => {
+        console.log('received pair', data)
+
+        this._setData(data, 'schools');
+        return data;
       })
       .catch(err => {
         console.error(err)

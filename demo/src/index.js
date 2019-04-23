@@ -188,32 +188,18 @@ const baseOptions = {
 class Demo extends Component {
 
   state = {
-    xVar: 'all_ses',
+    xVar: 'frl_pct',
     data: {},
     freeze: false
   }
 
   componentDidMount() {
     setTimeout(() => {
-      console.log('freeze!')
-      this.setState({
-        freeze: true
-      })
-    }, 5000)
-    setTimeout(() => {
       console.log('load data');
       this.setState({
-        xVar: 'b_ses'
+        xVar: 'w_pct'
       })
     }, 10000)
-
-    setTimeout(() => {
-      console.log('unfreeze!')
-      this.setState({
-        freeze: false
-      })
-    }, 15000)
-
   }
 
   receiveData = (data, region) => {
@@ -235,16 +221,16 @@ class Demo extends Component {
         data = {this.state.data}
         xVar = {this.state.xVar}
         yVar = 'all_avg'
-        zVar = 'sz'
-        endpoint = 'https://d2fypeb6f974r1.cloudfront.net/dev/scatterplot/'
-        prefix = 'districts'
+        zVar = 'all_sz'
+        endpoint = 'http://localhost:8080/'
+        prefix = 'schools'
         options = {baseOptions}
         theme = {theme}
         classes = {{error: 'demo-scatterplot-error'}}
-        baseVars = {{
-          'counties': ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz' ],
-          'districts': ['id', 'name', 'lat', 'lon', 'all_avg', 'all_ses', 'sz' ],
-          'schools': ['id', 'name', 'lat', 'lon', 'all_avg', 'frl_pct', 'sz' ]
+        metaVars = {{
+          'counties': ['id', 'name', 'lat', 'lon', 'all_sz' ],
+          'districts': ['id', 'name', 'lat', 'lon', 'all_sz' ],
+          'schools': ['id', 'name', 'lat', 'lon', 'all_sz' ]
         }}
         onReady = {(e) => console.log(e.getOption())}
         onHover = {(e) => console.log(e)}
