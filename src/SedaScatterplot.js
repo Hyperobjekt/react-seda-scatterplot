@@ -10,6 +10,7 @@ import { fetchScatterplotVars, fetchReducedPair } from './utils';
  */
 const getDataForId = (id, data) => {
   return Object.keys(data).reduce((acc, curr) => {
+    // only add data if it exists
     if (data[curr][id] || data[curr][id] === 0) {
       acc[curr] = data[curr][id]
     }
