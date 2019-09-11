@@ -222,7 +222,7 @@ class Demo extends Component {
         xVar = {this.state.xVar}
         yVar = 'all_avg'
         zVar = 'all_sz'
-        endpoint = 'http://localhost:8080/'
+        endpoint = 'https://data.edopportunity.org/dev/scatterplot/'
         prefix = 'schools'
         options = {baseOptions}
         theme = {theme}

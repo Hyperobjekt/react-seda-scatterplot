@@ -21,13 +21,13 @@
     "semantic-release": "semantic-release"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "d3-array": "^2.0.3",
     "d3-scale": "^2.2.2",
     "echarts": "^4.1.0",
     "echarts-for-react": "^2.0.15-beta.0",
     "lodash.isequal": "^4.5.0",
-    "lodash.merge": "^4.6.1",
+    "lodash.merge": "^4.6.2",
     "papaparse": "^4.6.3",
     "prop-types": "^15.7.2"
   },
@@ -38,7 +38,7 @@
     "nwb": "0.23.x",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
-    "semantic-release": "^15.13.3",
+    "semantic-release": "^15.13.24",
     "travis-deploy-once": "^5.0.11"
   },
   "author": "Lane Olson",
