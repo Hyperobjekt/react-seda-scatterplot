@@ -61,7 +61,7 @@ function Scatterplot(container, props) {
     { 
       prefix: 'districts',
       options: this.states.base,
-      endpoint: 'https://d2fypeb6f974r1.cloudfront.net/dev/scatterplot/',
+      endpoint: 'https://data.edopportunity.org/dev/scatterplot/',
       ref: function(ref) { 
         _self.component = ref; 
       },
