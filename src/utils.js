@@ -41,7 +41,6 @@ export const mergeDatasets = (...sets) => {
  * @returns {object} { 'all_avg': { '01001': 3.22, ... }, 'all_coh': { '01001': 3.22, ... }}
  */
 const extractVarsFromDataArray = (varNames, data) => {
-  console.log(varNames, data)
   return varNames.reduce((obj, v, i) => {
     if(v !== 'id') {
       obj[v] = Object.keys(data)
@@ -170,16 +169,23 @@ export const fetchScatterplotVars =
     const fetchVars = vars
       .map(v => metaVars.indexOf(v) > -1 ? 'meta' : v)
       .filter((value, index, self) => self.indexOf(value) === index)
+    const fetchUrls = 
+      fetchVars.map(v => getDataUrlForVarName(endpoint, prefix, v, state))
+    const fetchMap = fetchVars.reduce((acc, curr, i) => {
+      if (fetchUrls[i]) { acc[curr] = fetchUrls[i]; }
+      return acc;
+    }, {});
+    console.log('fetchMap', fetchMap)
     return Promise.all(
-      fetchVars
-        .map(v => axios
-          .get(getDataUrlForVarName(endpoint, prefix, v, state))
-          .then((res) => {
-            return parseCsvData(res.data, v === 'meta').data;
-          }, (err) => {
-            console.error(err);
-            throw new Error(`Could not get ${getDataUrlForVarName(endpoint, prefix, v, state)}`)
-          })
+      Object.keys(fetchMap)
+        .map(v => 
+          axios.get(fetchMap[v])
+            .then((res) => {
+              return parseCsvData(res.data, v === 'meta').data;
+            }, (err) => {
+              console.error(err);
+              throw new Error(`Could not get ${fetchMap[v]}`)
+            })
         )
     )
     .then(data => createVariableCollection(fetchVars, data, metaVars))

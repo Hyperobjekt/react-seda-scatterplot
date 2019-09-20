@@ -188,18 +188,18 @@ const baseOptions = {
 class Demo extends Component {
 
   state = {
-    xVar: 'frl_pct',
+    xVar: 'all_frl',
     data: {},
     freeze: false
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      console.log('load data');
-      this.setState({
-        xVar: 'w_pct'
-      })
-    }, 10000)
+    // setTimeout(() => {
+    //   console.log('load data');
+    //   this.setState({
+    //     xVar: 'w_pct'
+    //   })
+    // }, 10000)
   }
 
   receiveData = (data, region) => {
@@ -224,6 +224,7 @@ class Demo extends Component {
         zVar = 'all_sz'
         endpoint = 'https://data.edopportunity.org/dev/scatterplot/'
         prefix = 'schools'
+        stateFips='06'
         options = {baseOptions}
         theme = {theme}
         classes = {{error: 'demo-scatterplot-error'}}
