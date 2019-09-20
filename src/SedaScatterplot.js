@@ -33,6 +33,7 @@ export class SedaScatterplot extends Component {
     xVar: PropTypes.string,
     yVar: PropTypes.string,
     zVar: PropTypes.string,
+    stateFips: PropTypes.string,
     data: PropTypes.object,
     theme: PropTypes.object,
     prefix: PropTypes.string,
@@ -70,7 +71,7 @@ export class SedaScatterplot extends Component {
    * Toggle highlights on the hovered ID if needed
    */
   componentDidUpdate(prevProps) {
-    const { prefix, xVar, yVar, zVar, hovered } = this.props;
+    const { prefix, xVar, yVar, zVar, hovered, stateFips } = this.props;
     if(this.isDataReady()) {
       if (this.echart && !this.ready) {
         this.ready = true;
@@ -88,7 +89,8 @@ export class SedaScatterplot extends Component {
     if (
       prefix === 'schools' && (
       prevProps.xVar !== xVar ||
-      prevProps.yVar !== yVar
+      prevProps.yVar !== yVar ||
+      prevProps.stateFips !== stateFips
       )
     ) {
       this._loadScatterplotData();
@@ -176,10 +178,10 @@ export class SedaScatterplot extends Component {
    * Loads variables for a region if they do not exist in the data
    */
   _loadScatterplotData() {
-    const { xVar, yVar, zVar, prefix } = this.props;
+    const { xVar, yVar, zVar, prefix, stateFips } = this.props;
     // always need to fetch schools
-    if (prefix === 'schools') {
-      return this._fetchSchoolPair(xVar, yVar)
+    if (prefix === 'schools' && !stateFips) {
+      return this._fetchSchoolPair(xVar, yVar) 
     }
     const data = this.props.data[prefix] || {};
     const vars = [];
@@ -194,13 +196,13 @@ export class SedaScatterplot extends Component {
   }
 
   _fetchVariables(vars) {
-    const { prefix, endpoint, metaVars } = this.props;
+    const { prefix, endpoint, metaVars, stateFips } = this.props;
     if (!endpoint) { 
       throw new Error('No endpoint specified for scatterplot') 
     }
     // get meta collection variables if any
     const collectionVars = (metaVars && metaVars[prefix]) || [];
-    return fetchScatterplotVars(vars, prefix, endpoint, collectionVars)
+    return fetchScatterplotVars(vars, prefix, endpoint, collectionVars, stateFips)
       .then(data => {
         this._setData(data, prefix);
         return data;
@@ -212,15 +214,12 @@ export class SedaScatterplot extends Component {
   }
 
   _fetchSchoolPair(xVar, yVar) {
-    console.log('fetching pair', xVar,yVar)
     const { endpoint } = this.props;
     if (!endpoint) { 
       throw new Error('No endpoint specified for scatterplot') 
     }
     return fetchReducedPair(endpoint, xVar, yVar)
       .then(data => {
-        console.log('received pair', data)
-
         this._setData(data, 'schools');
         return data;
       })

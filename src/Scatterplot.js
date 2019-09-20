@@ -298,6 +298,9 @@ export class Scatterplot extends Component {
           notMerge={this.props.notMerge}
           theme={this.state.themeId}
           showLoading={this.props.loading}
+          loadingOption={{
+            color: '#0078d4'
+          }}
         />
     )
   }
