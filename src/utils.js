@@ -61,6 +61,7 @@ const extractVarsFromDataArray = (varNames, data) => {
  * @returns {object} { 'w_ses': { '01001': 0.43, ... }, 'b_ses': { '01001': 0.32, ... } }
  */
 const createVariableCollection = (varNames, data, metaVars) => {
+  if (!data || data.length === 0) { return {} }
   return varNames.reduce((acc, curr, i) => {
     if (curr === 'meta') {
       // extract variables from the "meta" file
@@ -175,7 +176,6 @@ export const fetchScatterplotVars =
       if (fetchUrls[i]) { acc[curr] = fetchUrls[i]; }
       return acc;
     }, {});
-    console.log('fetchMap', fetchMap)
     return Promise.all(
       Object.keys(fetchMap)
         .map(v => 
