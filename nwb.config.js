@@ -10,7 +10,7 @@ module.exports = {
     }
   },
   babel: {
-    cherryPick: ['babel-plugin-transform-parameters', 'babel-plugin-transform-spread', 'babel-plugin-transform-destructuring', 'plugin-transform-arrow-functions'],
+    plugins: ['@babel/plugin-transform-arrow-functions', '@babel/plugin-transform-spread', '@babel/plugin-transform-destructuring'],
     env: {
       targets: {
         browsers: "> 0.5%, not dead",
@@ -19,6 +19,10 @@ module.exports = {
       modules: 'umd'
     },
     runtime: "polyfill",
-    stage: 0
+    stage: 0,
+    presets: [
+        "@babel/env",
+        "@babel/react"
+    ]
   }
 }

@@ -33,7 +33,7 @@ import 'echarts/lib/component/markArea';
 /**
  * Gets the range for the provided dataset, while filtering
  * out extreme outliers
- * @param {object} data 
+ * @param {object} data
  */
 const getDataRange = (data) => {
   const values = Object.keys(data)
@@ -41,7 +41,7 @@ const getDataRange = (data) => {
     .filter(v => v > -9999)
     .sort((a, b) => a - b);
   return [
-    d3array.quantile(values, 0.001), 
+    d3array.quantile(values, 0.001),
     d3array.quantile(values, 0.999)
   ]
 }
@@ -53,7 +53,7 @@ const getDataRange = (data) => {
  * @param {object} options range and exponent options for scale
  */
 const getDataScale = (
-  data, 
+  data,
   { range = [0, 1], exponent = 1 }
 ) => {
   if (!data) { return () => 0 }
@@ -70,7 +70,7 @@ const getDataSeries = (id, series = []) =>
     null;
 
 const makeId = () =>
-  Math.random().toString(36).substring(2, 15) + 
+  Math.random().toString(36).substring(2, 15) +
   Math.random().toString(36).substring(2, 15);
 
 export class Scatterplot extends Component {
@@ -167,13 +167,13 @@ export class Scatterplot extends Component {
       symbolSize: zVar ? ((value) => sizeScale(value[2])) : 10,
       z:3
     }
-    const overrides = options ? 
+    const overrides = options ?
       getDataSeries('highlighted', options.series) : {};
     const data = highlighted
       .map((id, i) => scatterData.find(d => d[idDim] === id))
       .filter(d => Boolean(d))
     return merge(
-      { ...baseSeries, data: data }, 
+      { ...baseSeries, data: data },
       overrides ? overrides : {}
     )
   }
@@ -191,19 +191,19 @@ export class Scatterplot extends Component {
       symbolSize: (value) => sizeScale(value[2]),
       z:4
     }
-    const overrides = options ? 
+    const overrides = options ?
       getDataSeries('selected', options.series) : {};
     const data = selected
       .map((id, i) => scatterData.find(d => d[idDim] === id))
       .filter(d => Boolean(d))
     return merge(
-      { ...baseSeries, data: data }, 
+      { ...baseSeries, data: data },
       overrides ? overrides : {}
     )
   }
 
-  /** 
-   * Get series with default styles and selected highlights 
+  /**
+   * Get series with default styles and selected highlights
    */
   _getBaseSeries(scatterData, sizeScale) {
     const { options } = this.props;
@@ -220,26 +220,26 @@ export class Scatterplot extends Component {
   }
 
   /**
-   * Gets scatterplot data series, or return empty array if 
+   * Gets scatterplot data series, or return empty array if
    * data is not ready yet
    */
-  _getScatterplotSeries() { 
+  _getScatterplotSeries() {
     const { data, xVar, yVar, zVar, options } = this.props;
     const otherSeries = options && options.series ?
       options.series.filter(
         s => ['base', 'selected', 'highlighted'].indexOf(s.id) === -1
       ) : []
     if (
-      (data && data[xVar] && data[yVar]) && 
+      (data && data[xVar] && data[yVar]) &&
       ((zVar && data[zVar]) || !zVar)
     ) {
-      const sizeScale = zVar ? 
+      const sizeScale = zVar ?
         getDataScale(data[zVar], { range: [ 6, 48 ] }) :
         (() => 10);
       const scatterData = zVar ?
         getScatterplotData(data[xVar], data[yVar], data[zVar]) :
         getScatterplotData(data[xVar], data[yVar])
-      const series = [ 
+      const series = [
         this._getBaseSeries(scatterData, sizeScale),
         this._getSelectedSeries(scatterData, sizeScale),
         this._getHighlightedSeries(scatterData, sizeScale),
@@ -257,29 +257,29 @@ export class Scatterplot extends Component {
   _getScatterplotOptions = () => {
     const { options } = this.props;
     const series = this._getScatterplotSeries()
-    const fullOptions = { 
+    const fullOptions = {
       ...options,
       series
     };
     return fullOptions;
   }
-  
 
-  /** 
+
+  /**
    * Bind events when the chart is ready
    */
   _onChartReady(e) {
     this.props.onHover &&
       e.on('mouseover', this.props.onHover)
-    this.props.onHover && 
+    this.props.onHover &&
       e.on('mouseout', this.props.onHover)
-    this.props.onMouseMove && 
+    this.props.onMouseMove &&
       e.on('mousemove', this.props.onMouseMove)
-    this.props.onClick && 
+    this.props.onClick &&
       e.on('click', this.props.onClick)
     this.props.onMouseOver &&
       e.getDom().addEventListener('mouseover', this.props.onMouseEnter)
-    this.props.onMouseOut && 
+    this.props.onMouseOut &&
       e.getDom().addEventListener('mouseout', this.props.onMouseLeave)
     this.echart = e;
     this.props.onReady && this.props.onReady(e)
@@ -289,7 +289,7 @@ export class Scatterplot extends Component {
 
   render() {
     return (
-      this.state.options && 
+      this.state.options &&
         <ReactEchartsCore
           echarts={echarts}
           onChartReady={this._onChartReady.bind(this)}
