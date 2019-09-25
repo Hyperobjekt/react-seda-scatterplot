@@ -10,19 +10,17 @@ module.exports = {
     }
   },
   babel: {
-    plugins: ['@babel/plugin-transform-arrow-functions', '@babel/plugin-transform-spread', '@babel/plugin-transform-destructuring'],
-    env: {
-      targets: {
-        browsers: "> 0.5%, not dead",
-        ie: "11"
-      },
-      modules: 'umd'
-    },
-    runtime: "polyfill",
-    stage: 0,
-    presets: [
-        "@babel/env",
-        "@babel/react"
-    ]
+    cherryPick: ['d3-array', 'd3-scale'],
+    plugins: [
+      'transform-class-properties',
+      'transform-es2015-arrow-functions',
+      'transform-es2015-spread',
+      'transform-es2015-destructuring',
+      'transform-es2015-classes',
+      'syntax-class-properties',
+      'transform-class-constructor-call',
+      'transform-es2015-parameters'
+    ],
+    presets: ["es2015", "stage-0", "react"]
   }
 }
