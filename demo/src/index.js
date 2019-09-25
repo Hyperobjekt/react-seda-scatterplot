@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { render } from 'react-dom'
 import SedaScatterplot from '../../src'
-import * as merge from 'lodash.merge'
+import merge from 'lodash.merge'
 
 var colorPalette = [
   '#2ec7c9', '#b6a2de', '#5ab1ef', '#ffb980', '#d87a80',
