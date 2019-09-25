@@ -1,4 +1,4 @@
-import * as merge from 'lodash.merge';
+import merge from 'lodash.merge';
 
 /** Default options for scatterplot container */
 const gridOptions = {

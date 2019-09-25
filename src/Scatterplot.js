@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { getScatterplotData } from './utils';
 import { getScatterplotOptions } from './style';
-import * as _isEqual from 'lodash.isequal';
+import _isEqual from 'lodash.isequal';
 import * as scale from 'd3-scale';
 import * as d3array from 'd3-array';
-import * as merge from 'lodash.merge';
+import merge from 'lodash.merge';
 
 // import the core library.
 import ReactEchartsCore from 'echarts-for-react/lib/core';
