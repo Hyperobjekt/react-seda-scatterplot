@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
+import classNames from 'classnames';
 import Scatterplot from './Scatterplot';
 import { fetchScatterplotVars, fetchReducedPair } from './utils';
 
@@ -49,6 +50,10 @@ export class SedaScatterplot extends Component {
     onLoading: PropTypes.func,
     metaVars: PropTypes.object,
     classes: PropTypes.object
+  }
+
+  static defaultProps = {
+    classes: {}
   }
   
   constructor(props) {
@@ -348,7 +353,7 @@ export class SedaScatterplot extends Component {
       this.props.data[this.props.prefix ? this.props.prefix : 'unprefixed'] :
       null
     return (
-      <div className="seda-scatterplot">
+      <div className={classNames("seda-scatterplot", this.props.classes.root)}>
         <Scatterplot 
           ref={(ref) => this.scatterplot = ref}
           onReady={this._onReady}
@@ -370,7 +375,9 @@ export class SedaScatterplot extends Component {
           freeze={this.props.freeze}
         />
         { this.state.error && !this.state.fetching &&
-          <div style={{position: 'relative', zIndex: 2}} className="seda-scatterplot__error">
+          <div 
+            className={classNames("seda-scatterplot__error", this.props.classes.error)}
+          >
             <p>There was an error fetching chart data.</p>
             <button onClick={() => this._loadScatterplotData()}>Retry</button>
           </div>

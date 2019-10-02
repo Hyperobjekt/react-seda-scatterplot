@@ -227,7 +227,7 @@ class Demo extends Component {
         stateFips='06'
         options = {baseOptions}
         theme = {theme}
-        classes = {{error: 'demo-scatterplot-error'}}
+        classes = {{root: 'demo-scatterplot', error: 'demo-scatterplot-error'}}
         metaVars = {{
           'counties': ['id', 'name', 'lat', 'lon', 'all_sz' ],
           'districts': ['id', 'name', 'lat', 'lon', 'all_sz' ],
