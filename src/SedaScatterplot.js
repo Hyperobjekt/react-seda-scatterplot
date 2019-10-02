@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import Scatterplot from './Scatterplot';
 import { fetchScatterplotVars, fetchReducedPair } from './utils';
+import { relative } from 'path';
 
 /**
  * Gets the scatterplot data for a given ID
@@ -55,7 +56,7 @@ export class SedaScatterplot extends Component {
     super(props);
     this.loaded = false;
     this.hoverTimeout = null;
-    this.state = { hovered: false };
+    this.state = { hovered: false, error: false };
   }
 
   /** 
@@ -205,11 +206,11 @@ export class SedaScatterplot extends Component {
     return fetchScatterplotVars(vars, prefix, endpoint, collectionVars, stateFips)
       .then(data => {
         this._setData(data, prefix);
+        if (this.state.error) this.setState({error: false})
         return data;
       })
       .catch(err => {
-        console.error(err)
-        this.props.onError && this.props.onError(err);
+        this._handleFetchError(err, vars)
       })
   }
 
@@ -221,12 +222,18 @@ export class SedaScatterplot extends Component {
     return fetchReducedPair(endpoint, xVar, yVar)
       .then(data => {
         this._setData(data, 'schools');
+        if (this.state.error) this.setState({error: false})
         return data;
       })
       .catch(err => {
-        console.error(err)
-        this.props.onError && this.props.onError(err);
+        this._handleFetchError(err)
       })
+  }
+
+  /** Handles the fetch error */
+  _handleFetchError(err, vars) {
+    this.props.onError && this.props.onError(err);
+    this.setState({ 'error' : vars });
   }
 
   /**
@@ -336,26 +343,34 @@ export class SedaScatterplot extends Component {
       this.props.data[this.props.prefix ? this.props.prefix : 'unprefixed'] :
       null
     return (
-      <Scatterplot 
-        ref={(ref) => this.scatterplot = ref}
-        onReady={this._onReady}
-        onHover={this._onHover}
-        onMouseEnter={() => { this.setState({ hovered: true }) }}
-        onMouseLeave={() => { this.setState({ hovered: false }) }}
-        onMouseMove={this._onMouseMove}
-        onClick={this._onClick}
-        data={data}
-        xVar={this.props.xVar}
-        yVar={this.props.yVar}
-        zVar={this.props.zVar}
-        selected={this.props.selected}
-        highlighted={this.props.highlighted}
-        options={this.props.options}
-        notMerge={this.props.notMerge}
-        theme={this.props.theme}
-        loading={!this.isDataReady()}
-        freeze={this.props.freeze}
-      />  
+      <div className="seda-scatterplot">
+        <Scatterplot 
+          ref={(ref) => this.scatterplot = ref}
+          onReady={this._onReady}
+          onHover={this._onHover}
+          onMouseEnter={() => { this.setState({ hovered: true }) }}
+          onMouseLeave={() => { this.setState({ hovered: false }) }}
+          onMouseMove={this._onMouseMove}
+          onClick={this._onClick}
+          data={data}
+          xVar={this.props.xVar}
+          yVar={this.props.yVar}
+          zVar={this.props.zVar}
+          selected={this.props.selected}
+          highlighted={this.props.highlighted}
+          options={this.props.options}
+          notMerge={this.props.notMerge}
+          theme={this.props.theme}
+          loading={!this.isDataReady()}
+          freeze={this.props.freeze}
+        />
+        { this.state.error &&
+          <div style={{position: 'relative', zIndex: 2}} className="seda-scatterplot__error">
+            <p>There was an error fetching chart data.</p>
+            <button onClick={() => this._fetchVariables(this.state.error)}>Retry</button>
+          </div>
+        }
+      </div>
     )
   }
 }

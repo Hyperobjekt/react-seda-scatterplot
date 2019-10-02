@@ -1,6 +1,12 @@
 import axios from 'axios';
 import { parse } from 'papaparse';
 
+function FetchException(message, urls, err) {
+  this.message = message;
+  this.name = 'FetchException';
+  this.urls = urls;
+  this.originalError = err;
+}
 
 /**
  * Takes multiple data sets with identifiers and merges them
@@ -147,15 +153,17 @@ const getDataUrlForVarName = (endpoint, prefix, varName, state) => {
  * @param {string} var2 
  */
 export const fetchReducedPair = (endpoint, var1, var2) => {
-  const filename = [ var1, var2 ].sort().join('-')
+  const filename = [ var1, var2 ].sort().join('-');
+  const fetchUrl = `${endpoint}schools/reduced/${filename}.csv`;
   return axios
-    .get(`${endpoint}schools/reduced/${filename}.csv`)
+    .get(fetchUrl)
     .then((res) => parseCsvData(res.data, true))
     .then(({header, data }) => extractVarsFromDataArray(header, data))
-    .catch((err) => {
-      console.error(err);
-      return {}
-    })
+    .catch(
+      (err) => {
+        throw new FetchException(`Could not fetch data`, { [filename] : fetchUrl }, err);
+      }
+    )
 }
 
 /**
@@ -183,8 +191,7 @@ export const fetchScatterplotVars =
             .then((res) => {
               return parseCsvData(res.data, v === 'meta').data;
             }, (err) => {
-              console.error(err);
-              throw new Error(`Could not get ${fetchMap[v]}`)
+              throw new FetchException(`Could not fetch data`, fetchMap, err);
             })
         )
     )
