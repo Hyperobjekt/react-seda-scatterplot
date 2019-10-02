@@ -201,11 +201,9 @@ export class SedaScatterplot extends Component {
     if (!endpoint) { 
       throw new Error('No endpoint specified for scatterplot') 
     }
-    const ep2 = Math.random() > 0.5 ?
-      endpoint : 'tmpfake'
     // get meta collection variables if any
     const collectionVars = (metaVars && metaVars[prefix]) || [];
-    return fetchScatterplotVars(vars, prefix, ep2, collectionVars, stateFips)
+    return fetchScatterplotVars(vars, prefix, endpoint, collectionVars, stateFips)
       .then(data => {
         this._setData(data, prefix);
         if (this.state.error || this.state.fetching) {
