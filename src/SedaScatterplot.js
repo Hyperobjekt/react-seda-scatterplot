@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import Scatterplot from './Scatterplot';
 import { fetchScatterplotVars, fetchReducedPair } from './utils';
-import { relative } from 'path';
 
 /**
  * Gets the scatterplot data for a given ID
@@ -56,7 +55,7 @@ export class SedaScatterplot extends Component {
     super(props);
     this.loaded = false;
     this.hoverTimeout = null;
-    this.state = { hovered: false, error: false };
+    this.state = { hovered: false, error: false, fetching: false };
   }
 
   /** 
@@ -198,15 +197,20 @@ export class SedaScatterplot extends Component {
 
   _fetchVariables(vars) {
     const { prefix, endpoint, metaVars, stateFips } = this.props;
+    this.setState({fetching: true})
     if (!endpoint) { 
       throw new Error('No endpoint specified for scatterplot') 
     }
+    const ep2 = Math.random() > 0.5 ?
+      endpoint : 'tmpfake'
     // get meta collection variables if any
     const collectionVars = (metaVars && metaVars[prefix]) || [];
-    return fetchScatterplotVars(vars, prefix, endpoint, collectionVars, stateFips)
+    return fetchScatterplotVars(vars, prefix, ep2, collectionVars, stateFips)
       .then(data => {
         this._setData(data, prefix);
-        if (this.state.error) this.setState({error: false})
+        if (this.state.error || this.state.fetching) {
+          this.setState({error: false, fetching: false})
+        }
         return data;
       })
       .catch(err => {
@@ -219,21 +223,24 @@ export class SedaScatterplot extends Component {
     if (!endpoint) { 
       throw new Error('No endpoint specified for scatterplot') 
     }
+    this.setState({fetching: true})
     return fetchReducedPair(endpoint, xVar, yVar)
       .then(data => {
         this._setData(data, 'schools');
-        if (this.state.error) this.setState({error: false})
+        if (this.state.error || this.state.fetching) { 
+          this.setState({error: false, fetching: false})
+        }
         return data;
       })
       .catch(err => {
-        this._handleFetchError(err)
+        this._handleFetchError(err, [xVar, yVar])
       })
   }
 
   /** Handles the fetch error */
   _handleFetchError(err, vars) {
     this.props.onError && this.props.onError(err);
-    this.setState({ 'error' : vars });
+    this.setState({ 'fetching': false, 'error' : vars });
   }
 
   /**
@@ -364,10 +371,10 @@ export class SedaScatterplot extends Component {
           loading={!this.isDataReady()}
           freeze={this.props.freeze}
         />
-        { this.state.error &&
+        { this.state.error && !this.state.fetching &&
           <div style={{position: 'relative', zIndex: 2}} className="seda-scatterplot__error">
             <p>There was an error fetching chart data.</p>
-            <button onClick={() => this._fetchVariables(this.state.error)}>Retry</button>
+            <button onClick={() => this._loadScatterplotData()}>Retry</button>
           </div>
         }
       </div>
